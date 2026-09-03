@@ -1,0 +1,141 @@
+import React, { useState, useEffect } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Stars } from '@react-three/drei';
+import { Globe, Map as MapIcon } from 'lucide-react';
+import Earth from './Earth';
+import Map2D from './Map2D';
+import BottomHUD from './BottomHUD';
+import RightPanel from './RightPanel';
+import CameraFramer from './CameraFramer';
+import axios from 'axios';
+
+export default function HeroSection() {
+  const [entities, setEntities] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeEntity, setActiveEntity] = useState(null);
+  const [dynamicCategories, setDynamicCategories] = useState({});
+  const [is3D, setIs3D] = useState(true); // Toggle State
+
+  // Indian Jewel Tone Palette
+  const jewelPalette = [
+    '#F59E0B', // Saffron Gold / Marigold
+    '#0D9488', // Peacock Teal
+    '#E11D48', // Terracotta Crimson
+    '#3B82F6', // Lapis Lazuli
+    '#D97706', // Sandstone Amber
+    '#EC4899', // Lotus Rose
+    '#8B5CF6', // Royal Amethyst
+    '#10B981', // Sacred Tulsi Emerald
+  ];
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/entities')
+      .then(res => {
+        const uniqueCategories = new Set();
+        const data = res.data.map(e => {
+          if (e.category_name) uniqueCategories.add(e.category_name);
+          return e;
+        });
+
+        const catMap = {};
+        let index = 0;
+        uniqueCategories.forEach(cat => {
+          catMap[cat] = jewelPalette[index % jewelPalette.length];
+          index++;
+        });
+
+        setDynamicCategories(catMap);
+        setEntities(data);
+      })
+      .catch(err => console.error("Error fetching entities:", err));
+  }, []);
+
+  const filteredEntities = activeCategory === 'All'
+    ? entities
+    : entities.filter(e => e.category_name === activeCategory);
+
+  return (
+    <section className="relative w-full h-screen overflow-hidden pt-16 bg-[#08080C]">
+
+      {/* 2D / 3D Toggle Switch Top Right */}
+      <div className="absolute top-24 right-8 z-20">
+        <div className="dharohar-glass p-1 flex items-center rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-[#D4AF37]/30">
+          <button
+            onClick={() => setIs3D(true)}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full heritage-badge transition-all duration-300 ${
+              is3D 
+                ? 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] font-bold shadow-[0_0_15px_rgba(212,175,55,0.4)]' 
+                : 'text-zinc-400 hover:text-[#F5D77F]'
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span>3D Globe</span>
+          </button>
+          <button
+            onClick={() => setIs3D(false)}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full heritage-badge transition-all duration-300 ${
+              !is3D 
+                ? 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] font-bold shadow-[0_0_15px_rgba(212,175,55,0.4)]' 
+                : 'text-zinc-400 hover:text-[#F5D77F]'
+            }`}
+          >
+            <MapIcon className="w-3.5 h-3.5" />
+            <span>2D Atlas</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Map Area (Conditionally Rendered) */}
+      {is3D ? (
+        <div className="w-full h-full absolute inset-0 cursor-move z-0">
+          <Canvas camera={{ position: [0.67, 2.63, -7.0], fov: 45 }}>
+            <Stars radius={100} depth={60} count={6000} factor={4} saturation={0.5} fade speed={0.8} />
+            
+            <Earth 
+              entities={filteredEntities} 
+              categoryColors={dynamicCategories}
+              activeEntity={activeEntity}
+              setActiveEntity={setActiveEntity}
+            />
+            
+            <CameraFramer activeEntity={activeEntity} radius={2.5} />
+
+            <OrbitControls 
+              makeDefault
+              enableZoom={true} 
+              enablePan={false} 
+              autoRotate={false} 
+              minDistance={3}
+              maxDistance={12}
+              zoomSpeed={1.2}
+              rotateSpeed={0.8}
+            />
+          </Canvas>
+        </div>
+      ) : (
+        <Map2D 
+          entities={filteredEntities}
+          categoryColors={dynamicCategories}
+          activeEntity={activeEntity}
+          setActiveEntity={setActiveEntity}
+        />
+      )}
+
+      {/* Floating Bottom Cultural Dimensions Filter */}
+      <BottomHUD 
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        categories={['All', ...Object.keys(dynamicCategories)]}
+        categoryColors={dynamicCategories}
+        setActiveEntity={setActiveEntity}
+      />
+
+      {/* Right Sliding Panel for Darshak AI Cultural Chronicle */}
+      <RightPanel 
+        activeEntity={activeEntity} 
+        setActiveEntity={setActiveEntity} 
+      />
+
+    </section>
+  );
+}
