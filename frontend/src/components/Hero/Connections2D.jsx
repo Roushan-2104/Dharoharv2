@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Polyline } from 'react-leaflet';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
 
 export default function Connections2D({ activeEntity }) {
   const [connections, setConnections] = useState([]);
@@ -11,7 +12,7 @@ export default function Connections2D({ activeEntity }) {
       return;
     }
 
-    axios.get(`http://localhost:3000/api/entities/${activeEntity.id}/connections`)
+    axios.get(`${API_BASE_URL}/api/entities/${activeEntity.id}/connections`)
       .then(res => {
         setConnections(res.data);
       })

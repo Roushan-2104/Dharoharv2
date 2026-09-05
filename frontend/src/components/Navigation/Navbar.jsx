@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Compass, Map, Feather, Sparkles, Volume2, VolumeX, Languages } from 'lucide-react';
+import { Compass, Map, Feather, Sparkles, Volume2, VolumeX, Languages, Check } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function Navbar() {
   const [audioActive, setAudioActive] = useState(false);
-  const [selectedLang, setSelectedLang] = useState('EN');
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
-  const languages = ['EN', 'हि', 'ଓଡ଼ି'];
+  const languageOptions = [
+    { code: 'en', label: 'English', short: 'EN' },
+    { code: 'hi', label: 'हिन्दी', short: 'हि' },
+    { code: 'or', label: 'ଓଡ଼ିଆ', short: 'ଓଡ଼ି' },
+  ];
 
-  const cycleLanguage = () => {
-    const currentIndex = languages.indexOf(selectedLang);
-    const nextIndex = (currentIndex + 1) % languages.length;
-    setSelectedLang(languages[nextIndex]);
-  };
+  const currentOption = languageOptions.find(l => l.code === language) || languageOptions[0];
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 h-20 flex justify-between items-center px-6 md:px-10 border-b border-[#D4AF37]/20 bg-[#08080C]/80 backdrop-blur-xl">
@@ -30,7 +32,7 @@ export default function Navbar() {
           }
         >
           <Map className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>Sanskriti Map</span>
+          <span>{t('nav_map')}</span>
         </NavLink>
 
         <NavLink 
@@ -44,7 +46,7 @@ export default function Navbar() {
           }
         >
           <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>Anusandhan</span>
+          <span>{t('nav_discover')}</span>
         </NavLink>
 
         <NavLink 
@@ -58,7 +60,7 @@ export default function Navbar() {
           }
         >
           <Feather className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>Jan Sahayog</span>
+          <span>{t('nav_contribute')}</span>
         </NavLink>
       </div>
 
@@ -75,10 +77,10 @@ export default function Navbar() {
         </div>
         <NavLink to="/" className="flex flex-col items-center">
           <h1 className="text-2xl md:text-3xl font-black tracking-[0.2em] font-cinzel gold-gradient-text uppercase leading-none">
-            Dharohar
+            {t('nav_title')}
           </h1>
           <span className="text-[8px] uppercase tracking-[0.3em] text-[#D4AF37]/70 font-sans mt-0.5">
-            Digital Heritage Knowledge System
+            {t('nav_subtitle')}
           </span>
         </NavLink>
       </div>
@@ -89,18 +91,43 @@ export default function Navbar() {
         {/* Knowledge Graph Status */}
         <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-[#101017] border border-[#D4AF37]/20">
           <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full status-pulse"></div>
-          <span className="heritage-badge text-zinc-400 text-[9px]">Knowledge Graph Live</span>
+          <span className="heritage-badge text-zinc-400 text-[9px]">{t('nav_knowledge_live')}</span>
         </div>
 
-        {/* Multi-Language Selector */}
-        <button 
-          onClick={cycleLanguage}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#101017] border border-[#D4AF37]/25 text-[#F5D77F] hover:border-[#D4AF37] transition-all text-xs font-semibold"
-          title="Switch Language"
-        >
-          <Languages className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>{selectedLang}</span>
-        </button>
+        {/* Multi-Language Selector Dropdown */}
+        <div className="relative">
+          <button 
+            onClick={() => setLangMenuOpen(!langMenuOpen)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#101017] border border-[#D4AF37]/35 text-[#F5D77F] hover:border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.15)] transition-all text-xs font-semibold"
+            title={t('lang_switch_tooltip')}
+          >
+            <Languages className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>{currentOption.label}</span>
+          </button>
+
+          {/* Language Options Dropdown Menu */}
+          {langMenuOpen && (
+            <div className="absolute right-0 mt-2 w-36 rounded-xl dharohar-glass border border-[#D4AF37]/40 shadow-[0_10px_30px_rgba(0,0,0,0.8)] py-1.5 z-50 animate-fade-in-up">
+              {languageOptions.map(opt => (
+                <button
+                  key={opt.code}
+                  onClick={() => {
+                    setLanguage(opt.code);
+                    setLangMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium transition-colors ${
+                    language === opt.code
+                      ? 'text-[#F5D77F] bg-[#D4AF37]/20 font-bold'
+                      : 'text-zinc-300 hover:text-[#F5D77F] hover:bg-white/5'
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                  {language === opt.code && <Check className="w-3.5 h-3.5 text-[#D4AF37]" />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Audio Immersion Toggle */}
         <button 
@@ -110,7 +137,7 @@ export default function Navbar() {
               ? 'border-[#D4AF37] bg-[#D4AF37]/20 text-[#F5D77F] shadow-[0_0_15px_rgba(212,175,55,0.3)]' 
               : 'border-[#D4AF37]/20 bg-[#101017] text-zinc-400 hover:text-[#F5D77F] hover:border-[#D4AF37]/50'
           }`}
-          title={audioActive ? "Mute Ambient Sitar" : "Play Ambient Temple Sitar"}
+          title={audioActive ? t('audio_mute') : t('audio_play')}
         >
           {audioActive ? <Volume2 className="w-4 h-4 text-[#D4AF37]" /> : <VolumeX className="w-4 h-4" />}
         </button>

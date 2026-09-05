@@ -8,8 +8,11 @@ import BottomHUD from './BottomHUD';
 import RightPanel from './RightPanel';
 import CameraFramer from './CameraFramer';
 import axios from 'axios';
+import API_BASE_URL from '../../config/api';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function HeroSection() {
+  const { t } = useLanguage();
   const [entities, setEntities] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeEntity, setActiveEntity] = useState(null);
@@ -29,7 +32,7 @@ export default function HeroSection() {
   ];
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/entities')
+    axios.get(`${API_BASE_URL}/api/entities`)
       .then(res => {
         const uniqueCategories = new Set();
         const data = res.data.map(e => {
@@ -69,7 +72,7 @@ export default function HeroSection() {
             }`}
           >
             <Globe className="w-3.5 h-3.5" />
-            <span>3D Globe</span>
+            <span>{t('hero_3d')}</span>
           </button>
           <button
             onClick={() => setIs3D(false)}
@@ -80,7 +83,7 @@ export default function HeroSection() {
             }`}
           >
             <MapIcon className="w-3.5 h-3.5" />
-            <span>2D Atlas</span>
+            <span>{t('hero_2d')}</span>
           </button>
         </div>
       </div>
