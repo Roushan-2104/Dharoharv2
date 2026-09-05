@@ -6,7 +6,7 @@ import Connections from './Connections';
 import { latLongToVector3 } from '../../utils/geo';
 import { useLanguage } from '../../context/LanguageContext';
 
-export default function Earth({ entities, categoryColors, activeEntity, setActiveEntity }) {
+export default function Earth({ entities, categoryColors, activeEntity, setActiveEntity, itineraryRoute }) {
   const { translateEntityName, translateCategory } = useLanguage();
   const earthRef = useRef();
   const radius = 2.5;
@@ -41,8 +41,8 @@ export default function Earth({ entities, categoryColors, activeEntity, setActiv
           metalness={0.15}
         />
         
-        {/* Render Glowing Golden Cultural Arcs */}
-        <Connections activeEntity={activeEntity} radius={radius} />
+        {/* Render Glowing Golden Cultural Arcs & Itinerary Routes */}
+        <Connections activeEntity={activeEntity} itineraryRoute={itineraryRoute} radius={radius} />
         
         {/* Render Jewel Markers with Tooltips */}
         {entities.map(entity => {

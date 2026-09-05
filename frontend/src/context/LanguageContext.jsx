@@ -115,7 +115,36 @@ export const translations = {
     contribute_submitting: "Recording into Knowledge Graph...",
     contribute_success_title: "Story Inscribed in Living Archive",
     contribute_success_msg: "Your contribution has been recorded into the Dharohar National Knowledge System. Our cultural historians and moderation council will review and weave it into the interactive map.",
-    contribute_another: "Preserve Another Story"
+    contribute_another: "Preserve Another Story",
+
+    // Itinerary Generator
+    itinerary_btn: "Plan Cultural Trail",
+    itinerary_modal_title: "AI Cultural Itinerary Planner",
+    itinerary_modal_subtitle: "Generate personalized, thematic heritage trails crafted by Darshak AI across India's sacred geography.",
+    itinerary_duration_label: "Trail Duration",
+    itinerary_1day: "1 Day (Express Trail)",
+    itinerary_3day: "3 Days (Immersive Heritage)",
+    itinerary_5day: "5 Days (Grand Odyssey)",
+    itinerary_hub_label: "Starting Hub / Region",
+    itinerary_hub_any: "All Heritage Regions (Auto-select)",
+    itinerary_theme_label: "Cultural Themes & Focus",
+    itinerary_theme_temples: "Sacred Architecture & Temples",
+    itinerary_theme_dance: "Folk Dances & Performing Arts",
+    itinerary_theme_food: "Culinary & Temple Mahaprasad",
+    itinerary_theme_crafts: "Handicrafts, Pattachitra & Textiles",
+    itinerary_theme_wildlife: "Sacred Groves & Coastal Heritage",
+    itinerary_generate_btn: "Craft My Heritage Trail",
+    itinerary_generating: "Darshak AI is mapping sacred coordinates & archival lore...",
+    itinerary_day: "Day",
+    itinerary_activity: "Key Experience",
+    itinerary_food_tip: "Culinary Recommendation",
+    itinerary_lore_highlight: "Living Lore & Significance",
+    itinerary_view_stop: "Locate on Map",
+    itinerary_highlight_route: "Highlight Full Trail on Map",
+    itinerary_clear_route: "Clear Route Highlight",
+    itinerary_copy_btn: "Copy Itinerary",
+    itinerary_copied: "Copied to Clipboard!",
+    itinerary_reset: "Plan Another Trail"
   },
 
   hi: {
@@ -229,7 +258,36 @@ export const translations = {
     contribute_submitting: "ज्ञानकोश में सहेजा जा रहा है...",
     contribute_success_title: "गाथा ज्ञानकोश में अंकित हो गई!",
     contribute_success_msg: "धरोहर में योगदान के लिए धन्यवाद। आपके द्वारा प्रस्तुत विवरण की समीक्षा कर इसे इंटरएक्टिव मानचित्र में सम्मिलित किया जाएगा।",
-    contribute_another: "एक और गाथा सहेजें"
+    contribute_another: "एक और गाथा सहेजें",
+
+    // Itinerary Generator
+    itinerary_btn: "सांस्कृतिक यात्रा योजना",
+    itinerary_modal_title: "AI सांस्कृतिक यात्रा मार्गदर्शक",
+    itinerary_modal_subtitle: "दर्शक AI और धरोहर ज्ञानकोश द्वारा संचालित व्यक्तिगत, विषय-आधारित सांस्कृतिक यात्रा मार्ग बनाएं।",
+    itinerary_duration_label: "यात्रा की अवधि",
+    itinerary_1day: "1 दिन (त्वरित दर्शन)",
+    itinerary_3day: "3 दिन (गहन सांस्कृतिक अनुभव)",
+    itinerary_5day: "5 दिन (भव्य धरोहर यात्रा)",
+    itinerary_hub_label: "प्रारंभिक स्थल / क्षेत्र",
+    itinerary_hub_any: "सभी धरोहर क्षेत्र (स्वतः चयन)",
+    itinerary_theme_label: "सांस्कृतिक विषय एवं रुचियां",
+    itinerary_theme_temples: "पवित्र मंदिर एवं स्थापत्य",
+    itinerary_theme_dance: "लोक नृत्य एवं प्रदर्शन कलाएं",
+    itinerary_theme_food: "पारंपरिक खान-पान व महाप्रसाद",
+    itinerary_theme_crafts: "हस्तशिल्प, पट्टचित्र व हथकरघा",
+    itinerary_theme_wildlife: "पवित्र उपवन व तटीय धरोहर",
+    itinerary_generate_btn: "सांस्कृतिक यात्रा तैयार करें",
+    itinerary_generating: "दर्शक AI पवित्र निर्देशांक और अभिलेखीय ज्ञान का मानचित्रण कर रहा है...",
+    itinerary_day: "दिन",
+    itinerary_activity: "प्रमुख अनुभव एवं गतिविधि",
+    itinerary_food_tip: "पारंपरिक खान-पान सलाह",
+    itinerary_lore_highlight: "जीवंत इतिहास एवं पौराणिक गाथा",
+    itinerary_view_stop: "मानचित्र पर देखें",
+    itinerary_highlight_route: "मानचित्र पर संपूर्ण मार्ग दिखाएं",
+    itinerary_clear_route: "मार्ग हटाएं",
+    itinerary_copy_btn: "यात्रा विवरण कॉपी करें",
+    itinerary_copied: "क्लिपबोर्ड पर कॉपी किया गया!",
+    itinerary_reset: "नई यात्रा योजना बनाएं"
   },
 
   or: {
@@ -343,7 +401,36 @@ export const translations = {
     contribute_submitting: "ଜ୍ଞାନକୋଷରେ ସଂରକ୍ଷଣ ହେଉଛି...",
     contribute_success_title: "ଗାଥା ଜୀବନ୍ତ ଅଭିଲେଖାଗାରରେ ଲିପିବଦ୍ଧ ହୋଇଛି!",
     contribute_success_msg: "ଧରୋହରରେ ଯୋଗଦାନ କରିଥିବାରୁ ଧନ୍ୟବାଦ। ଆପଣଙ୍କ ତଥ୍ୟକୁ ସତ୍ୟାପନ କରାଯାଇ ଇଣ୍ଟରାକ୍ଟିଭ୍ ମାନଚିତ୍ରରେ ସାମିଲ କରାଯିବ।",
-    contribute_another: "ଆଉ ଏକ ଗାଥା ସଂରକ୍ଷଣ କରନ୍ତୁ"
+    contribute_another: "ଆଉ ଏକ ଗାଥା ସଂରକ୍ଷଣ କରନ୍ତୁ",
+
+    // Itinerary Generator
+    itinerary_btn: "ସାଂସ୍କୃତିକ ଯାତ୍ରା ଯୋଜନା",
+    itinerary_modal_title: "AI ସାଂସ୍କୃତିକ ଯାତ୍ରା ନିର୍ମାତା",
+    itinerary_modal_subtitle: "ଦର୍ଶକ AI ଏବଂ ଧରୋହର ଜ୍ଞାନ ଗ୍ରାଫ୍ ଦ୍ୱାରା ବ୍ୟକ୍ତିଗତ, ବିଷୟ-ଭିତ୍ତିକ ସାଂସ୍କୃତିକ ଯାତ୍ରା ଯୋଜନା ପ୍ରସ୍ତୁତ କରନ୍ତୁ।",
+    itinerary_duration_label: "ଯାତ୍ରା ଅବଧି",
+    itinerary_1day: "୧ ଦିନ (ଏକ୍ସପ୍ରେସ୍ ଭ୍ରମଣ)",
+    itinerary_3day: "୩ ଦିନ (ଗଭୀର ଐତିହ୍ୟ ଅନୁଭବ)",
+    itinerary_5day: "୫ ଦିନ (ଭବ୍ୟ ଐତିହ୍ୟ ଯାତ୍ରା)",
+    itinerary_hub_label: "ଆରମ୍ଭ ସ୍ଥାନ / ଅଞ୍ଚଳ",
+    itinerary_hub_any: "ସମସ୍ତ ଐତିହ୍ୟ ଅଞ୍ଚଳ (ସ୍ୱତଃ ଚୟନ)",
+    itinerary_theme_label: "ସାଂସ୍କୃତିକ ବିଷୟବସ୍ତୁ ଓ ରୁଚି",
+    itinerary_theme_temples: "ପବିତ୍ର ମନ୍ଦିର ଓ ସ୍ଥାପତ୍ୟ",
+    itinerary_theme_dance: "ଲୋକ ନୃତ୍ୟ ଓ ପାରମ୍ପରିକ କଳା",
+    itinerary_theme_food: "ପାରମ୍ପରିକ ଖାଦ୍ୟ ଓ ମହାପ୍ରସାଦ",
+    itinerary_theme_crafts: "ହସ୍ତଶିଳ୍ପ, ପଟ୍ଟଚିତ୍ର ଓ ବୟନକଳା",
+    itinerary_theme_wildlife: "ପବିତ୍ର ଜଙ୍ଗଲ ଓ ଉପକୂଳ ଐତିହ୍ୟ",
+    itinerary_generate_btn: "ସାଂସ୍କୃତିକ ଯାତ୍ରା ପ୍ରସ୍ତୁତ କରନ୍ତୁ",
+    itinerary_generating: "ଦର୍ଶକ AI ପବିତ୍ର ଭୌଗୋଳିକ ସ୍ଥାନ ଓ ଅଭିଲେଖୀୟ ତଥ୍ୟକୁ ସଂଯୋଗ କରୁଛି...",
+    itinerary_day: "ଦିନ",
+    itinerary_activity: "ମୁଖ୍ୟ ଅନୁଭବ ଓ କାର୍ଯ୍ୟକ୍ରମ",
+    itinerary_food_tip: "ପାରମ୍ପରିକ ଖାଦ୍ୟ ପରାମର୍ଶ",
+    itinerary_lore_highlight: "ଜୀବନ୍ତ ଇତିହାସ ଓ ପୌରାଣିକ କାହାଣୀ",
+    itinerary_view_stop: "ମାନଚିତ୍ରରେ ଦେଖନ୍ତୁ",
+    itinerary_highlight_route: "ମାନଚିତ୍ରରେ ସମ୍ପୂର୍ଣ୍ଣ ମାର୍ଗ ଦେଖାନ୍ତୁ",
+    itinerary_clear_route: "ମାର୍ଗ ହଟାନ୍ତୁ",
+    itinerary_copy_btn: "ଯାତ୍ରା ବିବରଣୀ କପି କରନ୍ତୁ",
+    itinerary_copied: "କ୍ଲିପବୋର୍ଡରେ କପି ହୋଇଛି!",
+    itinerary_reset: "ନୂତନ ଯାତ୍ରା ଯୋଜନା କରନ୍ତୁ"
   }
 };
 

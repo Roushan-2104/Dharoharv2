@@ -26,7 +26,7 @@ function MapController({ activeEntity }) {
   return null;
 }
 
-export default function Map2D({ entities, categoryColors, activeEntity, setActiveEntity }) {
+export default function Map2D({ entities, categoryColors, activeEntity, setActiveEntity, itineraryRoute }) {
   const { translateEntityName, translateCategory } = useLanguage();
   
   // Custom Leaflet DivIcon creator with glowing jewel tone styling
@@ -93,8 +93,8 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
           );
         })}
 
-        {/* 2D Cultural Connections */}
-        {activeEntity && <Connections2D activeEntity={activeEntity} />}
+        {/* 2D Cultural Connections & Itinerary Routes */}
+        <Connections2D activeEntity={activeEntity} itineraryRoute={itineraryRoute} />
 
       </MapContainer>
 

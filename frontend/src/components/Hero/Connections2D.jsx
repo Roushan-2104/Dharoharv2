@@ -3,7 +3,7 @@ import { Polyline } from 'react-leaflet';
 import axios from 'axios';
 import API_BASE_URL from '../../config/api';
 
-export default function Connections2D({ activeEntity }) {
+export default function Connections2D({ activeEntity, itineraryRoute }) {
   const [connections, setConnections] = useState([]);
 
   useEffect(() => {
@@ -19,19 +19,25 @@ export default function Connections2D({ activeEntity }) {
       .catch(err => console.error("Error fetching connections:", err));
   }, [activeEntity]);
 
-  if (!activeEntity || connections.length === 0) return null;
+  const hasEntityConnections = activeEntity && connections.length > 0;
+  const hasItineraryRoute = itineraryRoute && itineraryRoute.length >= 2;
 
-  const startPos = activeEntity.coordinates;
+  if (!hasEntityConnections && !hasItineraryRoute) return null;
+
+  const itineraryPositions = hasItineraryRoute
+    ? itineraryRoute.map(stop => Array.isArray(stop) ? stop : (stop.coordinates || [0, 0]))
+    : [];
 
   return (
     <>
-      {connections.map((conn) => {
+      {/* Entity Connections */}
+      {hasEntityConnections && connections.map((conn) => {
+        const startPos = activeEntity.coordinates;
         const endPos = conn.coordinates;
         
-        // Draw a glowing golden dashed polyline from the active entity to the connected entity
         return (
           <Polyline 
-            key={conn.id} 
+            key={`conn-${conn.id}`} 
             positions={[startPos, endPos]} 
             pathOptions={{ 
               color: '#D4AF37', 
@@ -43,6 +49,20 @@ export default function Connections2D({ activeEntity }) {
           />
         );
       })}
+
+      {/* Itinerary Route Multi-Stop Golden Trail */}
+      {hasItineraryRoute && (
+        <Polyline
+          positions={itineraryPositions}
+          pathOptions={{
+            color: '#F59E0B',
+            weight: 4,
+            opacity: 0.9,
+            dashArray: '8, 8',
+            lineCap: 'round'
+          }}
+        />
+      )}
     </>
   );
 }
