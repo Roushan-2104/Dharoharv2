@@ -10,7 +10,7 @@ export default function CameraFramer({ activeEntity, radius }) {
   const isAnimating = useRef(false);
 
   useEffect(() => {
-    if (activeEntity) {
+    if (activeEntity && Array.isArray(activeEntity.coordinates) && activeEntity.coordinates.length >= 2) {
       // Find the entity's position on the globe
       const entityPos = latLongToVector3(activeEntity.coordinates[0], activeEntity.coordinates[1], radius);
       
