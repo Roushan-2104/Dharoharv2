@@ -19,6 +19,9 @@ export const translations = {
     // Hero Section & HUD
     hero_3d: "3D Globe",
     hero_2d: "2D Map",
+    hero_search_placeholder: "Search heritage site, temple, tradition, cuisine...",
+    hero_search_no_results: "No heritage records found",
+    hero_search_hint: "Search across 200+ sacred sites, art forms & regional traditions",
     hud_subtitle: "Cultural Dimensions • Sanskriti",
     hud_all: "All",
 
@@ -130,6 +133,9 @@ export const translations = {
     // Hero Section & HUD
     hero_3d: "3D ग्लोब",
     hero_2d: "2D मानचित्र",
+    hero_search_placeholder: "स्मारक, मंदिर, परंपरा, व्यंजन या स्थान खोजें...",
+    hero_search_no_results: "कोई धरोहर स्थल नहीं मिला",
+    hero_search_hint: "200+ पवित्र स्थलों, कला रूपों और लोक परंपराओं में खोजें",
     hud_subtitle: "सांस्कृतिक आयाम • संस्कृति",
     hud_all: "सभी",
 
@@ -241,6 +247,9 @@ export const translations = {
     // Hero Section & HUD
     hero_3d: "୩D ଗ୍ଲୋବ୍",
     hero_2d: "୨D ମାନଚିତ୍ର",
+    hero_search_placeholder: "ସ୍ମାରକୀ, ମନ୍ଦିର, ପରମ୍ପରା, ଖାଦ୍ୟ ବା ସ୍ଥାନ ଖୋଜନ୍ତୁ...",
+    hero_search_no_results: "କୌଣସି ଐତିହ୍ୟ ସ୍ଥାନ ମିଳିଲା ନାହିଁ",
+    hero_search_hint: "୨୦୦+ ପବିତ୍ର ସ୍ଥଳୀ, କଳା ଓ ଲୋକ ପରମ୍ପରାରେ ଅନୁସନ୍ଧାନ କରନ୍ତୁ",
     hud_subtitle: "ସାଂସ୍କୃତିକ ଆୟାମ • ସଂସ୍କୃତି",
     hud_all: "ସମସ୍ତ",
 

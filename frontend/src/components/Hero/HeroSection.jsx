@@ -7,6 +7,7 @@ import Map2D from './Map2D';
 import BottomHUD from './BottomHUD';
 import RightPanel from './RightPanel';
 import CameraFramer from './CameraFramer';
+import HeroSearchBar from './HeroSearchBar';
 import axios from 'axios';
 import API_BASE_URL from '../../config/api';
 import { useLanguage } from '../../context/LanguageContext';
@@ -53,12 +54,29 @@ export default function HeroSection() {
       .catch(err => console.error("Error fetching entities:", err));
   }, []);
 
+  const handleSelectEntity = (entity) => {
+    if (!entity) return;
+    // Auto-adjust category filter if current category hides this entity
+    if (activeCategory !== 'All' && entity.category_name !== activeCategory) {
+      setActiveCategory('All');
+    }
+    setActiveEntity(entity);
+  };
+
   const filteredEntities = activeCategory === 'All'
     ? entities
     : entities.filter(e => e.category_name === activeCategory);
 
   return (
     <section className="relative w-full h-screen overflow-hidden pt-16 bg-[#08080C]">
+
+      {/* Floating Hero Search Bar */}
+      <HeroSearchBar 
+        entities={entities}
+        categoryColors={dynamicCategories}
+        onSelectEntity={handleSelectEntity}
+        activeEntity={activeEntity}
+      />
 
       {/* 2D / 3D Toggle Switch Top Right */}
       <div className="absolute top-24 right-8 z-20">
