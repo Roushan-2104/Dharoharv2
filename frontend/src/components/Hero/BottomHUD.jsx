@@ -1,7 +1,9 @@
 import React from 'react';
 import { Sparkles, Landmark, Music, Utensils, Calendar, Scroll, Layers } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function BottomHUD({ activeCategory, setActiveCategory, categories, categoryColors = {}, setActiveEntity }) {
+  const { t, translateCategory } = useLanguage();
   
   // Helper to assign a cultural icon to category name
   const getCategoryIcon = (category) => {
@@ -22,7 +24,7 @@ export default function BottomHUD({ activeCategory, setActiveCategory, categorie
       <div className="flex items-center gap-2 px-3.5 py-1 rounded-full dharohar-glass border border-[#D4AF37]/30 shadow-md">
         <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse"></span>
         <span className="heritage-badge text-[9px] text-[#F5D77F] tracking-[0.25em]">
-          Cultural Dimensions • Sanskriti
+          {t('hud_subtitle')}
         </span>
       </div>
 
@@ -32,6 +34,7 @@ export default function BottomHUD({ activeCategory, setActiveCategory, categorie
           {categories.map((cat) => {
             const isActive = activeCategory === cat;
             const dotColor = categoryColors[cat] || '#D4AF37';
+            const translatedCat = translateCategory(cat);
 
             return (
               <button
@@ -51,7 +54,7 @@ export default function BottomHUD({ activeCategory, setActiveCategory, categorie
                   {getCategoryIcon(cat)}
                 </span>
 
-                <span>{cat}</span>
+                <span>{translatedCat}</span>
 
                 {/* Jewel Tone Dot */}
                 {cat !== 'All' && (

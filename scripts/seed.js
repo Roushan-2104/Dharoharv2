@@ -1,13 +1,18 @@
+require('dotenv').config();
 const { Client } = require('pg');
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
 
-const DB_URL = "postgresql://postgres.owtcyqernavqkbvpkcxk:rBr+r2S9DBch.e&@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres";
+const DB_URL = process.env.DATABASE_URL;
+if (!DB_URL) {
+  console.error("Error: DATABASE_URL environment variable is required.");
+  process.exit(1);
+}
 
 const client = new Client({
   connectionString: DB_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: DB_URL && DB_URL.includes('localhost') ? false : { rejectUnauthorized: false }
 });
 
 async function run() {

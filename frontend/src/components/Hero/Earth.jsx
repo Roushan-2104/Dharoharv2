@@ -4,8 +4,10 @@ import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import Connections from './Connections';
 import { latLongToVector3 } from '../../utils/geo';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function Earth({ entities, categoryColors, activeEntity, setActiveEntity }) {
+  const { translateEntityName, translateCategory } = useLanguage();
   const earthRef = useRef();
   const radius = 2.5;
   const [hoveredEntity, setHoveredEntity] = useState(null);
@@ -87,13 +89,13 @@ export default function Earth({ entities, categoryColors, activeEntity, setActiv
                     >
                       <div className="dharohar-glass px-3 py-1.5 rounded-lg border border-[#D4AF37]/50 shadow-[0_8px_25px_rgba(0,0,0,0.8)] flex flex-col items-center">
                         <span className="text-[12px] font-bold font-cinzel text-[#FFF8E7] tracking-wider">
-                          {entity.name}
+                          {translateEntityName(entity.name, entity.location_context)}
                         </span>
                         <span 
                           className="text-[9px] uppercase font-semibold tracking-widest mt-0.5"
                           style={{ color: color }}
                         >
-                          {entity.category_name}
+                          {translateCategory(entity.category_name)}
                         </span>
                       </div>
                     </div>

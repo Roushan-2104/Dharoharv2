@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Feather, CheckCircle2, UploadCloud, Sparkles, MapPin, BookOpen, ShieldCheck } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function ContributePage() {
+  const { t, translateCategory } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -34,15 +36,15 @@ export default function ContributePage() {
             </div>
 
             <span className="heritage-badge text-[#F5D77F] tracking-[0.25em]">
-              Heritage Inscription Received
+              {t('contribute_success_title')}
             </span>
 
             <h2 className="text-3xl md:text-5xl font-cinzel font-black text-[#FFF8E7] mt-2 mb-4">
-              Story Inscribed in Living Archive
+              {t('contribute_success_title')}
             </h2>
 
             <p className="text-zinc-300 mb-10 max-w-lg mx-auto leading-relaxed text-sm md:text-base font-sans">
-              Your contribution for <span className="text-[#F5D77F] font-semibold">"{formData.title || 'Heritage Record'}"</span> has been recorded into the Dharohar National Knowledge System. Our cultural historians and moderation council will review and weave it into the interactive map.
+              {t('contribute_success_msg')}
             </p>
 
             <button 
@@ -59,7 +61,7 @@ export default function ContributePage() {
               }}
               className="bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] px-8 py-3.5 rounded-full font-bold text-xs heritage-badge hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all"
             >
-              Preserve Another Story
+              {t('contribute_another')}
             </button>
           </div>
         ) : (
@@ -69,17 +71,16 @@ export default function ContributePage() {
               <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
                 <span className="w-8 h-[1.5px] bg-[#D4AF37]" />
                 <span className="heritage-badge text-[#F5D77F] tracking-[0.25em]">
-                  Jan Sahayog • Community Registry
+                  {t('contribute_badge')}
                 </span>
               </div>
 
               <h1 className="text-3xl md:text-5xl font-cinzel font-black text-[#FFF8E7] leading-tight mb-3">
-                Preserve a Story, <br />
-                <span className="gold-gradient-text">Enrich India's Tapestry</span>
+                {t('contribute_title')}
               </h1>
 
               <p className="text-zinc-400 text-sm md:text-base max-w-xl leading-relaxed">
-                Contribute regional folklore, lesser-known sacred sites, indigenous culinary recipes, and oral traditions to India's living cultural knowledge graph.
+                {t('contribute_subtitle')}
               </p>
             </div>
 
@@ -89,12 +90,12 @@ export default function ContributePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    Heritage or Tradition Title
+                    {t('contribute_name_label')}
                   </label>
                   <input 
                     required 
                     type="text" 
-                    placeholder="e.g. Danda Nata Folk Dance, Prachi Valley"
+                    placeholder={t('contribute_name_placeholder')}
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                     className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
@@ -103,19 +104,19 @@ export default function ContributePage() {
 
                 <div>
                   <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    Cultural Domain
+                    {t('contribute_cat_label')}
                   </label>
                   <select 
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
                     className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all"
                   >
-                    <option value="Oral Tradition & Folklore">Oral Tradition & Folklore</option>
-                    <option value="Monuments & Temples">Monuments & Sacred Architecture</option>
-                    <option value="Classical Dance & Music">Classical & Folk Performing Arts</option>
-                    <option value="Festivals & Rituals">Festivals, Fairs & Sacred Rites</option>
-                    <option value="Culinary Heritage">Indigenous Culinary Heritage</option>
-                    <option value="Handicrafts & Handlooms">Handicrafts & Handloom Traditions</option>
+                    <option value="Oral Tradition & Folklore">{translateCategory('Folk Traditions & Lore')}</option>
+                    <option value="Monuments & Temples">{translateCategory('Monuments & Temples')}</option>
+                    <option value="Classical Dance & Music">{translateCategory('Classical Dance & Music')}</option>
+                    <option value="Festivals & Rituals">{translateCategory('Festivals & Rituals')}</option>
+                    <option value="Culinary Heritage">{translateCategory('Culinary Heritage')}</option>
+                    <option value="Handicrafts & Handlooms">{translateCategory('Handicrafts & Handlooms')}</option>
                   </select>
                 </div>
               </div>
@@ -123,14 +124,14 @@ export default function ContributePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    Region, Village, or District
+                    {t('contribute_loc_label')}
                   </label>
                   <div className="relative">
                     <MapPin className="w-4 h-4 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
                     <input 
                       required 
                       type="text" 
-                      placeholder="e.g. Raghurajpur, Puri, Odisha"
+                      placeholder={t('contribute_loc_placeholder')}
                       value={formData.location}
                       onChange={(e) => setFormData({...formData, location: e.target.value})}
                       className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl pl-11 pr-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
@@ -140,29 +141,29 @@ export default function ContributePage() {
 
                 <div>
                   <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    Source & Provenance Lineage
+                    {t('contribute_source_label')}
                   </label>
                   <select 
                     value={formData.sourceType}
                     onChange={(e) => setFormData({...formData, sourceType: e.target.value})}
                     className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all"
                   >
-                    <option value="Community Oral Lore">Community Oral Lore / Family Elder</option>
-                    <option value="Temple Chronicle / Pothi">Temple Chronicle / Palm-leaf Pothi</option>
-                    <option value="Local Artisan Tradition">Practicing Artisan / Performer Tradition</option>
-                    <option value="Field Research">Independent Field Research</option>
+                    <option value="Community Oral Lore">{t('contribute_source_opt1')}</option>
+                    <option value="Temple Chronicle / Pothi">{t('contribute_source_opt2')}</option>
+                    <option value="Local Artisan Tradition">{t('contribute_source_opt3')}</option>
+                    <option value="Field Research">{t('contribute_source_opt4')}</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                  Cultural Lore, Story & Historical Significance
+                  {t('contribute_desc_label')}
                 </label>
                 <textarea 
                   required 
                   rows={4} 
-                  placeholder="Narrate the story, historical context, community significance, rituals, or what visitors should know..."
+                  placeholder={t('contribute_desc_placeholder')}
                   value={formData.lore}
                   onChange={(e) => setFormData({...formData, lore: e.target.value})}
                   className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl p-5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600 resize-none font-sans leading-relaxed" 
@@ -172,11 +173,11 @@ export default function ContributePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    Contributor Name / Collective
+                    {t('contribute_contributor_label')}
                   </label>
                   <input 
                     type="text" 
-                    placeholder="e.g. Debashis Mohapatra (Local Historian)"
+                    placeholder={t('contribute_contributor_placeholder')}
                     value={formData.contributor}
                     onChange={(e) => setFormData({...formData, contributor: e.target.value})}
                     className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
@@ -185,13 +186,13 @@ export default function ContributePage() {
 
                 <div>
                   <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    Photo Documentation (Optional Link)
+                    {t('contribute_photo_label')}
                   </label>
                   <div className="relative">
                     <UploadCloud className="w-4 h-4 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
                     <input 
                       type="url" 
-                      placeholder="https://... photo or document URL"
+                      placeholder={t('contribute_photo_placeholder')}
                       className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl pl-11 pr-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
                     />
                   </div>
@@ -205,7 +206,7 @@ export default function ContributePage() {
                   className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D4AF37] text-[#08080C] font-bold text-xs heritage-badge shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all flex items-center justify-center gap-2"
                 >
                   <Feather className="w-4 h-4" />
-                  <span>Submit to Heritage Registry</span>
+                  <span>{t('contribute_submit')}</span>
                 </button>
               </div>
 

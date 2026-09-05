@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import Connections2D from './Connections2D';
+import { useLanguage } from '../../context/LanguageContext';
 
 // Component to handle auto-panning when an entity is selected
 function MapController({ activeEntity }) {
@@ -26,6 +27,7 @@ function MapController({ activeEntity }) {
 }
 
 export default function Map2D({ entities, categoryColors, activeEntity, setActiveEntity }) {
+  const { translateEntityName, translateCategory } = useLanguage();
   
   // Custom Leaflet DivIcon creator with glowing jewel tone styling
   const createCustomIcon = (color, isActive) => {
@@ -81,9 +83,9 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
             >
               <Tooltip direction="top" offset={[0, -10]} opacity={0.95}>
                 <div className="px-2 py-1 bg-[#0C0C14] text-[#FFF8E7] rounded border border-[#D4AF37]/50 shadow-lg text-center">
-                  <div className="font-cinzel text-xs font-bold">{entity.name}</div>
+                  <div className="font-cinzel text-xs font-bold">{translateEntityName(entity.name, entity.location_context)}</div>
                   <div className="text-[9px] uppercase tracking-wider font-semibold" style={{ color: color }}>
-                    {entity.category_name}
+                    {translateCategory(entity.category_name)}
                   </div>
                 </div>
               </Tooltip>

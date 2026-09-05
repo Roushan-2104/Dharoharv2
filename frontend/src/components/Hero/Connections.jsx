@@ -3,6 +3,7 @@ import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import axios from 'axios';
 import { latLongToVector3 } from '../../utils/geo';
+import API_BASE_URL from '../../config/api';
 
 export default function Connections({ activeEntity, radius }) {
   const [connections, setConnections] = useState([]);
@@ -13,7 +14,7 @@ export default function Connections({ activeEntity, radius }) {
       return;
     }
 
-    axios.get(`http://localhost:3000/api/entities/${activeEntity.id}/connections`)
+    axios.get(`${API_BASE_URL}/api/entities/${activeEntity.id}/connections`)
       .then(res => {
         setConnections(res.data);
       })
