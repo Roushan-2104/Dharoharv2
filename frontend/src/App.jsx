@@ -6,6 +6,7 @@ import MapPage from './pages/MapPage';
 import DiscoverPage from './pages/DiscoverPage';
 import ContributePage from './pages/ContributePage';
 import StructuralGrid from './components/Layout/StructuralGrid';
+import DharoharChatbot from './components/Chatbot/DharoharChatbot';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/discover" element={<DiscoverPage />} />
             <Route path="/contribute" element={<ContributePage />} />
           </Routes>
+          <DharoharChatbot />
         </StructuralGrid>
       </Router>
     </LanguageProvider>

@@ -15,13 +15,12 @@ import { useLanguage } from '../../context/LanguageContext';
 import { calibrateEntityCoordinates } from '../../utils/geo';
 
 export default function HeroSection() {
-  const { t } = useLanguage();
+  const { t, isItineraryOpen, setIsItineraryOpen } = useLanguage();
   const [entities, setEntities] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeEntity, setActiveEntity] = useState(null);
   const [dynamicCategories, setDynamicCategories] = useState({});
   const [is3D, setIs3D] = useState(true); // Toggle State
-  const [isItineraryOpen, setIsItineraryOpen] = useState(false);
   const [activeItineraryRoute, setActiveItineraryRoute] = useState([]);
 
   // Indian Jewel Tone Palette
@@ -90,24 +89,9 @@ export default function HeroSection() {
         activeEntity={activeEntity}
       />
 
-      {/* Top Right Controls: Plan Cultural Trail & 2D/3D Toggle */}
+      {/* Top Right Controls: 2D/3D Toggle */}
       <div className="absolute top-24 right-4 sm:right-8 z-20 flex items-center gap-2 sm:gap-3">
         
-        {/* Plan Trip Action Button */}
-        <button
-          onClick={() => setIsItineraryOpen(true)}
-          className="dharohar-glass px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#12121E]/85 hover:bg-[#D4AF37]/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center gap-2 transition-all duration-300 transform hover:scale-105 group cursor-pointer"
-          title={t('itinerary_btn')}
-        >
-          <Sparkles className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-[#F59E0B] group-hover:rotate-12 transition-transform" />
-          <span className="font-cinzel text-xs font-bold tracking-wide">
-            {t('itinerary_btn')}
-          </span>
-          {activeItineraryRoute.length > 0 && (
-            <span className="w-2 h-2 rounded-full bg-[#F59E0B] shadow-[0_0_8px_#F59E0B] animate-pulse"></span>
-          )}
-        </button>
-
         {/* 2D / 3D Toggle Switch */}
         <div className="dharohar-glass p-1 flex items-center rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-[#D4AF37]/30">
           <button

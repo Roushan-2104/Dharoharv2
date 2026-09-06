@@ -100,6 +100,32 @@
   .gold-glow {
     box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hud-scrollbar::-webkit-scrollbar {
+    height: 4px;
+    display: block;
+  }
+  .hud-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 9999px;
+    margin: 0 8px;
+  }
+  .hud-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #D4AF37, #F59E0B);
+    border-radius: 9999px;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+  }
+  .hud-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #FFF6D6;
+  }
 }
 
 /* Subtle Starry Atmospheric Overlay */

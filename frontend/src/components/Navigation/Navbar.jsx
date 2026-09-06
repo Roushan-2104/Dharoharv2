@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Compass, Map, Feather, Sparkles, Volume2, VolumeX, Languages, Check } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Navbar() {
   const [audioActive, setAudioActive] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, t, setIsItineraryOpen } = useLanguage();
+  const navigate = useNavigate();
 
   const languageOptions = [
     { code: 'en', label: 'English', short: 'EN' },
@@ -15,6 +16,13 @@ export default function Navbar() {
   ];
 
   const currentOption = languageOptions.find(l => l.code === language) || languageOptions[0];
+
+  const handleOpenItinerary = () => {
+    setIsItineraryOpen(true);
+    if (window.location.pathname !== '/') {
+      navigate('/');
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 h-20 flex justify-between items-center px-6 md:px-10 border-b border-[#D4AF37]/20 bg-[#08080C]/80 backdrop-blur-xl">
@@ -86,13 +94,19 @@ export default function Navbar() {
       </div>
 
       {/* Right Controls / Cultural Status */}
-      <div className="flex items-center justify-end flex-1 gap-4 md:gap-6">
+      <div className="flex items-center justify-end flex-1 gap-3 sm:gap-4 md:gap-5">
         
-        {/* Knowledge Graph Status */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-[#101017] border border-[#D4AF37]/20">
-          <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full status-pulse"></div>
-          <span className="heritage-badge text-zinc-400 text-[9px]">{t('nav_knowledge_live')}</span>
-        </div>
+        {/* Itinerary Action Button */}
+        <button
+          onClick={handleOpenItinerary}
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#12121E]/90 hover:bg-[#D4AF37]/20 shadow-[0_0_12px_rgba(212,175,55,0.2)] transition-all transform hover:scale-105 cursor-pointer"
+          title={t('itinerary_btn')}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
+          <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide">
+            {t('itinerary_btn')}
+          </span>
+        </button>
 
         {/* Multi-Language Selector Dropdown */}
         <div className="relative">

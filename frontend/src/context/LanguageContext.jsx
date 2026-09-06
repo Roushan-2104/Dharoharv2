@@ -118,7 +118,7 @@ export const translations = {
     contribute_another: "Share Another Story",
 
     // Itinerary Generator
-    itinerary_btn: "Plan My Trip",
+    itinerary_btn: "Itinerary",
     itinerary_modal_title: "AI Trip & Route Planner",
     itinerary_modal_subtitle: "Get a personalized, day-by-day travel plan powered by Darshak AI.",
     itinerary_duration_label: "Trip Duration",
@@ -144,7 +144,24 @@ export const translations = {
     itinerary_clear_route: "Clear Route",
     itinerary_copy_btn: "Copy Plan",
     itinerary_copied: "Copied to Clipboard!",
-    itinerary_reset: "Plan New Trip"
+    itinerary_reset: "Plan New Trip",
+
+    // Dharohar AI Sticky Chatbot
+    bot_title: "Dharohar AI Guide",
+    bot_subtitle: "Your Living Heritage Navigator",
+    bot_welcome: "Namaste! I am your Dharohar AI Guide. I can guide you through ancient temples, folk dances, vibrant festivals, traditional cuisine, and hidden heritage trails across Odisha and India. How may I assist your cultural journey today?",
+    bot_quick_1: "🏛️ Ancient Temples in Puri & Konark",
+    bot_quick_2: "🎭 Odissi & Chhau Dance Heritage",
+    bot_quick_3: "🍲 Traditional Cuisine & Mahaprasad",
+    bot_quick_4: "🌿 Hidden Heritage Spots in Odisha",
+    bot_quick_5: "🗺️ Suggest a 3-Day Heritage Trip",
+    bot_placeholder: "Ask anything about heritage, history, rituals, food...",
+    bot_callout: "✨ Ask Dharohar AI Guide!",
+    bot_clear: "Clear Chat",
+    bot_online: "Live Guide",
+    bot_voice_on: "Voice On",
+    bot_voice_off: "Voice Off",
+    bot_disclaimer: "Powered by Dharohar AI & Gemini Knowledge System"
   },
 
   hi: {
@@ -261,7 +278,7 @@ export const translations = {
     contribute_another: "एक और कहानी साझा करें",
 
     // Itinerary Generator
-    itinerary_btn: "यात्रा प्लान करें",
+    itinerary_btn: "यात्रा योजना (Itinerary)",
     itinerary_modal_title: "AI यात्रा योजनाकार",
     itinerary_modal_subtitle: "दर्शक AI द्वारा तैयार की गई अपनी व्यक्तिगत सांस्कृतिक यात्रा योजना प्राप्त करें।",
     itinerary_duration_label: "यात्रा की अवधि",
@@ -287,7 +304,24 @@ export const translations = {
     itinerary_clear_route: "मार्ग हटाएं",
     itinerary_copy_btn: "प्लान कॉपी करें",
     itinerary_copied: "कॉपी हो गया!",
-    itinerary_reset: "नई यात्रा प्लान करें"
+    itinerary_reset: "नई यात्रा प्लान करें",
+
+    // Dharohar AI Sticky Chatbot
+    bot_title: "धरोहर साथी AI",
+    bot_subtitle: "आपका सांस्कृतिक एवं विरासत मार्गदर्शक",
+    bot_welcome: "नमस्ते! मैं आपका 'धरोहर साथी AI' हूँ। ओडिशा और भारत के प्राचीन मंदिरों, लोक नृत्यों, त्योहारों, खान-पान या अनसुने ऐतिहासिक स्थलों के बारे में मुझसे कुछ भी पूछें। मैं आपकी सांस्कृतिक यात्रा में कैसे सहायता करूँ?",
+    bot_quick_1: "🏛️ पुरी और कोणार्क के प्रसिद्ध मंदिर",
+    bot_quick_2: "🎭 छऊ और ओडिसी नृत्य परंपरा",
+    bot_quick_3: "🍲 पारंपरिक ओडिया व्यंजन व महाप्रसाद",
+    bot_quick_4: "🌿 ओडिशा के अनूठे व अनसुने स्थल",
+    bot_quick_5: "🗺️ 3 दिवसीय सांस्कृतिक यात्रा का सुझाव दें",
+    bot_placeholder: "विरासत, मंदिर, कला, भोजन या संस्कृति के बारे में पूछें...",
+    bot_callout: "✨ धरोहर AI साथी से पूछें!",
+    bot_clear: "बातचीत साफ़ करें",
+    bot_online: "सक्रिय मार्गदर्शक",
+    bot_voice_on: "आवाज़ चालू",
+    bot_voice_off: "आवाज़ बंद",
+    bot_disclaimer: "धरोहर AI एवं जेमिनी नॉलेज सिस्टम द्वारा संचालित"
   },
 
   or: {
@@ -404,7 +438,7 @@ export const translations = {
     contribute_another: "ଆଉ ଏକ କାହାଣୀ ସାମିଲ କରନ୍ତୁ",
 
     // Itinerary Generator
-    itinerary_btn: "ଯାତ୍ରା ଯୋଜନା କରନ୍ତୁ",
+    itinerary_btn: "ଯାତ୍ରା ଯୋଜନା (Itinerary)",
     itinerary_modal_title: "AI ଯାତ୍ରା ଯୋଜନାକାରୀ",
     itinerary_modal_subtitle: "ଦର୍ଶକ AI ଦ୍ୱାରା ପ୍ରସ୍ତୁତ ଆପଣଙ୍କ ବ୍ୟକ୍ତିଗତ ସାଂସ୍କୃତିକ ଯାତ୍ରା ଯୋଜନା ପାଆନ୍ତୁ।",
     itinerary_duration_label: "ଯାତ୍ରା ଅବଧି",
@@ -430,7 +464,24 @@ export const translations = {
     itinerary_clear_route: "ମାର୍ଗ ହଟାନ୍ତୁ",
     itinerary_copy_btn: "ପ୍ଲାନ କପି କରନ୍ତୁ",
     itinerary_copied: "କପି ହୋଇଗଲା!",
-    itinerary_reset: "ନୂତନ ଯାତ୍ରା ଯୋଜନା କରନ୍ତୁ"
+    itinerary_reset: "ନୂତନ ଯାତ୍ରା ଯୋଜନା କରନ୍ତୁ",
+
+    // Dharohar AI Sticky Chatbot
+    bot_title: "ଧରୋହର ସାଥୀ AI",
+    bot_subtitle: "ଆପଣଙ୍କ ସାଂସ୍କୃତିକ ଓ ଐତିହ୍ୟ ପଥପ୍ରଦର୍ଶକ",
+    bot_welcome: "ନମସ୍କାର! ମୁଁ ଆପଣଙ୍କ 'ଧରୋହର ସାଥୀ AI'। ଓଡ଼ିଶା ତଥା ଭାରତର ପ୍ରାଚୀନ ମନ୍ଦିର, ଶାସ୍ତ୍ରୀୟ ନୃତ୍ୟ, ପର୍ବପର୍ବାଣି, ପାରମ୍ପରିକ ଖାଦ୍ୟ ବା ଅନାବିଷ୍କୃତ ଐତିହ୍ୟ ସ୍ଥଳ ବିଷୟରେ ମୋତେ ପଚାରନ୍ତୁ। ଆଜି ଆପଣଙ୍କ ସାଂସ୍କୃତିକ ଯାତ୍ରାରେ ମୁଁ କିପରି ସାହାଯ୍ୟ କରିବି?",
+    bot_quick_1: "🏛️ ପୁରୀ ଓ କୋଣାର୍କର ପ୍ରସିଦ୍ଧ ମନ୍ଦିର",
+    bot_quick_2: "🎭 ଛଉ ଓ ଓଡ଼ିଶୀ ନୃତ୍ୟ ପରମ୍ପରା",
+    bot_quick_3: "🍲 ପାରମ୍ପରିକ ଓଡ଼ିଆ ଖାଦ୍ୟ ଓ ମହାପ୍ରସାଦ",
+    bot_quick_4: "🌿 ଓଡ଼ିଶାର ଅନାବିଷ୍କୃତ ଐତିହ୍ୟ ସ୍ଥଳ",
+    bot_quick_5: "🗺️ ୩ ଦିନର ସାଂସ୍କୃତିକ ଯାତ୍ରା ଯୋଜନା",
+    bot_placeholder: "ଐତିହ୍ୟ, ମନ୍ଦିର, କଳା, ଖାଦ୍ୟ ବା ସଂସ୍କୃତି ବିଷୟରେ ପଚାରନ୍ତୁ...",
+    bot_callout: "✨ ଧରୋହର AI ସାଥୀଙ୍କୁ ପଚାରନ୍ତୁ!",
+    bot_clear: "ଚାଟ୍ ସଫା କରନ୍ତୁ",
+    bot_online: "ସକ୍ରିୟ ମାର୍ଗଦର୍ଶକ",
+    bot_voice_on: "ସ୍ୱର ଚାଲୁ",
+    bot_voice_off: "ସ୍ୱର ବନ୍ଦ",
+    bot_disclaimer: "ଧରୋହର AI ଏବଂ ଜେମିନି ନଲେଜ୍ ସିଷ୍ଟମ୍ ଦ୍ୱାରା ପରିଚାଳିତ"
   }
 };
 
@@ -733,6 +784,7 @@ export const LanguageProvider = ({ children }) => {
   const [language, setLanguageState] = useState(() => {
     return localStorage.getItem('dharohar_language') || 'en';
   });
+  const [isItineraryOpen, setIsItineraryOpen] = useState(false);
 
   const setLanguage = (lang) => {
     setLanguageState(lang);
@@ -930,7 +982,9 @@ export const LanguageProvider = ({ children }) => {
       translateCategory,
       translateEntityName,
       translateLocation,
-      translateEntityDescription
+      translateEntityDescription,
+      isItineraryOpen,
+      setIsItineraryOpen
     }}>
       {children}
     </LanguageContext.Provider>
