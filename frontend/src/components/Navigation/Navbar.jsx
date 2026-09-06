@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Compass, Map, Feather, Sparkles, Volume2, VolumeX, Languages, Check } from 'lucide-react';
+import { Compass, Map, Feather, Sparkles, Languages, Check } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Navbar() {
-  const [audioActive, setAudioActive] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { language, setLanguage, t, setIsItineraryOpen } = useLanguage();
   const navigate = useNavigate();
@@ -112,7 +111,7 @@ export default function Navbar() {
         <div className="relative">
           <button 
             onClick={() => setLangMenuOpen(!langMenuOpen)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#101017] border border-[#D4AF37]/35 text-[#F5D77F] hover:border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.15)] transition-all text-xs font-semibold"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#101017] border border-[#D4AF37]/35 text-[#F5D77F] hover:border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.15)] transition-all text-xs font-semibold cursor-pointer"
             title={t('lang_switch_tooltip')}
           >
             <Languages className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -129,7 +128,7 @@ export default function Navbar() {
                     setLanguage(opt.code);
                     setLangMenuOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium transition-colors ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium transition-colors cursor-pointer ${
                     language === opt.code
                       ? 'text-[#F5D77F] bg-[#D4AF37]/20 font-bold'
                       : 'text-zinc-300 hover:text-[#F5D77F] hover:bg-white/5'
@@ -142,19 +141,6 @@ export default function Navbar() {
             </div>
           )}
         </div>
-
-        {/* Audio Immersion Toggle */}
-        <button 
-          onClick={() => setAudioActive(!audioActive)}
-          className={`p-2 rounded-full border transition-all ${
-            audioActive 
-              ? 'border-[#D4AF37] bg-[#D4AF37]/20 text-[#F5D77F] shadow-[0_0_15px_rgba(212,175,55,0.3)]' 
-              : 'border-[#D4AF37]/20 bg-[#101017] text-zinc-400 hover:text-[#F5D77F] hover:border-[#D4AF37]/50'
-          }`}
-          title={audioActive ? t('audio_mute') : t('audio_play')}
-        >
-          {audioActive ? <Volume2 className="w-4 h-4 text-[#D4AF37]" /> : <VolumeX className="w-4 h-4" />}
-        </button>
 
       </div>
 
