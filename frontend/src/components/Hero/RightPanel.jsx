@@ -86,10 +86,10 @@ export default function RightPanel({ activeEntity, setActiveEntity }) {
       setMessages(prev => [...prev, { 
         sender: 'ai', 
         text: language === 'or'
-          ? "ଦର୍ଶକ ବର୍ତ୍ତମାନ ଚିନ୍ତନ କରୁଛନ୍ତି। ଦୟାକରି କିଛି ସମୟ ପରେ ପୁନର୍ବାର ପଚାରନ୍ତୁ।"
+          ? "ଦୟାକରି କିଛି ସମୟ ପରେ ପୁଣି ପଚାରନ୍ତୁ।"
           : language === 'hi'
-          ? "दर्शक इस समय प्राचीन अभिलेखों का अवलोकन कर रहा है। कृपया कुछ क्षणों बाद पुनः पूछें।"
-          : "Darshak is momentarily reflecting. Please try asking again in a moment." 
+          ? "कृपया कुछ क्षणों बाद पुनः पूछें।"
+          : "Please try asking again in a moment." 
       }]);
     } finally {
       setIsTyping(false);

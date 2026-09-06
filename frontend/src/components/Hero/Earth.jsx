@@ -44,55 +44,60 @@ export default function Earth({ entities, categoryColors, activeEntity, setActiv
         {/* Render Glowing Golden Cultural Arcs & Itinerary Routes */}
         <Connections activeEntity={activeEntity} itineraryRoute={itineraryRoute} radius={radius} />
         
-        {/* Render Jewel Markers with Tooltips */}
+        {/* Render Refined Jewel Micro-Markers with Tooltips */}
         {entities.map(entity => {
-          if (!entity.coordinates || entity.coordinates.length < 2) return null;
-          const pos = latLongToVector3(entity.coordinates[0], entity.coordinates[1], radius + 0.02);
+          const coords = entity.coordinates;
+          if (!coords || coords.length < 2) return null;
+          
+          const pos = latLongToVector3(coords[0], coords[1], radius + 0.012);
           const color = categoryColors[entity.category_name] || '#D4AF37';
           const isActive = activeEntity?.id === entity.id;
           const isHovered = hoveredEntity?.id === entity.id;
 
           return (
             <group key={entity.id} position={pos}>
-              <Html center distanceFactor={10}>
+              <Html center distanceFactor={12}>
                 <div 
                   className="relative group cursor-pointer flex items-center justify-center"
                   onClick={(e) => { e.stopPropagation(); setActiveEntity(entity); }}
                   onMouseEnter={() => setHoveredEntity(entity)}
                   onMouseLeave={() => setHoveredEntity(null)}
                 >
-                  {/* Glowing Beacon Ripple for Active or Hovered Marker */}
+                  {/* Subtle Beacon Halo for Active or Hovered Marker */}
                   {(isActive || isHovered) && (
                     <div 
-                      className="absolute w-8 h-8 rounded-full animate-ping pointer-events-none"
-                      style={{ backgroundColor: color, opacity: 0.4 }}
+                      className="absolute w-4 h-4 rounded-full animate-ping pointer-events-none"
+                      style={{ backgroundColor: color, opacity: 0.35 }}
                     />
                   )}
 
-                  {/* Core Jewel Dot */}
+                  {/* Refined Micro-Jewel Dot */}
                   <div 
-                    className="relative rounded-full transition-all duration-300"
+                    className="relative rounded-full transition-all duration-300 transform hover:scale-125"
                     style={{
-                      width: isActive ? '14px' : isHovered ? '12px' : '8px',
-                      height: isActive ? '14px' : isHovered ? '12px' : '8px',
+                      width: isActive ? '9px' : isHovered ? '7.5px' : '5px',
+                      height: isActive ? '9px' : isHovered ? '7.5px' : '5px',
                       backgroundColor: color,
-                      boxShadow: `0 0 ${isActive ? '22px' : isHovered ? '16px' : '8px'} ${color}`,
-                      border: '1.5px solid rgba(255,255,255,0.95)',
-                      transform: 'scale(1)',
+                      boxShadow: isActive 
+                        ? `0 0 10px ${color}, 0 0 16px rgba(255,255,255,0.6)` 
+                        : isHovered 
+                          ? `0 0 8px ${color}` 
+                          : `0 0 4px ${color}`,
+                      border: '1px solid rgba(255,255,255,0.95)',
                     }}
                   />
 
                   {/* Tooltip Card on Hover / Active */}
                   {(isActive || isHovered) && (
                     <div 
-                      className="absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none z-50 animate-fade-in-up"
+                      className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none z-50 animate-fade-in-up"
                     >
-                      <div className="dharohar-glass px-3 py-1.5 rounded-lg border border-[#D4AF37]/50 shadow-[0_8px_25px_rgba(0,0,0,0.8)] flex flex-col items-center">
-                        <span className="text-[12px] font-bold font-cinzel text-[#FFF8E7] tracking-wider">
+                      <div className="dharohar-glass px-2.5 py-1 rounded-md border border-[#D4AF37]/50 shadow-[0_6px_20px_rgba(0,0,0,0.85)] flex flex-col items-center">
+                        <span className="text-[11px] font-bold font-cinzel text-[#FFF8E7] tracking-wide">
                           {translateEntityName(entity.name, entity.location_context)}
                         </span>
                         <span 
-                          className="text-[9px] uppercase font-semibold tracking-widest mt-0.5"
+                          className="text-[8.5px] uppercase font-semibold tracking-wider mt-0.5"
                           style={{ color: color }}
                         >
                           {translateCategory(entity.category_name)}

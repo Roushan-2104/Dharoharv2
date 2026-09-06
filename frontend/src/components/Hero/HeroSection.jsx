@@ -12,6 +12,7 @@ import ItineraryModal from './ItineraryModal';
 import axios from 'axios';
 import API_BASE_URL from '../../config/api';
 import { useLanguage } from '../../context/LanguageContext';
+import { calibrateEntityCoordinates } from '../../utils/geo';
 
 export default function HeroSection() {
   const { t } = useLanguage();
@@ -41,7 +42,11 @@ export default function HeroSection() {
         const uniqueCategories = new Set();
         const data = res.data.map(e => {
           if (e.category_name) uniqueCategories.add(e.category_name);
-          return e;
+          const calibratedCoords = calibrateEntityCoordinates(e);
+          return {
+            ...e,
+            coordinates: calibratedCoords
+          };
         });
 
         const catMap = {};
@@ -88,11 +93,11 @@ export default function HeroSection() {
       {/* Top Right Controls: Plan Cultural Trail & 2D/3D Toggle */}
       <div className="absolute top-24 right-4 sm:right-8 z-20 flex items-center gap-2 sm:gap-3">
         
-        {/* Plan Cultural Trail Action Button */}
+        {/* Plan Trip Action Button */}
         <button
           onClick={() => setIsItineraryOpen(true)}
           className="dharohar-glass px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#12121E]/85 hover:bg-[#D4AF37]/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center gap-2 transition-all duration-300 transform hover:scale-105 group cursor-pointer"
-          title="Plan AI Cultural Trail"
+          title={t('itinerary_btn')}
         >
           <Sparkles className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-[#F59E0B] group-hover:rotate-12 transition-transform" />
           <span className="font-cinzel text-xs font-bold tracking-wide">

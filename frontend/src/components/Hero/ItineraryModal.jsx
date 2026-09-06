@@ -203,7 +203,7 @@ export default function ItineraryModal({
                   {t('itinerary_generating')}
                 </h3>
                 <p className="text-xs text-zinc-400">
-                  Harmonizing sacred geographical coordinates, architectural timelines, and temple culinary traditions...
+                  Connecting sacred sites, route times, and delicious local food stops...
                 </p>
               </div>
             </div>
@@ -218,9 +218,9 @@ export default function ItineraryModal({
                 </label>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { id: '1', label: t('itinerary_1day'), desc: '2-3 Core Sites', icon: '⚡' },
+                    { id: '1', label: t('itinerary_1day'), desc: '2-3 Highlights', icon: '⚡' },
                     { id: '3', label: t('itinerary_3day'), desc: '6-8 Heritage Sites', icon: '🌟' },
-                    { id: '5', label: t('itinerary_5day'), desc: '12+ Full Odyssey', icon: '👑' },
+                    { id: '5', label: t('itinerary_5day'), desc: '12+ Full Journey', icon: '👑' },
                   ].map(option => (
                     <button
                       key={option.id}

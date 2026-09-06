@@ -205,8 +205,9 @@ export default function DiscoverPage() {
 
                   {/* Card Bottom CTA */}
                   <div className="pt-4 border-t border-[#D4AF37]/15 flex items-center justify-between">
-                    <span className="text-[11px] text-zinc-500 font-mono">
-                      {t('discover_ref')}: #{entity.id.substring(0, 6)}
+                    <span className="text-[11px] text-[#D4AF37]/80 flex items-center gap-1 font-medium">
+                      <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                      <span>{t('panel_verified')}</span>
                     </span>
 
                     <button
@@ -275,13 +276,14 @@ export default function DiscoverPage() {
                 </p>
               </div>
 
-              {/* Coordinates & Metadata */}
-              {activeModalEntity.coordinates && (
-                <div className="mb-6 flex items-center justify-between text-xs text-zinc-500 font-mono bg-black/40 px-4 py-2.5 rounded-xl border border-white/5">
-                  <span>{t('panel_coordinates')}: {Array.isArray(activeModalEntity.coordinates) ? activeModalEntity.coordinates.join(', ') : JSON.stringify(activeModalEntity.coordinates)}</span>
-                  <span>{t('discover_ref')}: #{activeModalEntity.id.substring(0, 8)}</span>
-                </div>
-              )}
+              {/* Verified Status Banner */}
+              <div className="mb-6 flex items-center justify-between text-xs text-zinc-400 bg-black/40 px-4 py-2.5 rounded-xl border border-white/5">
+                <span className="flex items-center gap-1.5 text-[#10B981]">
+                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  {t('panel_verified')}
+                </span>
+                <span>{translateLocation(activeModalEntity.location_context)}</span>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-white/10">
