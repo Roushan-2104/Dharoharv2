@@ -2,14 +2,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   Bot, Sparkles, Send, X, Minimize2, Maximize2, Volume2, VolumeX, 
   Trash2, Compass, MessageSquare, Mic, MicOff, Copy, Check, 
-  Landmark, Music, Utensils, Calendar, MapPin, ChevronDown
+  Landmark, Music, Utensils, Calendar, MapPin, ChevronDown, 
+  ArrowRight, ExternalLink, HelpCircle, Layers, Scroll, Compass as ExploreIcon
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_BASE_URL from '../../config/api';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function DharoharChatbot() {
   const { t, language, setIsItineraryOpen } = useLanguage();
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -20,44 +24,87 @@ export default function DharoharChatbot() {
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [speakingIndex, setSpeakingIndex] = useState(null);
+  const [activeTab, setActiveTab] = useState('all');
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  // Initial welcome message
-  const [messages, setMessages] = useState([
-    {
-      sender: 'bot',
-      text: t('bot_welcome'),
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      quickActions: [
-        { label: '🏛️ Temples', query: 'Tell me about the most ancient and sacred temples of Odisha' },
-        { label: '🎭 Dance & Arts', query: 'What is the cultural history of Odissi and Chhau dance?' },
-        { label: '🍲 Mahaprasad & Food', query: 'What are traditional Odia culinary delights and Mahaprasad?' },
-        { label: '🗺️ Trip Itinerary', query: 'Suggest an exciting 3-day cultural heritage itinerary' }
-      ]
-    }
-  ]);
+  // Topic Categories for quick prompt exploration
+  const categoryTabs = [
+    { id: 'all', label: '✨ All Topics', icon: <Layers className="w-3 h-3" /> },
+    { id: 'temples', label: '🏛️ Temples', icon: <Landmark className="w-3 h-3" /> },
+    { id: 'arts', label: '🎭 Arts & Dance', icon: <Music className="w-3 h-3" /> },
+    { id: 'food', label: '🍲 Food & Lore', icon: <Utensils className="w-3 h-3" /> },
+    { id: 'trails', label: '🗺️ Trip Planner', icon: <Compass className="w-3 h-3" /> },
+    { id: 'folklore', label: '📜 Folklore', icon: <Scroll className="w-3 h-3" /> },
+  ];
 
-  // Update initial message on language switch if only initial message is present
+  const categorizedPrompts = {
+    all: [
+      { text: t('bot_quick_1') || '🏛️ Ancient Temples in Puri & Konark', query: 'Tell me about the most ancient and sacred temples in Puri and Konark.' },
+      { text: t('bot_quick_2') || '🎭 Odissi & Chhau Dance Heritage', query: 'What is the cultural history and significance of Odissi and Chhau dance?' },
+      { text: t('bot_quick_3') || '🍲 Traditional Food & Mahaprasad', query: 'What makes Puri Mahaprasad and traditional Odia sweets so unique?' },
+      { text: t('bot_quick_4') || '🌿 Hidden Heritage Spots', query: 'What are some unexplored or secret heritage spots across Odisha?' },
+    ],
+    temples: [
+      { text: 'Konark Wheel Geometry & Astronomy', query: 'Explain the astronomical and sun-dial calculation features of Konark Sun Temple.' },
+      { text: 'Jagannath Rath Yatra & Neela Chakra', query: 'What is the history and mysteries behind Jagannath Temple and Rath Yatra rituals?' },
+      { text: 'Chausath Yogini Tantric Architecture', query: 'What is the significance of the circular 64 Yogini temple in Hirapur?' },
+      { text: 'Lingaraja Kalinga Architecture', query: 'Explain the architectural mastery of Lingaraja Temple in Old Bhubaneswar.' }
+    ],
+    arts: [
+      { text: 'Raghurajpur Pattachitra Craftsmanship', query: 'How is the traditional Pattachitra cloth scroll painting made in Raghurajpur?' },
+      { text: 'Mayurbhanj Chhau Martial Dance', query: 'What are the distinctive techniques and stories enacted in Mayurbhanj Chhau?' },
+      { text: 'Sambalpuri Ikat Handloom Weaving', query: 'What is the tie-and-dye Ikat weaving process of Sambalpuri sarees?' }
+    ],
+    food: [
+      { text: 'Chhenapoda & Pahala Rasagola History', query: 'What is the origin story of Chhenapoda and Pahala Rasagola in Odisha culinary lore?' },
+      { text: '56 Bhog Mahaprasad Tradition', query: 'Explain the 56 Bhog offerings and earthen pot cooking process of Jagannath Mahaprasad.' },
+      { text: 'Dalma & Pakhala Living Culture', query: 'What is the cultural and seasonal importance of Pakhala and Dalma in Odisha?' }
+    ],
+    trails: [
+      { text: 'Golden Triangle 3-Day Heritage Route', query: 'Suggest an ideal 3-day itinerary covering Bhubaneswar, Puri, and Konark.' },
+      { text: 'Buddhist Diamond Triangle (Ratnagiri)', query: 'How can I plan a heritage trip to Ratnagiri, Lalitgiri, and Udayagiri Buddhist ruins?' },
+      { text: 'Tribal & Handloom Cultural Circuit', query: 'What is the best route to explore traditional crafts and handlooms in Odisha?' }
+    ],
+    folklore: [
+      { text: 'Kanchi Abhiyana & Manika Gouduni Legend', query: 'Tell me the inspiring legend of Kanchi Abhiyana and Manika Gouduni yogurt seller.' },
+      { text: 'Dharmapada Sacrifice at Konark', query: 'What is the legendary story of 12-year-old Dharmapada and the Konark Temple crown?' },
+      { text: 'Ashoka & Kalinga War at Dhauli Hills', query: 'How did the Kalinga War transform Emperor Ashoka at Dhauli Peace Pagoda?' }
+    ]
+  };
+
+  // Chat messages state with session storage memory
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('dharohar_chat_history');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+
+    return [
+      {
+        sender: 'bot',
+        text: t('bot_welcome'),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        suggestedQuestions: [
+          t('bot_quick_1') || '🏛️ Ancient Temples in Puri & Konark',
+          t('bot_quick_2') || '🎭 Odissi & Chhau Dance Heritage',
+          t('bot_quick_3') || '🍲 Traditional Cuisine & Mahaprasad'
+        ]
+      }
+    ];
+  });
+
+  // Save chat to session storage
   useEffect(() => {
-    if (messages.length === 1 && messages[0].sender === 'bot') {
-      setMessages([
-        {
-          sender: 'bot',
-          text: t('bot_welcome'),
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          quickActions: [
-            { label: '🏛️ Temples', query: t('bot_quick_1') },
-            { label: '🎭 Dance & Arts', query: t('bot_quick_2') },
-            { label: '🍲 Food', query: t('bot_quick_3') },
-            { label: '🌿 Hidden Spots', query: t('bot_quick_4') }
-          ]
-        }
-      ]);
-    }
-  }, [language]);
+    try {
+      sessionStorage.setItem('dharohar_chat_history', JSON.stringify(messages));
+    } catch (e) {}
+  }, [messages]);
 
   // Auto scroll to bottom
   const scrollToBottom = () => {
@@ -83,16 +130,11 @@ export default function DharoharChatbot() {
         const transcript = event.results[0][0].transcript;
         setInputMessage(transcript);
         setIsListening(false);
+        handleSendMessage(transcript);
       };
 
-      recognition.onerror = () => {
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
       recognitionRef.current = recognition;
     }
   }, [language]);
@@ -127,11 +169,9 @@ export default function DharoharChatbot() {
     }
 
     window.speechSynthesis.cancel();
-    // Strip markdown formatting characters for clean speech
-    const cleanText = text.replace(/[*_#`~]/g, '');
+    const cleanText = text.replace(/[*_#`~>]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
     
-    // Choose appropriate language voice
     utterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
@@ -150,8 +190,8 @@ export default function DharoharChatbot() {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5 Note
-      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
       gain.gain.setValueAtTime(0.04, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
       osc.connect(gain);
@@ -185,6 +225,8 @@ export default function DharoharChatbot() {
       });
 
       const botResponse = res.data.response || "Namaste! I am here to assist your cultural exploration.";
+      const matchedEntities = res.data.matchedEntities || [];
+      const suggestedQuestions = res.data.suggestedQuestions || [];
       const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       
       const updatedMessages = [
@@ -193,7 +235,9 @@ export default function DharoharChatbot() {
           sender: 'bot',
           text: botResponse,
           time: botTime,
-          isItinerarySuggestion: query.toLowerCase().includes('itinerary') || query.toLowerCase().includes('trip') || query.toLowerCase().includes('tour') || query.toLowerCase().includes('यात्रा')
+          matchedEntities: matchedEntities,
+          suggestedQuestions: suggestedQuestions,
+          isItinerarySuggestion: query.toLowerCase().includes('itinerary') || query.toLowerCase().includes('trip') || query.toLowerCase().includes('tour') || query.toLowerCase().includes('यात्रा') || query.toLowerCase().includes('plan')
         }
       ];
 
@@ -239,16 +283,16 @@ export default function DharoharChatbot() {
 
   const handleClearChat = () => {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
+    sessionStorage.removeItem('dharohar_chat_history');
     setMessages([
       {
         sender: 'bot',
         text: t('bot_welcome'),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        quickActions: [
-          { label: '🏛️ Temples', query: t('bot_quick_1') },
-          { label: '🎭 Dance & Arts', query: t('bot_quick_2') },
-          { label: '🍲 Food', query: t('bot_quick_3') },
-          { label: '🌿 Hidden Spots', query: t('bot_quick_4') }
+        suggestedQuestions: [
+          t('bot_quick_1') || '🏛️ Ancient Temples in Puri & Konark',
+          t('bot_quick_2') || '🎭 Odissi & Chhau Dance Heritage',
+          t('bot_quick_3') || '🍲 Traditional Cuisine & Mahaprasad'
         ]
       }
     ]);
@@ -256,10 +300,8 @@ export default function DharoharChatbot() {
 
   // Helper to render formatted markdown text safely
   const renderFormattedText = (text) => {
-    // Split lines
     const lines = text.split('\n');
     return lines.map((line, lIdx) => {
-      // Bold text replacement **text**
       const parts = line.split(/(\*\*.*?\*\*)/g);
       const formattedLine = parts.map((part, pIdx) => {
         if (part.startsWith('**') && part.endsWith('**')) {
@@ -270,9 +312,17 @@ export default function DharoharChatbot() {
 
       if (line.trim().startsWith('* ') || line.trim().startsWith('- ')) {
         return (
-          <li key={lIdx} className="ml-3 my-0.5 list-disc text-zinc-200">
+          <li key={lIdx} className="ml-3.5 my-1 list-disc text-zinc-200">
             {formattedLine.slice(1)}
           </li>
+        );
+      }
+
+      if (line.trim().startsWith('>')) {
+        return (
+          <div key={lIdx} className="border-l-2 border-[#D4AF37] pl-3 py-1 my-1.5 italic text-[#F5D77F]/90 bg-[#D4AF37]/5 rounded-r-lg text-[11px]">
+            {formattedLine}
+          </div>
         );
       }
 
@@ -281,7 +331,7 @@ export default function DharoharChatbot() {
       }
 
       return (
-        <p key={lIdx} className="my-0.5 leading-relaxed">
+        <p key={lIdx} className="my-1 leading-relaxed">
           {formattedLine}
         </p>
       );
@@ -294,19 +344,19 @@ export default function DharoharChatbot() {
       {/* Floating Animated Callout Pill (When Closed) */}
       {!isOpen && showCallout && (
         <div className="relative mb-3 animate-bounce">
-          <div className="dharohar-glass px-3.5 py-1.5 rounded-full border border-[#D4AF37]/50 shadow-[0_8px_25px_rgba(212,175,55,0.25)] flex items-center gap-2 text-xs font-semibold text-[#FFF8E7] bg-[#12121E]/95 cursor-pointer hover:border-[#F5D77F] transition-all">
-            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+          <div className="dharohar-glass px-4 py-2 rounded-full border border-[#D4AF37]/50 shadow-[0_8px_30px_rgba(212,175,55,0.3)] flex items-center gap-2.5 text-xs font-semibold text-[#FFF8E7] bg-[#12121E]/95 cursor-pointer hover:border-[#F5D77F] transition-all">
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shadow-[0_0_8px_#10B981]"></span>
             <span onClick={() => { setIsOpen(true); setShowCallout(false); }}>
               {t('bot_callout')}
             </span>
             <button 
               onClick={(e) => { e.stopPropagation(); setShowCallout(false); }}
-              className="text-zinc-400 hover:text-zinc-200 ml-1 p-0.5"
+              className="text-zinc-400 hover:text-zinc-200 ml-1 p-0.5 rounded-full hover:bg-white/10"
+              title="Dismiss"
             >
-              <X className="w-3 h-3" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
-          {/* Arrow */}
           <div className="w-2.5 h-2.5 bg-[#12121E] border-r border-b border-[#D4AF37]/50 rotate-45 absolute -bottom-1.5 right-6"></div>
         </div>
       )}
@@ -314,22 +364,22 @@ export default function DharoharChatbot() {
       {/* Main Chatbot Window */}
       {isOpen && (
         <div 
-          className={`dharohar-glass border border-[#D4AF37]/40 shadow-[0_20px_60px_rgba(0,0,0,0.85)] rounded-3xl flex flex-col overflow-hidden transition-all duration-300 backdrop-blur-2xl mb-3 ${
+          className={`dharohar-glass border border-[#D4AF37]/40 shadow-[0_25px_70px_rgba(0,0,0,0.9)] rounded-3xl flex flex-col overflow-hidden transition-all duration-300 backdrop-blur-2xl mb-3 ${
             isExpanded 
-              ? 'w-[92vw] sm:w-[540px] h-[82vh] max-h-[750px]' 
+              ? 'w-[94vw] sm:w-[580px] h-[85vh] max-h-[800px]' 
               : isMinimized 
               ? 'w-[320px] sm:w-[360px] h-[64px]' 
-              : 'w-[92vw] sm:w-[400px] h-[560px] max-h-[85vh]'
+              : 'w-[94vw] sm:w-[440px] h-[600px] max-h-[85vh]'
           }`}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#171625] via-[#1C1A2E] to-[#121120] px-4 py-3 border-b border-[#D4AF37]/25 flex items-center justify-between select-none shrink-0 shadow-sm">
+          <div className="bg-gradient-to-r from-[#171625] via-[#1C1A2E] to-[#121120] px-4 py-3.5 border-b border-[#D4AF37]/25 flex items-center justify-between select-none shrink-0 shadow-sm">
             <div className="flex items-center gap-3">
-              {/* Bot Avatar */}
+              {/* Bot Avatar with Status */}
               <div className="relative">
                 <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#D4AF37] via-[#F59E0B] to-[#B45309] p-0.5 shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center justify-center">
                   <div className="w-full h-full bg-[#0E0E17] rounded-[14px] flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-[#F5D77F] animate-pulse" />
+                    <Bot className="w-5 h-5 text-[#F5D77F]" />
                   </div>
                 </div>
                 <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#10B981] border-2 border-[#0E0E17] shadow-[0_0_8px_#10B981]"></span>
@@ -340,10 +390,10 @@ export default function DharoharChatbot() {
                   <h3 className="font-cinzel text-sm font-bold text-[#FFF8E7] tracking-wide">
                     {t('bot_title')}
                   </h3>
-                  <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] animate-pulse" />
                 </div>
-                <p className="text-[10px] font-sans text-[#D4AF37]/80 flex items-center gap-1">
-                  <span>{t('bot_online')}</span> • <span className="text-zinc-400">{t('bot_subtitle')}</span>
+                <p className="text-[10px] font-sans text-[#D4AF37]/90 flex items-center gap-1.5">
+                  <span className="text-emerald-400 font-semibold">{t('bot_online')}</span> • <span className="text-zinc-400">{t('bot_subtitle')}</span>
                 </p>
               </div>
             </div>
@@ -354,7 +404,7 @@ export default function DharoharChatbot() {
               <button
                 onClick={() => setVoiceEnabled(!voiceEnabled)}
                 className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                  voiceEnabled ? 'text-[#F5D77F] bg-[#D4AF37]/20' : 'hover:text-zinc-200 hover:bg-white/5'
+                  voiceEnabled ? 'text-[#F5D77F] bg-[#D4AF37]/25 border border-[#D4AF37]/40' : 'hover:text-zinc-200 hover:bg-white/5'
                 }`}
                 title={voiceEnabled ? t('bot_voice_on') : t('bot_voice_off')}
               >
@@ -404,8 +454,25 @@ export default function DharoharChatbot() {
           {/* Body Content (Hidden if Minimized) */}
           {!isMinimized && (
             <>
+              {/* Category Explorer Tabs */}
+              <div className="px-3 py-2 bg-[#0E0E18] border-b border-white/5 flex gap-1.5 overflow-x-auto hud-scrollbar shrink-0">
+                {categoryTabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-1.5 whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+                      activeTab === tab.id
+                        ? 'bg-[#D4AF37]/20 text-[#F5D77F] border border-[#D4AF37]/50 shadow-[0_0_10px_rgba(212,175,55,0.2)]'
+                        : 'bg-[#151424]/60 text-zinc-400 border border-transparent hover:text-zinc-200 hover:bg-white/5'
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+
               {/* Messages Container */}
-              <div className="flex-1 overflow-y-auto px-4 py-3.5 space-y-3.5 hud-scrollbar">
+              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 hud-scrollbar">
                 {messages.map((msg, index) => {
                   const isBot = msg.sender === 'bot';
                   return (
@@ -413,33 +480,75 @@ export default function DharoharChatbot() {
                       key={index}
                       className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} transition-all`}
                     >
-                      <div className={`flex gap-2 max-w-[88%] ${isBot ? 'flex-row' : 'flex-row-reverse'}`}>
+                      <div className={`flex gap-2.5 max-w-[90%] ${isBot ? 'flex-row' : 'flex-row-reverse'}`}>
                         
                         {/* Bot Avatar Icon */}
                         {isBot && (
-                          <div className="w-6 h-6 rounded-lg bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center shrink-0 mt-1">
-                            <Bot className="w-3.5 h-3.5 text-[#F5D77F]" />
+                          <div className="w-7 h-7 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center shrink-0 mt-1 shadow-sm">
+                            <Bot className="w-4 h-4 text-[#F5D77F]" />
                           </div>
                         )}
 
                         {/* Message Bubble */}
                         <div 
-                          className={`rounded-2xl px-3.5 py-2.5 text-xs shadow-md ${
+                          className={`rounded-2xl px-4 py-3 text-xs shadow-md ${
                             isBot 
-                              ? 'bg-[#151422]/90 text-zinc-200 border border-[#D4AF37]/20 rounded-tl-sm' 
-                              : 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#0A0A10] font-medium rounded-tr-sm shadow-[0_4px_15px_rgba(212,175,55,0.25)]'
+                              ? 'bg-[#151424]/95 text-zinc-200 border border-[#D4AF37]/25 rounded-tl-sm' 
+                              : 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#0A0A10] font-medium rounded-tr-sm shadow-[0_4px_15px_rgba(212,175,55,0.3)]'
                           }`}
                         >
                           {isBot ? renderFormattedText(msg.text) : msg.text}
 
+                          {/* Grounded Entity Preview Cards (If returned from DB) */}
+                          {isBot && msg.matchedEntities && msg.matchedEntities.length > 0 && (
+                            <div className="mt-3 pt-2.5 border-t border-[#D4AF37]/20 space-y-2">
+                              <div className="text-[10px] font-bold text-[#F5D77F] uppercase tracking-wider flex items-center gap-1.5">
+                                <Landmark className="w-3 h-3 text-[#F59E0B]" />
+                                <span>Verified Heritage Sites Mentioned:</span>
+                              </div>
+                              <div className="grid grid-cols-1 gap-2">
+                                {msg.matchedEntities.map((entity, eIdx) => (
+                                  <div 
+                                    key={eIdx}
+                                    className="p-2 rounded-xl bg-[#0F0E1A] border border-[#D4AF37]/30 flex items-center justify-between gap-2 hover:border-[#F5D77F] transition-all"
+                                  >
+                                    <div className="min-w-0 flex-1">
+                                      <h4 className="font-cinzel text-xs font-bold text-[#FFF8E7] truncate">
+                                        {entity.name}
+                                      </h4>
+                                      <p className="text-[10px] text-zinc-400 truncate flex items-center gap-1 mt-0.5">
+                                        <MapPin className="w-2.5 h-2.5 text-[#D4AF37]" />
+                                        <span>{entity.location_context || entity.category_name || 'Odisha Heritage'}</span>
+                                      </p>
+                                    </div>
+                                    <button
+                                      onClick={() => {
+                                        navigate('/');
+                                        setIsOpen(false);
+                                      }}
+                                      className="px-2 py-1 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 text-[#F5D77F] text-[10px] font-semibold border border-[#D4AF37]/40 flex items-center gap-1 shrink-0 cursor-pointer"
+                                      title="Locate on Map"
+                                    >
+                                      <span>Map</span>
+                                      <ArrowRight className="w-2.5 h-2.5" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
                           {/* Action Button to Open Itinerary inside message */}
                           {msg.isItinerarySuggestion && (
                             <button
-                              onClick={() => setIsItineraryOpen(true)}
-                              className="mt-2.5 w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 border border-[#D4AF37]/40 text-[#F5D77F] font-semibold text-[11px] transition-all cursor-pointer shadow-sm"
+                              onClick={() => {
+                                setIsItineraryOpen(true);
+                                setIsOpen(false);
+                              }}
+                              className="mt-3 w-full flex items-center justify-center gap-2 py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37]/25 to-[#F59E0B]/25 hover:from-[#D4AF37]/40 hover:to-[#F59E0B]/40 border border-[#D4AF37]/50 text-[#F5D77F] font-bold text-xs transition-all cursor-pointer shadow-[0_0_12px_rgba(212,175,55,0.2)]"
                             >
                               <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
-                              <span>{t('itinerary_btn')} • Open Planner</span>
+                              <span>{t('itinerary_btn')} • Launch AI Trip Planner</span>
                             </button>
                           )}
                         </div>
@@ -447,18 +556,19 @@ export default function DharoharChatbot() {
 
                       {/* Message Tools (Bot Only) */}
                       {isBot && (
-                        <div className="flex items-center gap-2 mt-1 ml-8 text-[10px] text-zinc-500">
+                        <div className="flex items-center gap-2.5 mt-1.5 ml-9 text-[10px] text-zinc-500">
                           <span>{msg.time}</span>
                           
                           {/* Listen Button */}
                           <button
                             onClick={() => speakText(msg.text, index)}
-                            className={`hover:text-[#F5D77F] transition-colors p-0.5 cursor-pointer ${
-                              speakingIndex === index ? 'text-[#F5D77F] animate-pulse' : ''
+                            className={`hover:text-[#F5D77F] transition-colors p-0.5 cursor-pointer flex items-center gap-1 ${
+                              speakingIndex === index ? 'text-[#F5D77F] font-bold animate-pulse' : ''
                             }`}
                             title="Read Aloud"
                           >
-                            <Volume2 className="w-3 h-3" />
+                            <Volume2 className="w-3.5 h-3.5" />
+                            {speakingIndex === index && <span>Speaking...</span>}
                           </button>
 
                           {/* Copy Button */}
@@ -467,21 +577,22 @@ export default function DharoharChatbot() {
                             className="hover:text-[#F5D77F] transition-colors p-0.5 cursor-pointer"
                             title="Copy Response"
                           >
-                            {copiedIndex === index ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            {copiedIndex === index ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                           </button>
                         </div>
                       )}
 
-                      {/* Quick Action Chips (If Attached to message) */}
-                      {msg.quickActions && (
-                        <div className="flex flex-wrap gap-1.5 mt-2.5 ml-8">
-                          {msg.quickActions.map((qa, qIdx) => (
+                      {/* Suggested Dynamic Follow-Up Chips */}
+                      {isBot && msg.suggestedQuestions && msg.suggestedQuestions.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-2 ml-9">
+                          {msg.suggestedQuestions.map((sq, sIdx) => (
                             <button
-                              key={qIdx}
-                              onClick={() => handleSendMessage(qa.query)}
-                              className="px-2.5 py-1 rounded-full bg-[#1A192A] hover:bg-[#D4AF37]/25 text-[#E6D5A8] border border-[#D4AF37]/30 text-[10px] font-medium transition-all hover:scale-105 cursor-pointer shadow-sm"
+                              key={sIdx}
+                              onClick={() => handleSendMessage(sq)}
+                              className="px-3 py-1 rounded-full bg-[#181728] hover:bg-[#D4AF37]/25 text-[#E6D5A8] border border-[#D4AF37]/35 text-[11px] font-medium transition-all hover:scale-105 cursor-pointer shadow-sm flex items-center gap-1"
                             >
-                              {qa.label}
+                              <Sparkles className="w-2.5 h-2.5 text-[#F59E0B]" />
+                              <span>{sq}</span>
                             </button>
                           ))}
                         </div>
@@ -492,15 +603,15 @@ export default function DharoharChatbot() {
 
                 {/* Loading / Typing Indicator */}
                 {loading && (
-                  <div className="flex items-center gap-2 text-xs text-zinc-400 ml-1">
-                    <div className="w-6 h-6 rounded-lg bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center">
-                      <Bot className="w-3.5 h-3.5 text-[#F5D77F] animate-spin" />
+                  <div className="flex items-center gap-2.5 text-xs text-zinc-400 ml-1">
+                    <div className="w-7 h-7 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center">
+                      <Bot className="w-4 h-4 text-[#F5D77F] animate-spin" />
                     </div>
-                    <div className="dharohar-glass px-3 py-2 rounded-2xl border border-[#D4AF37]/20 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-bounce"></span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-bounce [animation-delay:0.2s]"></span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#FFF8E7] animate-bounce [animation-delay:0.4s]"></span>
-                      <span className="text-[11px] text-[#F5D77F] ml-1">{t('chat_typing')}</span>
+                    <div className="dharohar-glass px-3.5 py-2 rounded-2xl border border-[#D4AF37]/20 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-bounce"></span>
+                      <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-bounce [animation-delay:0.2s]"></span>
+                      <span className="w-2 h-2 rounded-full bg-[#FFF8E7] animate-bounce [animation-delay:0.4s]"></span>
+                      <span className="text-[11px] text-[#F5D77F] font-medium ml-1">{t('chat_typing')}</span>
                     </div>
                   </div>
                 )}
@@ -508,37 +619,22 @@ export default function DharoharChatbot() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Quick Prompt Suggestions Bar */}
-              <div className="px-3 py-1.5 bg-[#0D0D15]/80 border-t border-white/5 flex gap-1.5 overflow-x-auto hud-scrollbar shrink-0">
-                <button
-                  onClick={() => handleSendMessage(t('bot_quick_1'))}
-                  className="whitespace-nowrap px-2.5 py-1 rounded-lg bg-[#141320] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/25 text-[10px] text-[#F5D77F] transition-colors cursor-pointer"
-                >
-                  🏛️ {t('bot_quick_1')}
-                </button>
-                <button
-                  onClick={() => handleSendMessage(t('bot_quick_2'))}
-                  className="whitespace-nowrap px-2.5 py-1 rounded-lg bg-[#141320] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/25 text-[10px] text-[#F5D77F] transition-colors cursor-pointer"
-                >
-                  🎭 {t('bot_quick_2')}
-                </button>
-                <button
-                  onClick={() => handleSendMessage(t('bot_quick_3'))}
-                  className="whitespace-nowrap px-2.5 py-1 rounded-lg bg-[#141320] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/25 text-[10px] text-[#F5D77F] transition-colors cursor-pointer"
-                >
-                  🍲 {t('bot_quick_3')}
-                </button>
-                <button
-                  onClick={() => handleSendMessage(t('bot_quick_4'))}
-                  className="whitespace-nowrap px-2.5 py-1 rounded-lg bg-[#141320] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/25 text-[10px] text-[#F5D77F] transition-colors cursor-pointer"
-                >
-                  🌿 {t('bot_quick_4')}
-                </button>
+              {/* Categorized Quick Prompts Suggestion Bar */}
+              <div className="px-3 py-2 bg-[#0C0B14] border-t border-white/5 flex gap-2 overflow-x-auto hud-scrollbar shrink-0">
+                {(categorizedPrompts[activeTab] || categorizedPrompts.all).map((item, pIdx) => (
+                  <button
+                    key={pIdx}
+                    onClick={() => handleSendMessage(item.query || item.text)}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#141322] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[11px] font-medium text-[#F5D77F] transition-all hover:scale-102 cursor-pointer shadow-sm"
+                  >
+                    {item.text}
+                  </button>
+                ))}
               </div>
 
               {/* Input Area */}
               <div className="p-3 bg-[#11101C] border-t border-[#D4AF37]/20 shrink-0">
-                <div className="flex items-center gap-2 bg-[#09090F] px-3 py-1.5 rounded-2xl border border-[#D4AF37]/30 focus-within:border-[#F5D77F] shadow-inner transition-colors">
+                <div className="flex items-center gap-2 bg-[#09090F] px-3.5 py-2 rounded-2xl border border-[#D4AF37]/35 focus-within:border-[#F5D77F] shadow-inner transition-colors">
                   <input
                     ref={inputRef}
                     type="text"
@@ -553,14 +649,14 @@ export default function DharoharChatbot() {
                   {/* Mic Voice Input */}
                   <button
                     onClick={toggleSpeechRecognition}
-                    className={`p-1.5 rounded-xl transition-colors cursor-pointer ${
+                    className={`p-1.5 rounded-xl transition-all cursor-pointer ${
                       isListening 
-                        ? 'bg-rose-500 text-white animate-pulse' 
+                        ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.6)]' 
                         : 'text-zinc-400 hover:text-[#F5D77F] hover:bg-white/5'
                     }`}
                     title={isListening ? "Stop Listening" : "Speak Query"}
                   >
-                    {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                   </button>
 
                   {/* Send Button */}
@@ -569,12 +665,12 @@ export default function DharoharChatbot() {
                     disabled={!inputMessage.trim() || loading}
                     className={`p-2 rounded-xl transition-all duration-300 cursor-pointer ${
                       inputMessage.trim() && !loading
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#0A0A10] font-bold shadow-[0_0_12px_rgba(212,175,55,0.4)] scale-105'
+                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#0A0A10] font-bold shadow-[0_0_15px_rgba(212,175,55,0.45)] scale-105'
                         : 'bg-zinc-800/60 text-zinc-600 cursor-not-allowed'
                     }`}
                     title={t('chat_send')}
                   >
-                    <Send className="w-3.5 h-3.5" />
+                    <Send className="w-4 h-4" />
                   </button>
                 </div>
 
@@ -596,11 +692,11 @@ export default function DharoharChatbot() {
           setIsMinimized(false);
           setShowCallout(false);
         }}
-        className="group relative flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#D4AF37] via-[#F59E0B] to-[#C2410C] text-[#0A0A10] shadow-[0_10px_30px_rgba(212,175,55,0.45)] hover:shadow-[0_12px_40px_rgba(245,158,11,0.6)] transform hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer border border-[#FFF8E7]/40"
+        className="group relative flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#D4AF37] via-[#F59E0B] to-[#C2410C] text-[#0A0A10] shadow-[0_10px_35px_rgba(212,175,55,0.5)] hover:shadow-[0_15px_45px_rgba(245,158,11,0.7)] transform hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer border border-[#FFF8E7]/40"
         title="Dharohar AI Guide"
       >
-        {/* Glow Pulse Ring */}
-        <span className="absolute -inset-1 rounded-2xl bg-[#F59E0B]/30 blur-md group-hover:bg-[#F59E0B]/60 transition-all"></span>
+        {/* Glow Pulse Aura */}
+        <span className="absolute -inset-1 rounded-2xl bg-[#F59E0B]/35 blur-md group-hover:bg-[#F59E0B]/60 transition-all"></span>
 
         {/* Icon */}
         <div className="relative z-10 flex items-center justify-center">
@@ -609,12 +705,12 @@ export default function DharoharChatbot() {
           ) : (
             <>
               <Bot className="w-6 h-6 text-[#0A0A10] group-hover:scale-110 transition-transform" />
-              <Sparkles className="w-3 h-3 text-[#FFF8E7] absolute -top-1.5 -right-1.5 animate-spin [animation-duration:4s]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#FFF8E7] absolute -top-1.5 -right-1.5 animate-spin [animation-duration:4s]" />
             </>
           )}
         </div>
 
-        {/* Active Badge */}
+        {/* Active Live Indicator Badge */}
         {!isOpen && (
           <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-[#10B981] border-2 border-[#08080C] shadow-[0_0_8px_#10B981]"></span>
         )}
