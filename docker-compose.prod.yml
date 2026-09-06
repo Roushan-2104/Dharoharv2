@@ -1,0 +1,36 @@
+# ----------------------------------------------------
+# Production Docker Compose (Optimized Nginx + Node)
+# Run with: docker compose -f docker-compose.prod.yml up --build -d
+# ----------------------------------------------------
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dharohar-backend-prod
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=${PORT:-3000}
+      - DATABASE_URL=${DATABASE_URL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    networks:
+      - dharohar-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: dharohar-frontend-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - dharohar-network
+
+networks:
+  dharohar-network:
+    driver: bridge

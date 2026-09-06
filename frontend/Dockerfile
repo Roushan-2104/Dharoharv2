@@ -1,42 +1,19 @@
 # ----------------------------------------------------
-# Stage 1: Build Frontend Assets
+# Development Dockerfile (Live Hot-Reload with Vite)
 # ----------------------------------------------------
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy dependency files
+# Install dependencies first (leverages Docker layer cache)
 COPY package*.json ./
+RUN npm install
 
-# Install all dependencies (including devDependencies for Vite build)
-RUN npm ci || npm install
-
-# Build argument for API URL if custom domain is used
-ARG VITE_API_URL=""
-ENV VITE_API_URL=${VITE_API_URL}
-
-# Copy application source code
+# Copy rest of the application files
 COPY . .
 
-# Build production bundle
-RUN npm run build
+# Expose Vite dev server port
+EXPOSE 5173
 
-# ----------------------------------------------------
-# Stage 2: Production Nginx Server
-# ----------------------------------------------------
-FROM nginx:alpine
-
-# Remove default nginx html files
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copy built assets from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose HTTP port
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start Vite dev server on all network interfaces
+CMD ["npm", "run", "dev", "--", "--host"]
