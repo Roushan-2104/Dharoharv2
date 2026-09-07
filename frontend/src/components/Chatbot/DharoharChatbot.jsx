@@ -11,7 +11,15 @@ import API_BASE_URL from '../../config/api';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function DharoharChatbot() {
-  const { t, language, setIsItineraryOpen } = useLanguage();
+  const { 
+    t, 
+    language, 
+    setIsItineraryOpen,
+    isChatOpen,
+    setIsChatOpen,
+    chatInitialQuery,
+    setChatInitialQuery
+  } = useLanguage();
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +37,19 @@ export default function DharoharChatbot() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const recognitionRef = useRef(null);
+
+  // Sync with global isChatOpen
+  useEffect(() => {
+    if (isChatOpen) {
+      setIsOpen(true);
+      setIsMinimized(false);
+      setShowCallout(false);
+      if (chatInitialQuery) {
+        handleSendMessage(chatInitialQuery);
+        setChatInitialQuery('');
+      }
+    }
+  }, [isChatOpen, chatInitialQuery]);
 
   // Topic Categories for quick prompt exploration
   const categoryTabs = [
@@ -441,6 +462,7 @@ export default function DharoharChatbot() {
               <button
                 onClick={() => {
                   setIsOpen(false);
+                  setIsChatOpen(false);
                   if (window.speechSynthesis) window.speechSynthesis.cancel();
                 }}
                 className="p-1.5 rounded-lg hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"

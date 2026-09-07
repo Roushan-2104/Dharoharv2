@@ -41,17 +41,61 @@ app.get('/api/entities', async (req, res) => {
 app.get('/api/entities/:id/connections', async (req, res) => {
   try {
     const { id } = req.params;
-    const query = `
-      SELECT e.id, e.name, e.coordinates, c.name as category_name
+    
+    // 1. Query curated semantic cultural relationships
+    const relQuery = `
+      SELECT 
+        e.id, 
+        e.name, 
+        e.location_context, 
+        e.description, 
+        e.coordinates, 
+        c.name as category_name,
+        r.relationship_type,
+        r.label_en,
+        r.label_hi,
+        r.label_or,
+        r.lore_en,
+        r.lore_hi,
+        r.lore_or
+      FROM relationships r
+      JOIN entities e ON r.target_entity_id = e.id
+      LEFT JOIN categories c ON e.category_id = c.id
+      WHERE r.source_entity_id = $1
+      ORDER BY r.created_at ASC;
+    `;
+    const relResult = await pool.query(relQuery, [id]);
+
+    if (relResult.rows.length > 0) {
+      return res.json(relResult.rows);
+    }
+
+    // 2. Fallback for entities without manual relationships: find contextual cultural neighbors
+    const fallbackQuery = `
+      SELECT 
+        e.id, 
+        e.name, 
+        e.location_context, 
+        e.description, 
+        e.coordinates, 
+        c.name as category_name,
+        'cultural_affinity' as relationship_type,
+        'Regional Cultural Network' as label_en,
+        'क्षेत्रीय सांस्कृतिक परंपरा' as label_hi,
+        'ଆଞ୍ଚଳିକ ସାଂସ୍କୃତିକ ପରମ୍ପରା' as label_or,
+        'Part of the rich interconnected tapestry of Odisha regional cultural traditions.' as lore_en,
+        'ओडिशा की समृद्ध क्षेत्रीय सांस्कृतिक परंपराओं का अभिन्न अंग।' as lore_hi,
+        'ଓଡ଼ିଶାର ସମୃଦ୍ଧ ଆଞ୍ଚଳିକ ସାଂସ୍କୃତିକ ଐତିହ୍ୟ ପରମ୍ପରାର ଅଂଶ।' as lore_or
       FROM entities e
       LEFT JOIN categories c ON e.category_id = c.id
       WHERE e.id != $1 AND e.coordinates IS NOT NULL
       ORDER BY random()
-      LIMIT floor(random() * 3 + 2);
+      LIMIT 3;
     `;
-    const result = await pool.query(query, [id]);
-    res.json(result.rows);
+    const fallbackResult = await pool.query(fallbackQuery, [id]);
+    res.json(fallbackResult.rows);
   } catch (err) {
+    console.error("Error in /api/entities/:id/connections:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Polyline } from 'react-leaflet';
 import axios from 'axios';
+import { calibrateEntityCoordinates } from '../../utils/geo';
 import API_BASE_URL from '../../config/api';
 
 export default function Connections2D({ activeEntity, itineraryRoute }) {
@@ -14,7 +15,11 @@ export default function Connections2D({ activeEntity, itineraryRoute }) {
 
     axios.get(`${API_BASE_URL}/api/entities/${activeEntity.id}/connections`)
       .then(res => {
-        setConnections(res.data);
+        const calibrated = (res.data || []).map(conn => ({
+          ...conn,
+          coordinates: calibrateEntityCoordinates(conn)
+        }));
+        setConnections(calibrated);
       })
       .catch(err => console.error("Error fetching connections:", err));
   }, [activeEntity]);

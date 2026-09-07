@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import axios from 'axios';
-import { latLongToVector3 } from '../../utils/geo';
+import { latLongToVector3, calibrateEntityCoordinates } from '../../utils/geo';
 import API_BASE_URL from '../../config/api';
 
 export default function Connections({ activeEntity, itineraryRoute, radius }) {
@@ -16,7 +16,11 @@ export default function Connections({ activeEntity, itineraryRoute, radius }) {
 
     axios.get(`${API_BASE_URL}/api/entities/${activeEntity.id}/connections`)
       .then(res => {
-        setConnections(res.data);
+        const calibrated = (res.data || []).map(conn => ({
+          ...conn,
+          coordinates: calibrateEntityCoordinates(conn)
+        }));
+        setConnections(calibrated);
       })
       .catch(err => console.error("Error fetching connections:", err));
   }, [activeEntity]);

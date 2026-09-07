@@ -55,6 +55,13 @@ export const translations = {
     panel_close: "Close Panel",
     panel_loading_img: "Loading Image...",
     panel_record_progress: "Photo Coming Soon",
+    panel_living_threads: "Living Cultural Threads",
+    panel_living_threads_sub: "Verified Knowledge Graph Relations",
+    panel_hop_arc: "Follow Cultural Arc",
+    panel_ask_ai_title: "Curious about this heritage?",
+    panel_ask_ai_sub: "Ask Dharohar AI for oral lore, architectural secrets & festival dates",
+    panel_ask_ai_btn: "Ask Dharohar AI Guide",
+    panel_no_connections: "Connecting regional heritage traditions...",
     
     // Chat & Darshak AI
     chat_header_title: "Darshak AI",
@@ -215,6 +222,13 @@ export const translations = {
     panel_close: "पैनल बंद करें",
     panel_loading_img: "तस्वीर लोड हो रही है...",
     panel_record_progress: "तस्वीर जल्द आ रही है",
+    panel_living_threads: "जीवंत सांस्कृतिक सूत्र",
+    panel_living_threads_sub: "प्रमाणित ज्ञान ग्राफ संबंध",
+    panel_hop_arc: "सांस्कृतिक पथ का अनुसरण करें",
+    panel_ask_ai_title: "इस धरोहर के बारे में और जानना चाहते हैं?",
+    panel_ask_ai_sub: "धरोहर एआई से लोककथाओं, स्थापत्य रहस्यों और उत्सवों के बारे में पूछें",
+    panel_ask_ai_btn: "धरोहर एआई से पूछें",
+    panel_no_connections: "क्षेत्रीय सांस्कृतिक परंपराओं को जोड़ा जा रहा है...",
 
     // Chat & Darshak AI
     chat_header_title: "दर्शक AI",
@@ -375,6 +389,13 @@ export const translations = {
     panel_close: "ପ୍ୟାନେଲ୍ ବନ୍ଦ କରନ୍ତୁ",
     panel_loading_img: "ଫଟୋ ଲୋଡ୍ ହେଉଛି...",
     panel_record_progress: "ଫଟୋ ଶୀଘ୍ର ଆସୁଛି",
+    panel_living_threads: "ଜୀବନ୍ତ ସାଂସ୍କୃତିକ ସମ୍ପର୍କ ସୂତ୍ର",
+    panel_living_threads_sub: "ପ୍ରମାଣିତ ଜ୍ଞାନ ଗ୍ରାଫ୍ ସମ୍ପର୍କ",
+    panel_hop_arc: "ସାଂସ୍କୃତିକ ପଥ ଅନୁସରଣ କରନ୍ତୁ",
+    panel_ask_ai_title: "ଏହି ଐତିହ୍ୟ ବିଷୟରେ ଅଧିକ ଜାଣିବାକୁ ଚାହାନ୍ତି କି?",
+    panel_ask_ai_sub: "ଧରୋହର AI କୁ ଲୋକକଥା, ସ୍ଥାପତ୍ୟ ରହସ୍ୟ ଓ ପର୍ବପର୍ବାଣି ବିଷୟରେ ପଚାରନ୍ତୁ",
+    panel_ask_ai_btn: "ଧରୋହର AI କୁ ପଚାରନ୍ତୁ",
+    panel_no_connections: "ଆଞ୍ଚଳିକ ଐତିହ୍ୟ ପରମ୍ପରା ସଂଯୋଗ କରାଯାଉଛି...",
 
     // Chat & Darshak AI
     chat_header_title: "ଦର୍ଶକ AI",
@@ -785,6 +806,13 @@ export const LanguageProvider = ({ children }) => {
     return localStorage.getItem('dharohar_language') || 'en';
   });
   const [isItineraryOpen, setIsItineraryOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatInitialQuery, setChatInitialQuery] = useState('');
+
+  const openChatWithQuery = (query) => {
+    if (query) setChatInitialQuery(query);
+    setIsChatOpen(true);
+  };
 
   const setLanguage = (lang) => {
     setLanguageState(lang);
@@ -984,7 +1012,12 @@ export const LanguageProvider = ({ children }) => {
       translateLocation,
       translateEntityDescription,
       isItineraryOpen,
-      setIsItineraryOpen
+      setIsItineraryOpen,
+      isChatOpen,
+      setIsChatOpen,
+      chatInitialQuery,
+      setChatInitialQuery,
+      openChatWithQuery
     }}>
       {children}
     </LanguageContext.Provider>
