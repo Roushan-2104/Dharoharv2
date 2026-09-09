@@ -99,3 +99,34 @@ export const calibrateEntityCoordinates = (entity) => {
 
   return [20.5, 84.5];
 };
+
+/**
+ * Calculates Great-Circle distance in kilometers between two lat/lng coordinates (Haversine formula).
+ */
+export const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
+  if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return 9999;
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+/**
+ * Pre-defined regional hubs across Odisha & Eastern India for quick one-click onboarding.
+ */
+export const BASE_HUBS = [
+  { id: 'bhubaneswar', name: 'Bhubaneswar', label: 'Bhubaneswar (Temple Capital)', coords: [20.2961, 85.8245] },
+  { id: 'puri', name: 'Puri', label: 'Puri (Coastal & Sacred Sanctum)', coords: [19.8135, 85.8312] },
+  { id: 'cuttack', name: 'Cuttack', label: 'Cuttack (Silver City & Crafts)', coords: [20.4625, 85.8830] },
+  { id: 'sambalpur', name: 'Sambalpur', label: 'Sambalpur (Western Odisha & Weaves)', coords: [21.4669, 83.9812] },
+  { id: 'koraput', name: 'Koraput', label: 'Koraput (Eastern Ghats & Indigenous Lore)', coords: [18.8135, 82.7118] },
+  { id: 'mayurbhanj', name: 'Mayurbhanj', label: 'Mayurbhanj (Chhau & Similipal)', coords: [21.9322, 86.7230] },
+  { id: 'jajpur', name: 'Jajpur', label: 'Jajpur (Buddhist Diamond Triangle)', coords: [20.8510, 86.3330] },
+  { id: 'ganjam', name: 'Ganjam', label: 'Berhampur / Ganjam (Southern Coast)', coords: [19.3150, 84.7941] },
+];
+

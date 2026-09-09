@@ -823,6 +823,47 @@ export const LanguageProvider = ({ children }) => {
   const [isItineraryOpen, setIsItineraryOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInitialQuery, setChatInitialQuery] = useState('');
+  const [isPassportOpen, setIsPassportOpen] = useState(false);
+  const [visitedSites, setVisitedSites] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dharohar_visited_sites');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const toggleVisited = (entity, userNotes = '') => {
+    if (!entity || !entity.id) return;
+    setVisitedSites(prev => {
+      const exists = prev.some(item => item.id === entity.id);
+      let updated;
+      if (exists) {
+        updated = prev.filter(item => item.id !== entity.id);
+      } else {
+        const newItem = {
+          id: entity.id,
+          name: entity.name,
+          category_name: entity.category_name,
+          location_context: entity.location_context,
+          coordinates: entity.coordinates,
+          description: entity.description,
+          visitedAt: new Date().toISOString(),
+          notes: userNotes || ''
+        };
+        updated = [newItem, ...prev];
+      }
+      try {
+        localStorage.setItem('dharohar_visited_sites', JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
+  };
+
+  const isVisited = (entityId) => {
+    if (!entityId) return false;
+    return visitedSites.some(item => item.id === entityId);
+  };
 
   const openChatWithQuery = (query) => {
     if (query) setChatInitialQuery(query);
@@ -1032,7 +1073,12 @@ export const LanguageProvider = ({ children }) => {
       setIsChatOpen,
       chatInitialQuery,
       setChatInitialQuery,
-      openChatWithQuery
+      openChatWithQuery,
+      visitedSites,
+      toggleVisited,
+      isVisited,
+      isPassportOpen,
+      setIsPassportOpen
     }}>
       {children}
     </LanguageContext.Provider>

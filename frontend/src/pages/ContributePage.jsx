@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Feather, CheckCircle2, UploadCloud, Sparkles, MapPin, BookOpen, ShieldCheck } from 'lucide-react';
+import axios from 'axios';
+import { Feather, CheckCircle2, UploadCloud, Sparkles, MapPin, BookOpen, ShieldCheck, Loader2 } from 'lucide-react';
+import API_BASE_URL from '../config/api';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function ContributePage() {
   const { t, translateCategory } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     category: 'Oral Tradition & Folklore',
@@ -15,9 +18,17 @@ export default function ContributePage() {
     photoUrl: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setTimeout(() => setSubmitted(true), 400);
+    setSubmitting(true);
+    try {
+      await axios.post(`${API_BASE_URL}/api/contribute`, formData);
+    } catch (err) {
+      console.warn("Contribution API submission fallback:", err);
+    } finally {
+      setSubmitting(false);
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -207,10 +218,20 @@ export default function ContributePage() {
               <div className="pt-4">
                 <button 
                   type="submit"
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D4AF37] text-[#08080C] font-bold text-xs heritage-badge shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all flex items-center justify-center gap-2"
+                  disabled={submitting}
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D4AF37] text-[#08080C] font-bold text-xs heritage-badge shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                 >
-                  <Feather className="w-4 h-4" />
-                  <span>{t('contribute_submit')}</span>
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-[#08080C]" />
+                      <span>Recording to Heritage Knowledge System...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Feather className="w-4 h-4" />
+                      <span>{t('contribute_submit')}</span>
+                    </>
+                  )}
                 </button>
               </div>
 
