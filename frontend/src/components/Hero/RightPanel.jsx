@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, ExternalLink, Image as ImageIcon, Sparkles, MapPin, 
   ShieldCheck, Compass, ArrowRight, Bot, Layers, Music, 
-  Landmark, Utensils, Anchor, Crown, GitFork 
+  Landmark, Utensils, Anchor, Crown, GitFork, Volume2, VolumeX,
+  Award, CheckCircle2, Flame, ChefHat
 } from 'lucide-react';
 import axios from 'axios';
 import API_BASE_URL from '../../config/api';
 import { useLanguage } from '../../context/LanguageContext';
+import { getRegionalFoodsForEntity } from '../../utils/regionalFoods';
 
 export default function RightPanel({ activeEntity, setActiveEntity }) {
   const { 
@@ -16,13 +18,60 @@ export default function RightPanel({ activeEntity, setActiveEntity }) {
     translateEntityName, 
     translateLocation, 
     translateEntityDescription,
-    openChatWithQuery
+    openChatWithQuery,
+    visitedSites,
+    toggleVisited,
+    isVisited,
+    setIsPassportOpen
   } = useLanguage();
 
   const [wikiImage, setWikiImage] = useState(null);
   const [loadingImg, setLoadingImg] = useState(false);
   const [connections, setConnections] = useState([]);
   const [loadingConnections, setLoadingConnections] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const isHi = language === 'hi';
+  const isOr = language === 'or';
+  const regionalFoodProfile = activeEntity ? getRegionalFoodsForEntity(activeEntity) : null;
+
+  // Stop speech when entity or language changes or panel unmounts
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  }, [activeEntity, language]);
+
+  const toggleNarration = () => {
+    if (!('speechSynthesis' in window)) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const localizedTitle = translateEntityName(activeEntity?.name, activeEntity?.location_context);
+    const localizedDesc = translateEntityDescription(
+      activeEntity?.description,
+      activeEntity?.name,
+      activeEntity?.category_name,
+      activeEntity?.location_context
+    );
+    const fullText = `${localizedTitle}. ${localizedDesc}`;
+
+    const utterance = new SpeechSynthesisUtterance(fullText);
+    utterance.lang = language === 'hi' ? 'hi-IN' : language === 'or' ? 'or-IN' : 'en-IN';
+    utterance.rate = 0.95;
+
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  };
 
   // Fetch Wikipedia photography and Semantic Cultural Connections
   useEffect(() => {
@@ -179,6 +228,7 @@ export default function RightPanel({ activeEntity, setActiveEntity }) {
           onClick={() => setActiveEntity(null)}
           className="p-2 rounded-full border border-[#D4AF37]/30 hover:border-[#D4AF37] hover:bg-[#D4AF37]/15 transition-colors text-zinc-400 hover:text-[#FFF8E7] cursor-pointer"
           title={t('panel_close')}
+          aria-label={t('panel_close')}
         >
           <X className="w-5 h-5" />
         </button>
@@ -240,16 +290,139 @@ export default function RightPanel({ activeEntity, setActiveEntity }) {
             )}
           </p>
           
-          <a 
-            href={`https://en.wikipedia.org/wiki/${encodeURIComponent(activeEntity?.name || '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-[#F5D77F] hover:text-[#FFF8E7] transition-colors font-semibold"
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            <span>{t('panel_wiki_view')}</span>
-          </a>
+          <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2">
+            <button
+              onClick={toggleNarration}
+              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+                isSpeaking 
+                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] border-[#F5D77F] shadow-[0_0_15px_rgba(212,175,55,0.4)] animate-pulse'
+                  : 'bg-[#151424] hover:bg-[#D4AF37]/20 text-[#F5D77F] border-[#D4AF37]/35'
+              }`}
+              title={isSpeaking ? "Stop Narration" : "Listen to Heritage Narration"}
+            >
+              {isSpeaking ? (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-[#08080C]" />
+                  <span>Stop Narration</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Listen Lore</span>
+                </>
+              )}
+            </button>
+
+            {/* Mark as Visited / Passport Button */}
+            <button
+              onClick={() => toggleVisited(activeEntity)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer border ${
+                isVisited(activeEntity?.id)
+                  ? 'bg-emerald-950/60 border-emerald-500/60 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.25)]'
+                  : 'bg-[#151424] border-[#D4AF37]/35 text-zinc-300 hover:text-[#F5D77F] hover:border-[#D4AF37]'
+              }`}
+              title={isVisited(activeEntity?.id) ? "Marked as Visited in your Passport" : "Mark as Visited"}
+            >
+              {isVisited(activeEntity?.id) ? (
+                <>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Visited ✓</span>
+                </>
+              ) : (
+                <>
+                  <Award className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Mark Visited</span>
+                </>
+              )}
+            </button>
+
+            <a 
+              href={`https://en.wikipedia.org/wiki/${encodeURIComponent(activeEntity?.name || '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-[#F5D77F] hover:text-[#FFF8E7] transition-colors font-semibold"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>{t('panel_wiki_view')}</span>
+            </a>
+          </div>
         </div>
+
+        {/* ------------------------------------------------------------- */}
+        {/* Famous Regional Foods & Sacred Flavors (यहाँ का प्रसिद्ध स्वाद)*/}
+        {/* ------------------------------------------------------------- */}
+        {regionalFoodProfile && (
+          <div className="p-5 border-b border-[#D4AF37]/15 bg-[#0D0B14]">
+            
+            {/* Food Section Header */}
+            <div className="flex items-center justify-between mb-3.5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-orange-500/40 flex items-center justify-center">
+                  <Utensils className="w-4 h-4 text-orange-400" />
+                </div>
+                <div>
+                  <h4 className="font-cinzel text-sm font-bold text-[#FFF8E7] leading-none flex items-center gap-1.5">
+                    <span>{isHi ? 'यहाँ का प्रसिद्ध खान-पान व स्वाद' : isOr ? 'ଏହି ସ୍ଥାନର ପ୍ରସିଦ୍ଧ ପାରମ୍ପରିକ ଖାଦ୍ୟ' : 'Famous Local Foods of this Region'}</span>
+                    <Flame className="w-3 h-3 text-orange-400" />
+                  </h4>
+                  <p className="text-[10px] text-orange-400/80 font-sans mt-0.5">
+                    {isHi ? regionalFoodProfile.regionNameHi : isOr ? regionalFoodProfile.regionNameOr : regionalFoodProfile.regionName}
+                  </p>
+                </div>
+              </div>
+
+              <span className="heritage-badge text-[10px] text-orange-400 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/30">
+                {regionalFoodProfile.dishes.length} {isHi ? 'व्यंजन' : isOr ? 'ଖାଦ୍ୟ' : 'Dishes'}
+              </span>
+            </div>
+
+            {/* Dishes Cards Grid */}
+            <div className="space-y-2.5">
+              {regionalFoodProfile.dishes.map((dish, dIdx) => {
+                const dishTitle = isHi ? dish.nameHi : isOr ? dish.nameOr : dish.name;
+                const dishType = isHi ? dish.typeHi : isOr ? dish.typeOr : dish.type;
+                const dishDesc = isHi ? dish.descriptionHi : isOr ? dish.descriptionOr : dish.description;
+
+                return (
+                  <div 
+                    key={dIdx}
+                    className="p-3.5 rounded-2xl bg-[#14121F] border border-orange-500/20 hover:border-orange-500/50 transition-all shadow-sm group"
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h5 className="font-cinzel text-xs font-bold text-[#FFF8E7] group-hover:text-orange-300 transition-colors">
+                        {dishTitle}
+                      </h5>
+                      
+                      <span className="text-[9.5px] font-semibold px-2 py-0.5 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-300 shrink-0">
+                        {dishType}
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-zinc-300 font-sans leading-relaxed mb-2.5">
+                      {dishDesc}
+                    </p>
+
+                    <button
+                      onClick={() => {
+                        const q = isHi 
+                          ? `${dishTitle} की सामग्री, बनाने की विधि और ${translateEntityName(activeEntity.name, activeEntity.location_context)} में इसे खाने की सबसे अच्छी जगह बताएं।`
+                          : isOr
+                          ? `${dishTitle}ର ପ୍ରସ୍ତୁତି ପ୍ରଣାଳୀ ଓ ${translateEntityName(activeEntity.name, activeEntity.location_context)}ରେ ଏହା କେଉଁଠି ମିଳେ କୁହନ୍ତୁ।`
+                          : `Tell me about the recipe, origin lore, and best authentic places to eat ${dishTitle} near ${translateEntityName(activeEntity.name, activeEntity.location_context)}.`;
+                        openChatWithQuery(q);
+                      }}
+                      className="w-full py-1.5 px-2.5 rounded-xl bg-[#1A1728] hover:bg-orange-500/20 text-orange-300 hover:text-orange-200 text-[10px] font-semibold flex items-center justify-center gap-1.5 border border-orange-500/25 transition-all cursor-pointer"
+                    >
+                      <ChefHat className="w-3 h-3 text-orange-400" />
+                      <span>{isHi ? 'इस व्यंजन के बारे में AI से पूछें' : isOr ? 'ଏହି ଖାଦ୍ୟ ବିଷୟରେ AI କୁ ପଚାରନ୍ତୁ' : 'Ask AI Guide About Recipe & Best Places'}</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
+        )}
 
         {/* ------------------------------------------------------------- */}
         {/* Living Cultural Threads (Semantic Cultural Relationships)     */}

@@ -1,8 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, MapPin, X, Sparkles, Navigation, CornerDownLeft } from 'lucide-react';
+import { Search, MapPin, X, Sparkles, Navigation, CornerDownLeft, SlidersHorizontal } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
-export default function HeroSearchBar({ entities = [], categoryColors = {}, onSelectEntity, activeEntity }) {
+export default function HeroSearchBar({ 
+  entities = [], 
+  categoryColors = {}, 
+  onSelectEntity, 
+  activeEntity,
+  onOpenPersonalize,
+  userPreference,
+  onResetPreference,
+  filteredCount = 0
+}) {
   const { t, translateEntityName, translateCategory, translateLocation, translateEntityDescription } = useLanguage();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -111,11 +120,11 @@ export default function HeroSearchBar({ entities = [], categoryColors = {}, onSe
   return (
     <div 
       ref={searchContainerRef}
-      className="absolute top-24 left-6 sm:left-10 z-30 w-[88vw] sm:w-96 md:w-[420px]"
+      className="absolute top-24 left-4 sm:left-8 md:left-10 z-30 w-[calc(100vw-2rem)] sm:w-[420px] md:w-[460px] pointer-events-auto"
     >
-      {/* Search Input Box */}
+      {/* Modern Integrated Search & Filter Command Bar */}
       <div 
-        className={`relative dharohar-glass rounded-2xl border transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.6)] ${
+        className={`relative dharohar-glass rounded-2xl border transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.7)] ${
           isOpen && results.length > 0 
             ? 'border-[#D4AF37] rounded-b-none bg-[#0D0D16]/95' 
             : 'border-[#D4AF37]/35 hover:border-[#D4AF37]/70 bg-[#0C0C14]/85'
@@ -147,19 +156,68 @@ export default function HeroSearchBar({ entities = [], categoryColors = {}, onSe
               onClick={handleClear}
               className="p-1 rounded-full text-zinc-400 hover:text-[#FFF8E7] hover:bg-white/10 transition-colors"
               title="Clear"
+              aria-label="Clear search"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           )}
 
-          {/* Quick Search Shortcut Pill */}
-          {!query && (
-            <div className="hidden sm:flex items-center gap-1 text-[10px] text-zinc-400 bg-white/5 px-2 py-0.5 rounded border border-white/5">
-              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
-            </div>
+          {/* Vertical Divider */}
+          <div className="w-[1px] h-4 bg-white/15 shrink-0" />
+
+          {/* Modern Personalize / Filter Button */}
+          {onOpenPersonalize && (
+            <button
+              onClick={onOpenPersonalize}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 border ${
+                userPreference?.isActive
+                  ? 'bg-[#D4AF37]/25 border-[#F5D77F] text-[#F5D77F] shadow-[0_0_12px_rgba(212,175,55,0.3)]'
+                  : 'bg-white/5 hover:bg-[#D4AF37]/20 border-white/10 hover:border-[#D4AF37]/50 text-zinc-300 hover:text-[#F5D77F]'
+              }`}
+              title="Personalize Map (Custom Location, Radius & Cultural Vibe)"
+              aria-label="Personalize Map"
+            >
+              <SlidersHorizontal className={`w-3.5 h-3.5 ${userPreference?.isActive ? 'text-[#F5D77F]' : 'text-[#D4AF37]'}`} />
+              <span className="text-[11px] sm:text-xs">Personalize</span>
+              {userPreference?.isActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+              )}
+            </button>
           )}
+
         </div>
       </div>
+
+      {/* Active Personalization Chip (Attached directly beneath search bar) */}
+      {userPreference?.isActive && (
+        <div className="mt-2 animate-fade-in">
+          <div className="dharohar-glass px-3.5 py-1.5 rounded-xl border border-[#D4AF37]/45 shadow-[0_6px_25px_rgba(0,0,0,0.7)] flex items-center justify-between gap-2 text-xs backdrop-blur-xl bg-[#0D0D18]/90">
+            <div className="flex items-center gap-2 truncate">
+              <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping shrink-0" />
+              <span className="text-[11px] text-zinc-300 truncate">
+                Curated near <strong className="text-[#F5D77F]">{userPreference.locationLabel}</strong> ({filteredCount} sites)
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={onOpenPersonalize}
+                className="px-2 py-0.5 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 text-[#F5D77F] text-[10px] font-semibold border border-[#D4AF37]/30 transition-all cursor-pointer"
+              >
+                Change
+              </button>
+              {onResetPreference && (
+                <button
+                  onClick={onResetPreference}
+                  className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                  title="Reset to all sites"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Dropdown Results Menu */}
       {isOpen && query.trim().length > 0 && (

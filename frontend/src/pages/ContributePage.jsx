@@ -1,22 +1,34 @@
 import React, { useState } from 'react';
-import { Feather, CheckCircle2, UploadCloud, Sparkles, MapPin, BookOpen, ShieldCheck } from 'lucide-react';
+import axios from 'axios';
+import { Feather, CheckCircle2, UploadCloud, Sparkles, MapPin, BookOpen, ShieldCheck, Loader2 } from 'lucide-react';
+import API_BASE_URL from '../config/api';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function ContributePage() {
   const { t, translateCategory } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     category: 'Oral Tradition & Folklore',
     location: '',
     lore: '',
     sourceType: 'Community Oral Lore',
-    contributor: ''
+    contributor: '',
+    photoUrl: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setTimeout(() => setSubmitted(true), 400);
+    setSubmitting(true);
+    try {
+      await axios.post(`${API_BASE_URL}/api/contribute`, formData);
+    } catch (err) {
+      console.warn("Contribution API submission fallback:", err);
+    } finally {
+      setSubmitting(false);
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -36,7 +48,7 @@ export default function ContributePage() {
             </div>
 
             <span className="heritage-badge text-[#F5D77F] tracking-[0.25em]">
-              {t('contribute_success_title')}
+              {t('contribute_badge')}
             </span>
 
             <h2 className="text-3xl md:text-5xl font-cinzel font-black text-[#FFF8E7] mt-2 mb-4">
@@ -56,7 +68,8 @@ export default function ContributePage() {
                   location: '',
                   lore: '',
                   sourceType: 'Community Oral Lore',
-                  contributor: ''
+                  contributor: '',
+                  photoUrl: ''
                 });
               }}
               className="bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] px-8 py-3.5 rounded-full font-bold text-xs heritage-badge hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all"
@@ -193,6 +206,8 @@ export default function ContributePage() {
                     <input 
                       type="url" 
                       placeholder={t('contribute_photo_placeholder')}
+                      value={formData.photoUrl}
+                      onChange={(e) => setFormData({...formData, photoUrl: e.target.value})}
                       className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl pl-11 pr-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
                     />
                   </div>
@@ -203,10 +218,20 @@ export default function ContributePage() {
               <div className="pt-4">
                 <button 
                   type="submit"
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D4AF37] text-[#08080C] font-bold text-xs heritage-badge shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all flex items-center justify-center gap-2"
+                  disabled={submitting}
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D4AF37] text-[#08080C] font-bold text-xs heritage-badge shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                 >
-                  <Feather className="w-4 h-4" />
-                  <span>{t('contribute_submit')}</span>
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-[#08080C]" />
+                      <span>Recording to Heritage Knowledge System...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Feather className="w-4 h-4" />
+                      <span>{t('contribute_submit')}</span>
+                    </>
+                  )}
                 </button>
               </div>
 

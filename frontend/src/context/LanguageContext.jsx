@@ -130,8 +130,10 @@ export const translations = {
     itinerary_modal_subtitle: "Get a personalized, day-by-day travel plan powered by Darshak AI.",
     itinerary_duration_label: "Trip Duration",
     itinerary_1day: "1 Day (Quick Highlights)",
-    itinerary_3day: "3 Days (Popular Tour)",
+    itinerary_2day: "2 Days (Weekend Getaway)",
+    itinerary_3day: "3 Days (Popular Heritage Trail)",
     itinerary_5day: "5 Days (Complete Explorer)",
+    itinerary_7day: "7 Days (Grand Cultural Expedition)",
     itinerary_hub_label: "Starting City / Region",
     itinerary_hub_any: "Any Region (Auto-select)",
     itinerary_theme_label: "What would you like to explore?",
@@ -140,6 +142,9 @@ export const translations = {
     itinerary_theme_food: "Local Food & Cuisine",
     itinerary_theme_crafts: "Handicrafts & Handlooms",
     itinerary_theme_wildlife: "Nature, Coastal & Sacred Groves",
+    itinerary_theme_history: "Forts, History & Tribal Heritage",
+    itinerary_custom_prompt_label: "Custom Preferences & Special Requests (Optional)",
+    itinerary_custom_prompt_placeholder: "e.g., Traveling with family/elders, seeking vegetarian Odia temple food, photography spots, relaxed pace, specific monuments...",
     itinerary_generate_btn: "Generate My Travel Plan",
     itinerary_generating: "Darshak AI is creating your personalized travel route...",
     itinerary_day: "Day",
@@ -297,8 +302,10 @@ export const translations = {
     itinerary_modal_subtitle: "दर्शक AI द्वारा तैयार की गई अपनी व्यक्तिगत सांस्कृतिक यात्रा योजना प्राप्त करें।",
     itinerary_duration_label: "यात्रा की अवधि",
     itinerary_1day: "1 दिन (मुख्य आकर्षण)",
-    itinerary_3day: "3 दिन (लोकप्रिय यात्रा)",
+    itinerary_2day: "2 दिन (सप्ताहांत यात्रा)",
+    itinerary_3day: "3 दिन (लोकप्रिय विरासत मार्ग)",
     itinerary_5day: "5 दिन (संपूर्ण यात्रा)",
+    itinerary_7day: "7 दिन (महा-सांस्कृतिक यात्रा)",
     itinerary_hub_label: "प्रारंभिक शहर / क्षेत्र",
     itinerary_hub_any: "सभी क्षेत्र (स्वतः चयन)",
     itinerary_theme_label: "आप क्या देखना पसंद करेंगे?",
@@ -307,6 +314,9 @@ export const translations = {
     itinerary_theme_food: "पारंपरिक खान-पान",
     itinerary_theme_crafts: "हस्तशिल्प व हथकरघा",
     itinerary_theme_wildlife: "प्रकृति व तटीय धरोहर",
+    itinerary_theme_history: "इतिहास, किले व जनजातीय संस्कृति",
+    itinerary_custom_prompt_label: "विशेष प्राथमिकताएं व आवश्यकताएं (वैकल्पिक)",
+    itinerary_custom_prompt_placeholder: "उदा. परिवार/बुजुर्गों के साथ यात्रा, शुद्ध शाकाहारी मंदिर भोग, फोटोग्राफी, आरामदायक गति, विशिष्ट मंदिर...",
     itinerary_generate_btn: "मेरी यात्रा प्लान तैयार करें",
     itinerary_generating: "दर्शक AI आपका यात्रा मार्ग तैयार कर रहा है...",
     itinerary_day: "दिन",
@@ -464,8 +474,10 @@ export const translations = {
     itinerary_modal_subtitle: "ଦର୍ଶକ AI ଦ୍ୱାରା ପ୍ରସ୍ତୁତ ଆପଣଙ୍କ ବ୍ୟକ୍ତିଗତ ସାଂସ୍କୃତିକ ଯାତ୍ରା ଯୋଜନା ପାଆନ୍ତୁ।",
     itinerary_duration_label: "ଯାତ୍ରା ଅବଧି",
     itinerary_1day: "୧ ଦିନ (ମୁଖ୍ୟ ଆକର୍ଷଣ)",
-    itinerary_3day: "୩ ଦିନ (ଲୋକପ୍ରିୟ ଭ୍ରମଣ)",
+    itinerary_2day: "୨ ଦିନ (ସପ୍ତାହାନ୍ତ ଭ୍ରମଣ)",
+    itinerary_3day: "୩ ଦିନ (ଲୋକପ୍ରିୟ ଐତିହ୍ୟ ଯାତ୍ରା)",
     itinerary_5day: "୫ ଦିନ (ସମ୍ପୂର୍ଣ୍ଣ ଯାତ୍ରା)",
+    itinerary_7day: "୭ ଦିନ (ମହା ସାଂସ୍କୃତିକ ଯାତ୍ରା)",
     itinerary_hub_label: "ଆରମ୍ଭ ସହର / ଅଞ୍ଚଳ",
     itinerary_hub_any: "ସମସ୍ତ ଅଞ୍ଚଳ (ସ୍ୱତଃ ଚୟନ)",
     itinerary_theme_label: "ଆପଣ କ'ଣ ଦେଖିବାକୁ ପସନ୍ଦ କରିବେ?",
@@ -474,6 +486,9 @@ export const translations = {
     itinerary_theme_food: "ପାରମ୍ପରିକ ଖାଦ୍ୟ",
     itinerary_theme_crafts: "ହସ୍ତଶିଳ୍ପ ଓ ବୟନକଳା",
     itinerary_theme_wildlife: "ପ୍ରକୃତି ଓ ଉପକୂଳ ଐତିହ୍ୟ",
+    itinerary_theme_history: "ଇତିହାସ, ଦୁର୍ଗ ଓ ଜନଜାତି ସଂସ୍କୃତି",
+    itinerary_custom_prompt_label: "ବିଶେଷ ପସନ୍ଦ ଓ ଆବଶ୍ୟକତା (ଇଚ୍ଛାଧୀନ)",
+    itinerary_custom_prompt_placeholder: "ଉଦା. ପରିବାର/ବୟସ୍କଙ୍କ ସହ ଯାତ୍ରା, ନିରାମିଷ ମନ୍ଦିର ପ୍ରସାଦ, ଫଟୋଗ୍ରାଫି, ସହଜ ଯାତ୍ରା, ନିର୍ଦ୍ଦିଷ୍ଟ ମନ୍ଦିର...",
     itinerary_generate_btn: "ମୋ ଯାତ୍ରା ଯୋଜନା ପ୍ରସ୍ତୁତ କରନ୍ତୁ",
     itinerary_generating: "ଦର୍ଶକ AI ଆପଣଙ୍କ ଯାତ୍ରା ମାର୍ଗ ପ୍ରସ୍ତୁତ କରୁଛି...",
     itinerary_day: "ଦିନ",
@@ -808,6 +823,47 @@ export const LanguageProvider = ({ children }) => {
   const [isItineraryOpen, setIsItineraryOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInitialQuery, setChatInitialQuery] = useState('');
+  const [isPassportOpen, setIsPassportOpen] = useState(false);
+  const [visitedSites, setVisitedSites] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dharohar_visited_sites');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const toggleVisited = (entity, userNotes = '') => {
+    if (!entity || !entity.id) return;
+    setVisitedSites(prev => {
+      const exists = prev.some(item => item.id === entity.id);
+      let updated;
+      if (exists) {
+        updated = prev.filter(item => item.id !== entity.id);
+      } else {
+        const newItem = {
+          id: entity.id,
+          name: entity.name,
+          category_name: entity.category_name,
+          location_context: entity.location_context,
+          coordinates: entity.coordinates,
+          description: entity.description,
+          visitedAt: new Date().toISOString(),
+          notes: userNotes || ''
+        };
+        updated = [newItem, ...prev];
+      }
+      try {
+        localStorage.setItem('dharohar_visited_sites', JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
+  };
+
+  const isVisited = (entityId) => {
+    if (!entityId) return false;
+    return visitedSites.some(item => item.id === entityId);
+  };
 
   const openChatWithQuery = (query) => {
     if (query) setChatInitialQuery(query);
@@ -1017,7 +1073,12 @@ export const LanguageProvider = ({ children }) => {
       setIsChatOpen,
       chatInitialQuery,
       setChatInitialQuery,
-      openChatWithQuery
+      openChatWithQuery,
+      visitedSites,
+      toggleVisited,
+      isVisited,
+      isPassportOpen,
+      setIsPassportOpen
     }}>
       {children}
     </LanguageContext.Provider>

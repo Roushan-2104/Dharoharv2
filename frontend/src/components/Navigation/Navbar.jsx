@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Compass, Map, Feather, Sparkles, Languages, Check } from 'lucide-react';
+import { Compass, Map, Feather, Sparkles, Languages, Check, Award } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Navbar() {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const { language, setLanguage, t, setIsItineraryOpen } = useLanguage();
+  const { 
+    language, 
+    setLanguage, 
+    t, 
+    setIsItineraryOpen, 
+    visitedSites, 
+    setIsPassportOpen 
+  } = useLanguage();
   const navigate = useNavigate();
 
   const languageOptions = [
@@ -22,6 +29,10 @@ export default function Navbar() {
       navigate('/');
     }
   };
+
+  const isHi = language === 'hi';
+  const isOr = language === 'or';
+  const passportTitle = isHi ? 'पासपोर्ट' : isOr ? 'ପାସପୋର୍ଟ' : 'Passport';
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 h-20 flex justify-between items-center px-6 md:px-10 border-b border-[#D4AF37]/20 bg-[#08080C]/80 backdrop-blur-xl">
@@ -93,16 +104,35 @@ export default function Navbar() {
       </div>
 
       {/* Right Controls / Cultural Status */}
-      <div className="flex items-center justify-end flex-1 gap-3 sm:gap-4 md:gap-5">
+      <div className="flex items-center justify-end flex-1 gap-2.5 sm:gap-3.5 md:gap-4">
         
+        {/* Visited Sites Passport Action Button */}
+        <button
+          onClick={() => setIsPassportOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#141224]/90 hover:bg-[#D4AF37]/20 shadow-[0_0_12px_rgba(212,175,55,0.15)] transition-all transform hover:scale-105 cursor-pointer"
+          title="Visited Heritage Sites Passport"
+          aria-label="Visited Heritage Sites Passport"
+        >
+          <Award className="w-3.5 h-3.5 text-[#F5D77F]" />
+          <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide hidden sm:inline">
+            {passportTitle}
+          </span>
+          {visitedSites.length > 0 && (
+            <span className="px-1.5 py-0.2 rounded-full bg-[#D4AF37] text-[#08080C] text-[10px] font-black leading-tight">
+              {visitedSites.length}
+            </span>
+          )}
+        </button>
+
         {/* Itinerary Action Button */}
         <button
           onClick={handleOpenItinerary}
           className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#12121E]/90 hover:bg-[#D4AF37]/20 shadow-[0_0_12px_rgba(212,175,55,0.2)] transition-all transform hover:scale-105 cursor-pointer"
           title={t('itinerary_btn')}
+          aria-label={t('itinerary_btn')}
         >
           <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
-          <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide">
+          <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide hidden sm:inline">
             {t('itinerary_btn')}
           </span>
         </button>
@@ -113,6 +143,8 @@ export default function Navbar() {
             onClick={() => setLangMenuOpen(!langMenuOpen)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#101017] border border-[#D4AF37]/35 text-[#F5D77F] hover:border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.15)] transition-all text-xs font-semibold cursor-pointer"
             title={t('lang_switch_tooltip')}
+            aria-label={t('lang_switch_tooltip')}
+            aria-expanded={langMenuOpen}
           >
             <Languages className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>{currentOption.label}</span>
@@ -128,6 +160,7 @@ export default function Navbar() {
                     setLanguage(opt.code);
                     setLangMenuOpen(false);
                   }}
+                  aria-label={`Select ${opt.label}`}
                   className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium transition-colors cursor-pointer ${
                     language === opt.code
                       ? 'text-[#F5D77F] bg-[#D4AF37]/20 font-bold'

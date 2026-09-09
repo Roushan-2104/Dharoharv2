@@ -29,12 +29,13 @@ export default function ItineraryModal({
   onHighlightRoute,
   activeRoute
 }) {
-  const { t, currentLang, translateEntityName, translateLocation } = useLanguage();
+  const { t, language, translateEntityName, translateLocation } = useLanguage();
 
   // Form State
-  const [duration, setDuration] = useState('3'); // '1', '3', '5'
+  const [duration, setDuration] = useState('3'); // '1', '2', '3', '5', '7'
   const [selectedHub, setSelectedHub] = useState('All');
   const [selectedThemes, setSelectedThemes] = useState(['temples', 'food']);
+  const [customPrompt, setCustomPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [itinerary, setItinerary] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -45,12 +46,12 @@ export default function ItineraryModal({
   // Available Hubs derived from entities
   const availableHubs = [
     { id: 'All', name: t('itinerary_hub_any') },
-    { id: 'Puri & Konark', name: 'Puri & Konark Coast' },
-    { id: 'Bhubaneswar & Prachi', name: 'Bhubaneswar & Ekamra Kshetra' },
-    { id: 'Sambalpur & Western Odisha', name: 'Western Odisha (Sambalpur & Bargarh)' },
-    { id: 'Mayurbhanj & North', name: 'Mayurbhanj & Similipal' },
-    { id: 'Ganjam & Chilika', name: 'Ganjam & Chilika Lagoon' },
-    { id: 'Jajpur & Biraja', name: 'Jajpur & Diamond Triangle' }
+    { id: 'Bhubaneswar & Prachi', name: 'Bhubaneswar & Ekamra Kshetra (Central)' },
+    { id: 'Puri & Konark', name: 'Puri, Konark & Chilika (Coastal)' },
+    { id: 'Sambalpur & Western Odisha', name: 'Sambalpur, Bargarh & Huma (Western Odisha)' },
+    { id: 'Mayurbhanj & North', name: 'Mayurbhanj, Similipal & Khiching (Northern Odisha)' },
+    { id: 'Ganjam & Chilika', name: 'Ganjam, Tara Tarini & Berhampur (Southern Coast)' },
+    { id: 'Jajpur & Biraja', name: 'Jajpur, Ratnagiri & Diamond Triangle (Buddhist Trail)' }
   ];
 
   // Available Themes
@@ -59,7 +60,8 @@ export default function ItineraryModal({
     { id: 'dance', label: t('itinerary_theme_dance'), icon: '💃' },
     { id: 'food', label: t('itinerary_theme_food'), icon: '🍛' },
     { id: 'crafts', label: t('itinerary_theme_crafts'), icon: '🎨' },
-    { id: 'wildlife', label: t('itinerary_theme_wildlife'), icon: '🌿' }
+    { id: 'wildlife', label: t('itinerary_theme_wildlife'), icon: '🌿' },
+    { id: 'history', label: t('itinerary_theme_history'), icon: '🏰' }
   ];
 
   const toggleTheme = (themeId) => {
@@ -75,11 +77,16 @@ export default function ItineraryModal({
   const handleGenerate = async () => {
     setIsLoading(true);
     try {
+      const langName = language === 'hi' ? 'Hindi' : language === 'or' ? 'Odia' : 'English';
       const payload = {
-        days: duration,
+        duration: `${duration} Days`,
+        days: parseInt(duration, 10),
         themes: selectedThemes,
+        startingRegion: selectedHub === 'All' ? 'Bhubaneswar' : selectedHub,
         startHub: selectedHub,
-        language: currentLang
+        customNotes: customPrompt.trim(),
+        userPrompt: customPrompt.trim(),
+        language: langName
       };
 
       const response = await axios.post(`${API_BASE_URL}/api/itinerary/generate`, payload);
@@ -148,7 +155,7 @@ export default function ItineraryModal({
         category_name: 'Heritage Trail',
         location_context: stop.location,
         coordinates: stop.coordinates,
-        description: `${stop.activity}. ${stop.loreHighlight || ''}`
+        description: `${stop.activity || ''}. ${stop.loreHighlight || stop.culturalLore || ''}`.trim()
       });
     }
   };
@@ -216,17 +223,19 @@ export default function ItineraryModal({
                 <label className="block font-cinzel text-xs font-bold text-[#F5D77F] uppercase tracking-wider mb-2.5">
                   1. {t('itinerary_duration_label')}
                 </label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                   {[
                     { id: '1', label: t('itinerary_1day'), desc: '2-3 Highlights', icon: '⚡' },
+                    { id: '2', label: t('itinerary_2day'), desc: '4-5 Stops', icon: '🌿' },
                     { id: '3', label: t('itinerary_3day'), desc: '6-8 Heritage Sites', icon: '🌟' },
-                    { id: '5', label: t('itinerary_5day'), desc: '12+ Full Journey', icon: '👑' },
+                    { id: '5', label: t('itinerary_5day'), desc: '10-12 Stops', icon: '👑' },
+                    { id: '7', label: t('itinerary_7day'), desc: 'Full Expedition', icon: '🔱' },
                   ].map(option => (
                     <button
                       key={option.id}
                       type="button"
                       onClick={() => setDuration(option.id)}
-                      className={`p-3.5 rounded-xl border text-left transition-all duration-300 flex flex-col justify-between ${
+                      className={`p-3 rounded-xl border text-left transition-all duration-300 flex flex-col justify-between ${
                         duration === option.id
                           ? 'bg-gradient-to-br from-[#D4AF37]/25 to-[#F59E0B]/10 border-[#F59E0B] shadow-[0_0_20px_rgba(212,175,55,0.25)]'
                           : 'bg-[#12121E]/60 border-zinc-800 hover:border-[#D4AF37]/40 text-zinc-300 hover:text-[#FFF8E7]'
@@ -239,7 +248,7 @@ export default function ItineraryModal({
                         )}
                       </div>
                       <div>
-                        <div className="font-cinzel text-xs sm:text-sm font-bold text-[#FFF8E7]">
+                        <div className="font-cinzel text-xs font-bold text-[#FFF8E7]">
                           {option.label}
                         </div>
                         <div className="text-[10px] text-zinc-400 font-sans mt-0.5">
@@ -279,7 +288,7 @@ export default function ItineraryModal({
                   </label>
                   <span className="text-[11px] text-zinc-400">Select 1 or more</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
                   {themes.map(th => {
                     const isSelected = selectedThemes.includes(th.id);
                     return (
@@ -287,13 +296,13 @@ export default function ItineraryModal({
                         key={th.id}
                         type="button"
                         onClick={() => toggleTheme(th.id)}
-                        className={`px-3.5 py-2.5 rounded-xl border text-left transition-all duration-200 flex items-center justify-between ${
+                        className={`px-3 py-2.5 rounded-xl border text-left transition-all duration-200 flex items-center justify-between ${
                           isSelected
                             ? 'bg-[#D4AF37]/15 border-[#D4AF37] text-[#FFF8E7] shadow-[0_0_12px_rgba(212,175,55,0.15)]'
                             : 'bg-[#12121E]/40 border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-zinc-200'
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-2">
                           <span className="text-base">{th.icon}</span>
                           <span className="text-xs font-medium">{th.label}</span>
                         </div>
@@ -310,8 +319,22 @@ export default function ItineraryModal({
                 </div>
               </div>
 
+              {/* Custom User Preferences & Notes */}
+              <div>
+                <label className="block font-cinzel text-xs font-bold text-[#F5D77F] uppercase tracking-wider mb-2">
+                  4. {t('itinerary_custom_prompt_label')}
+                </label>
+                <textarea
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                  placeholder={t('itinerary_custom_prompt_placeholder')}
+                  rows={2}
+                  className="w-full px-4 py-3 bg-[#12121E]/80 border border-zinc-700/80 hover:border-[#D4AF37]/50 rounded-xl text-sm text-[#FFF8E7] placeholder-zinc-500 focus:outline-none focus:border-[#F5D77F] focus:ring-1 focus:ring-[#F5D77F] transition-all font-sans resize-none"
+                />
+              </div>
+
               {/* Action Button */}
-              <div className="pt-3">
+              <div className="pt-2">
                 <button
                   type="button"
                   onClick={handleGenerate}
