@@ -11,7 +11,8 @@ export default function ContributePage() {
     location: '',
     lore: '',
     sourceType: 'Community Oral Lore',
-    contributor: ''
+    contributor: '',
+    photoUrl: ''
   });
 
   const handleSubmit = (e) => {
@@ -36,7 +37,7 @@ export default function ContributePage() {
             </div>
 
             <span className="heritage-badge text-[#F5D77F] tracking-[0.25em]">
-              {t('contribute_success_title')}
+              {t('contribute_badge')}
             </span>
 
             <h2 className="text-3xl md:text-5xl font-cinzel font-black text-[#FFF8E7] mt-2 mb-4">
@@ -56,7 +57,8 @@ export default function ContributePage() {
                   location: '',
                   lore: '',
                   sourceType: 'Community Oral Lore',
-                  contributor: ''
+                  contributor: '',
+                  photoUrl: ''
                 });
               }}
               className="bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] px-8 py-3.5 rounded-full font-bold text-xs heritage-badge hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all"
@@ -193,6 +195,8 @@ export default function ContributePage() {
                     <input 
                       type="url" 
                       placeholder={t('contribute_photo_placeholder')}
+                      value={formData.photoUrl}
+                      onChange={(e) => setFormData({...formData, photoUrl: e.target.value})}
                       className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl pl-11 pr-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
                     />
                   </div>

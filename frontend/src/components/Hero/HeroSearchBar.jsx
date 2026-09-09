@@ -147,6 +147,7 @@ export default function HeroSearchBar({ entities = [], categoryColors = {}, onSe
               onClick={handleClear}
               className="p-1 rounded-full text-zinc-400 hover:text-[#FFF8E7] hover:bg-white/10 transition-colors"
               title="Clear"
+              aria-label="Clear search"
             >
               <X className="w-3.5 h-3.5" />
             </button>

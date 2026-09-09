@@ -213,9 +213,10 @@ export default function DiscoverPage() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate('/');
+                        navigate('/', { state: { selectedEntityId: entity.id, selectedEntity: entity } });
                       }}
                       className="flex items-center gap-2 text-xs font-semibold text-[#F5D77F] group-hover:text-[#D4AF37] transition-colors"
+                      aria-label={`${t('discover_view_map')}: ${localizedName}`}
                     >
                       <span>{t('discover_view_map')}</span>
                       <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
@@ -238,6 +239,7 @@ export default function DiscoverPage() {
                 onClick={() => setActiveModalEntity(null)}
                 className="absolute top-6 right-6 text-zinc-400 hover:text-[#FFF8E7] bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors"
                 title={t('discover_close_modal')}
+                aria-label={t('discover_close_modal')}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -295,8 +297,9 @@ export default function DiscoverPage() {
                 </button>
                 <button
                   onClick={() => {
+                    const targetEntity = activeModalEntity;
                     setActiveModalEntity(null);
-                    navigate('/');
+                    navigate('/', { state: { selectedEntityId: targetEntity.id, selectedEntity: targetEntity } });
                   }}
                   className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] text-xs font-bold shadow-[0_0_20px_rgba(212,175,55,0.4)] flex items-center justify-center gap-2 hover:opacity-90 transition-all"
                 >

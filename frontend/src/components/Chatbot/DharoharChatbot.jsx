@@ -145,7 +145,7 @@ export default function DharoharChatbot() {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = false;
-      recognition.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+      recognition.lang = language === 'hi' ? 'hi-IN' : language === 'or' ? 'or-IN' : 'en-IN';
 
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
@@ -193,7 +193,7 @@ export default function DharoharChatbot() {
     const cleanText = text.replace(/[*_#`~>]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
     
-    utterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
+    utterance.lang = language === 'hi' ? 'hi-IN' : language === 'or' ? 'or-IN' : 'en-IN';
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
 
@@ -428,6 +428,7 @@ export default function DharoharChatbot() {
                   voiceEnabled ? 'text-[#F5D77F] bg-[#D4AF37]/25 border border-[#D4AF37]/40' : 'hover:text-zinc-200 hover:bg-white/5'
                 }`}
                 title={voiceEnabled ? t('bot_voice_on') : t('bot_voice_off')}
+                aria-label={voiceEnabled ? t('bot_voice_on') : t('bot_voice_off')}
               >
                 {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </button>
@@ -437,6 +438,7 @@ export default function DharoharChatbot() {
                 onClick={handleClearChat}
                 className="p-1.5 rounded-lg hover:text-zinc-200 hover:bg-white/5 transition-colors cursor-pointer"
                 title={t('bot_clear')}
+                aria-label={t('bot_clear')}
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -446,6 +448,7 @@ export default function DharoharChatbot() {
                 onClick={() => { setIsExpanded(!isExpanded); setIsMinimized(false); }}
                 className="p-1.5 rounded-lg hover:text-zinc-200 hover:bg-white/5 transition-colors cursor-pointer hidden sm:block"
                 title={isExpanded ? "Collapse" : "Expand"}
+                aria-label={isExpanded ? "Collapse chat" : "Expand chat"}
               >
                 {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
               </button>
@@ -454,6 +457,7 @@ export default function DharoharChatbot() {
                 onClick={() => setIsMinimized(!isMinimized)}
                 className="p-1.5 rounded-lg hover:text-zinc-200 hover:bg-white/5 transition-colors cursor-pointer"
                 title={isMinimized ? "Restore" : "Minimize"}
+                aria-label={isMinimized ? "Restore chat" : "Minimize chat"}
               >
                 <ChevronDown className={`w-4 h-4 transition-transform ${isMinimized ? 'rotate-180' : ''}`} />
               </button>
@@ -467,6 +471,7 @@ export default function DharoharChatbot() {
                 }}
                 className="p-1.5 rounded-lg hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
                 title="Close"
+                aria-label="Close chat"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -545,7 +550,7 @@ export default function DharoharChatbot() {
                                     </div>
                                     <button
                                       onClick={() => {
-                                        navigate('/');
+                                        navigate('/', { state: { selectedEntityId: entity.id, selectedEntity: entity } });
                                         setIsOpen(false);
                                       }}
                                       className="px-2 py-1 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 text-[#F5D77F] text-[10px] font-semibold border border-[#D4AF37]/40 flex items-center gap-1 shrink-0 cursor-pointer"
@@ -677,6 +682,7 @@ export default function DharoharChatbot() {
                         : 'text-zinc-400 hover:text-[#F5D77F] hover:bg-white/5'
                     }`}
                     title={isListening ? "Stop Listening" : "Speak Query"}
+                    aria-label={isListening ? "Stop Listening" : "Voice search"}
                   >
                     {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                   </button>
@@ -691,6 +697,7 @@ export default function DharoharChatbot() {
                         : 'bg-zinc-800/60 text-zinc-600 cursor-not-allowed'
                     }`}
                     title={t('chat_send')}
+                    aria-label={t('chat_send')}
                   >
                     <Send className="w-4 h-4" />
                   </button>
@@ -716,6 +723,7 @@ export default function DharoharChatbot() {
         }}
         className="group relative flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#D4AF37] via-[#F59E0B] to-[#C2410C] text-[#0A0A10] shadow-[0_10px_35px_rgba(212,175,55,0.5)] hover:shadow-[0_15px_45px_rgba(245,158,11,0.7)] transform hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer border border-[#FFF8E7]/40"
         title="Dharohar AI Guide"
+        aria-label="Toggle Dharohar AI Guide"
       >
         {/* Glow Pulse Aura */}
         <span className="absolute -inset-1 rounded-2xl bg-[#F59E0B]/35 blur-md group-hover:bg-[#F59E0B]/60 transition-all"></span>

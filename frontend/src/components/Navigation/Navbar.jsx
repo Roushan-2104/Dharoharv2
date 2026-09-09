@@ -100,6 +100,7 @@ export default function Navbar() {
           onClick={handleOpenItinerary}
           className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#12121E]/90 hover:bg-[#D4AF37]/20 shadow-[0_0_12px_rgba(212,175,55,0.2)] transition-all transform hover:scale-105 cursor-pointer"
           title={t('itinerary_btn')}
+          aria-label={t('itinerary_btn')}
         >
           <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
           <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide">
@@ -113,6 +114,8 @@ export default function Navbar() {
             onClick={() => setLangMenuOpen(!langMenuOpen)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#101017] border border-[#D4AF37]/35 text-[#F5D77F] hover:border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.15)] transition-all text-xs font-semibold cursor-pointer"
             title={t('lang_switch_tooltip')}
+            aria-label={t('lang_switch_tooltip')}
+            aria-expanded={langMenuOpen}
           >
             <Languages className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>{currentOption.label}</span>
@@ -128,6 +131,7 @@ export default function Navbar() {
                     setLanguage(opt.code);
                     setLangMenuOpen(false);
                   }}
+                  aria-label={`Select ${opt.label}`}
                   className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium transition-colors cursor-pointer ${
                     language === opt.code
                       ? 'text-[#F5D77F] bg-[#D4AF37]/20 font-bold'

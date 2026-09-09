@@ -12,7 +12,7 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://backend:3000',
+        target: process.env.VITE_PROXY_TARGET || process.env.BACKEND_URL || 'http://backend:3000',
         changeOrigin: true
       }
     }

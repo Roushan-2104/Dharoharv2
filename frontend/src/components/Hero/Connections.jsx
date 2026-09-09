@@ -25,8 +25,9 @@ export default function Connections({ activeEntity, itineraryRoute, radius }) {
       .catch(err => console.error("Error fetching connections:", err));
   }, [activeEntity]);
 
-  const hasEntityConnections = activeEntity && connections.length > 0;
-  const hasItineraryRoute = itineraryRoute && itineraryRoute.length >= 2;
+  const hasValidActiveCoords = activeEntity && Array.isArray(activeEntity.coordinates) && activeEntity.coordinates.length >= 2;
+  const hasEntityConnections = hasValidActiveCoords && connections.length > 0;
+  const hasItineraryRoute = Array.isArray(itineraryRoute) && itineraryRoute.length >= 2;
 
   if (!hasEntityConnections && !hasItineraryRoute) return null;
 
@@ -34,6 +35,8 @@ export default function Connections({ activeEntity, itineraryRoute, radius }) {
     <group>
       {/* 1. Entity Lineage Connections */}
       {hasEntityConnections && connections.map((conn) => {
+        if (!conn || !Array.isArray(conn.coordinates) || conn.coordinates.length < 2) return null;
+
         const startPos = latLongToVector3(activeEntity.coordinates[0], activeEntity.coordinates[1], radius);
         const endPos = latLongToVector3(conn.coordinates[0], conn.coordinates[1], radius);
         

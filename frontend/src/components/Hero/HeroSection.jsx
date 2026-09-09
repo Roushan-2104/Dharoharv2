@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { Globe, Map as MapIcon, Sparkles } from 'lucide-react';
@@ -16,6 +17,7 @@ import { calibrateEntityCoordinates } from '../../utils/geo';
 
 export default function HeroSection() {
   const { t, isItineraryOpen, setIsItineraryOpen } = useLanguage();
+  const location = useLocation();
   const [entities, setEntities] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeEntity, setActiveEntity] = useState(null);
@@ -70,6 +72,18 @@ export default function HeroSection() {
     setActiveEntity(entity);
   };
 
+  // Auto-select entity if navigated from Discover Page with state
+  useEffect(() => {
+    if (entities.length > 0 && location.state) {
+      const targetId = location.state.selectedEntityId;
+      const targetName = location.state.selectedEntity?.name;
+      const found = entities.find(e => (targetId && e.id === targetId) || (targetName && e.name === targetName));
+      if (found) {
+        handleSelectEntity(found);
+      }
+    }
+  }, [entities, location.state]);
+
   const handleHighlightRoute = (coords) => {
     setActiveItineraryRoute(coords || []);
   };
@@ -123,28 +137,30 @@ export default function HeroSection() {
       {is3D ? (
         <div className="w-full h-full absolute inset-0 cursor-move z-0">
           <Canvas camera={{ position: [0.67, 2.63, -7.0], fov: 45 }}>
-            <Stars radius={100} depth={60} count={6000} factor={4} saturation={0.5} fade speed={0.8} />
-            
-            <Earth 
-              entities={filteredEntities} 
-              categoryColors={dynamicCategories}
-              activeEntity={activeEntity}
-              setActiveEntity={setActiveEntity}
-              itineraryRoute={activeItineraryRoute}
-            />
-            
-            <CameraFramer activeEntity={activeEntity} radius={2.5} />
+            <Suspense fallback={null}>
+              <Stars radius={100} depth={60} count={6000} factor={4} saturation={0.5} fade speed={0.8} />
+              
+              <Earth 
+                entities={filteredEntities} 
+                categoryColors={dynamicCategories}
+                activeEntity={activeEntity}
+                setActiveEntity={setActiveEntity}
+                itineraryRoute={activeItineraryRoute}
+              />
+              
+              <CameraFramer activeEntity={activeEntity} radius={2.5} />
 
-            <OrbitControls 
-              makeDefault
-              enableZoom={true} 
-              enablePan={false} 
-              autoRotate={false} 
-              minDistance={3}
-              maxDistance={12}
-              zoomSpeed={1.2}
-              rotateSpeed={0.8}
-            />
+              <OrbitControls 
+                makeDefault
+                enableZoom={true} 
+                enablePan={false} 
+                autoRotate={false} 
+                minDistance={3}
+                maxDistance={12}
+                zoomSpeed={1.2}
+                rotateSpeed={0.8}
+              />
+            </Suspense>
           </Canvas>
         </div>
       ) : (

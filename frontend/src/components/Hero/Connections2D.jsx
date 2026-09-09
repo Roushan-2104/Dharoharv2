@@ -24,19 +24,24 @@ export default function Connections2D({ activeEntity, itineraryRoute }) {
       .catch(err => console.error("Error fetching connections:", err));
   }, [activeEntity]);
 
-  const hasEntityConnections = activeEntity && connections.length > 0;
-  const hasItineraryRoute = itineraryRoute && itineraryRoute.length >= 2;
+  const hasValidActiveCoords = activeEntity && Array.isArray(activeEntity.coordinates) && activeEntity.coordinates.length >= 2;
+  const hasEntityConnections = hasValidActiveCoords && connections.length > 0;
+  const hasItineraryRoute = Array.isArray(itineraryRoute) && itineraryRoute.length >= 2;
 
   if (!hasEntityConnections && !hasItineraryRoute) return null;
 
   const itineraryPositions = hasItineraryRoute
-    ? itineraryRoute.map(stop => Array.isArray(stop) ? stop : (stop.coordinates || [0, 0]))
+    ? itineraryRoute
+        .map(stop => Array.isArray(stop) ? stop : (stop?.coordinates || null))
+        .filter(pos => Array.isArray(pos) && pos.length >= 2)
     : [];
 
   return (
     <>
       {/* Entity Connections */}
       {hasEntityConnections && connections.map((conn) => {
+        if (!conn || !Array.isArray(conn.coordinates) || conn.coordinates.length < 2) return null;
+
         const startPos = activeEntity.coordinates;
         const endPos = conn.coordinates;
         

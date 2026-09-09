@@ -179,6 +179,7 @@ export default function RightPanel({ activeEntity, setActiveEntity }) {
           onClick={() => setActiveEntity(null)}
           className="p-2 rounded-full border border-[#D4AF37]/30 hover:border-[#D4AF37] hover:bg-[#D4AF37]/15 transition-colors text-zinc-400 hover:text-[#FFF8E7] cursor-pointer"
           title={t('panel_close')}
+          aria-label={t('panel_close')}
         >
           <X className="w-5 h-5" />
         </button>
