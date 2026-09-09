@@ -8,6 +8,7 @@ import ContributePage from './pages/ContributePage';
 import StructuralGrid from './components/Layout/StructuralGrid';
 import DharoharChatbot from './components/Chatbot/DharoharChatbot';
 import VisitedPassportModal from './components/Passport/VisitedPassportModal';
+import HeritageQuizModal from './components/Quiz/HeritageQuizModal';
 
 function AppContent() {
   const { isPassportOpen, setIsPassportOpen } = useLanguage();
@@ -26,6 +27,7 @@ function AppContent() {
           isOpen={isPassportOpen} 
           onClose={() => setIsPassportOpen(false)} 
         />
+        <HeritageQuizModal />
       </StructuralGrid>
     </Router>
   );
