@@ -9,12 +9,15 @@ services:
       dockerfile: Dockerfile
     container_name: dharohar-backend-prod
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    # Not published to the host: only Nginx (frontend container) reaches it at backend:3000
+    expose:
+      - "3000"
     environment:
       - PORT=${PORT:-3000}
       - DATABASE_URL=${DATABASE_URL}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - TRUST_PROXY=1
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost}
     networks:
       - dharohar-network
 

@@ -666,6 +666,7 @@ export default function DharoharChatbot() {
                     ref={inputRef}
                     type="text"
                     value={inputMessage}
+                    maxLength={1000}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={isListening ? "Listening... speak now" : t('bot_placeholder')}

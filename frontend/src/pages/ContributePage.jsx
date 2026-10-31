@@ -110,6 +110,7 @@ export default function ContributePage() {
                     type="text" 
                     placeholder={t('contribute_name_placeholder')}
                     value={formData.title}
+                    maxLength={200}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                     className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
                   />
@@ -146,6 +147,7 @@ export default function ContributePage() {
                       type="text" 
                       placeholder={t('contribute_loc_placeholder')}
                       value={formData.location}
+                      maxLength={200}
                       onChange={(e) => setFormData({...formData, location: e.target.value})}
                       className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl pl-11 pr-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
                     />
@@ -178,6 +180,7 @@ export default function ContributePage() {
                   rows={4} 
                   placeholder={t('contribute_desc_placeholder')}
                   value={formData.lore}
+                  maxLength={5000}
                   onChange={(e) => setFormData({...formData, lore: e.target.value})}
                   className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl p-5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600 resize-none font-sans leading-relaxed" 
                 />
@@ -192,6 +195,7 @@ export default function ContributePage() {
                     type="text" 
                     placeholder={t('contribute_contributor_placeholder')}
                     value={formData.contributor}
+                    maxLength={200}
                     onChange={(e) => setFormData({...formData, contributor: e.target.value})}
                     className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
                   />
@@ -207,6 +211,7 @@ export default function ContributePage() {
                       type="url" 
                       placeholder={t('contribute_photo_placeholder')}
                       value={formData.photoUrl}
+                      maxLength={500}
                       onChange={(e) => setFormData({...formData, photoUrl: e.target.value})}
                       className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl pl-11 pr-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
                     />

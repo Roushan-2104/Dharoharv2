@@ -326,6 +326,7 @@ export default function ItineraryModal({
                 </label>
                 <textarea
                   value={customPrompt}
+                  maxLength={1000}
                   onChange={(e) => setCustomPrompt(e.target.value)}
                   placeholder={t('itinerary_custom_prompt_placeholder')}
                   rows={2}

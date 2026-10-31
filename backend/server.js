@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const path = require('path');
 const { Pool } = require('pg');
@@ -58,8 +59,35 @@ const GEMINI_MODELS = (process.env.GEMINI_MODELS || "gemini-3.5-flash,gemini-fla
 // Per-call limit so a stuck model falls through to the next one / the offline answer
 const GEMINI_TIMEOUT_MS = parseInt(process.env.GEMINI_TIMEOUT_MS, 10) || 25000;
 
-app.use(cors());
-app.use(express.json());
+// Behind Nginx (prod) set TRUST_PROXY=1 so rate limits see the real client IP.
+// Leave it unset when the backend is reachable directly, or clients could spoof their IP.
+if (process.env.TRUST_PROXY) {
+  app.set('trust proxy', parseInt(process.env.TRUST_PROXY, 10) || 1);
+}
+
+// Only these browser origins may call the API cross-origin (same-origin via Nginx needs no CORS)
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || "http://localhost:5173,http://127.0.0.1:5173")
+  .split(',').map(o => o.trim()).filter(Boolean);
+app.use(cors({ origin: CORS_ORIGINS }));
+app.use(express.json({ limit: '50kb' }));
+
+// Per-IP request limits to protect the Gemini quota and the contributions table
+const limiter = (windowMinutes, max) => rateLimit({
+  windowMs: windowMinutes * 60 * 1000,
+  limit: max,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { error: "Too many requests. Please wait a moment and try again." }
+});
+app.use('/api/chat', limiter(1, 20));
+app.use('/api/itinerary', limiter(5, 10));
+app.use('/api/contribute', limiter(15, 10));
+
+// Input size caps
+const MAX_CHAT_MESSAGE = 1000;
+const MAX_NOTES = 1000;
+const MAX_DAYS = 14;
+const isLongString = (value, max) => value != null && (typeof value !== 'string' || value.length > max);
 
 app.get('/api/entities', async (req, res) => {
   if (isDbAvailable) {
@@ -88,6 +116,14 @@ app.post('/api/contribute', async (req, res) => {
     const { title, category, location, lore, sourceType, contributor, photoUrl } = req.body;
     if (!title || !lore) {
       return res.status(400).json({ error: "Title and lore description are required." });
+    }
+    if (isLongString(title, 200) || isLongString(lore, 5000) || isLongString(category, 200) ||
+        isLongString(location, 200) || isLongString(sourceType, 200) || isLongString(contributor, 200) ||
+        isLongString(photoUrl, 500)) {
+      return res.status(400).json({ error: "One or more fields are too long." });
+    }
+    if (photoUrl && !/^https?:\/\//i.test(photoUrl)) {
+      return res.status(400).json({ error: "Photo URL must start with http:// or https://." });
     }
 
     try {
@@ -519,7 +555,13 @@ function generateCulturalHeritageAnswer(query, targetLanguage, matchedEntities =
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, entityContext, language } = req.body;
-    
+    if (typeof message !== 'string' || !message.trim()) {
+      return res.status(400).json({ error: "Message is required." });
+    }
+    if (message.length > MAX_CHAT_MESSAGE) {
+      return res.status(400).json({ error: `Message is too long (max ${MAX_CHAT_MESSAGE} characters).` });
+    }
+
     const langMap = { 'hi': 'Hindi', 'or': 'Odia', 'en': 'English' };
     const targetLanguage = langMap[language] || language || "English";
     const contextName = entityContext?.name || "Odisha & Indian Living Heritage";
@@ -1082,9 +1124,15 @@ app.post('/api/itinerary/generate', async (req, res) => {
       language = "English" 
     } = req.body;
 
+    if (isLongString(customNotes, MAX_NOTES) || isLongString(userPrompt, MAX_NOTES) ||
+        isLongString(reqRegion, 100) || isLongString(startHub, 100) || isLongString(language, 20) ||
+        !Array.isArray(themes) || themes.length > 10 || themes.some(t => isLongString(t, 50))) {
+      return res.status(400).json({ error: "Invalid or too long itinerary input." });
+    }
+
     const langMap = { 'hi': 'Hindi', 'or': 'Odia', 'en': 'English' };
     const activeLanguage = langMap[language] || language || "English";
-    const parsedDays = parseInt(reqDays, 10) || (reqDuration ? parseInt(reqDuration, 10) : 3) || 3;
+    const parsedDays = Math.min(MAX_DAYS, Math.max(1, parseInt(reqDays, 10) || (reqDuration ? parseInt(reqDuration, 10) : 3) || 3));
     const duration = `${parsedDays} ${parsedDays === 1 ? 'Day' : 'Days'}`;
     const startingRegion = reqRegion || (startHub === "All" ? "Bhubaneswar" : startHub) || "Bhubaneswar";
     const userNotes = (customNotes || userPrompt || "").trim();
@@ -1230,6 +1278,13 @@ app.use((req, res) => {
     frontendUrl: "http://localhost:5173",
     validEndpoints: ["/api/entities", "/api/entities/:id/connections", "/api/chat", "/"]
   });
+});
+
+// JSON errors without stack traces (e.g. oversized or malformed request bodies)
+app.use((err, req, res, next) => {
+  const status = err.status || err.statusCode || 500;
+  if (status >= 500) console.error("Unhandled error:", err);
+  res.status(status).json({ error: status === 413 ? "Request is too large." : status < 500 ? "Invalid request." : "Internal Server Error" });
 });
 
 app.listen(port, () => {
