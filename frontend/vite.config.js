@@ -12,11 +12,7 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-<<<<<<< HEAD
-        target: process.env.BACKEND_URL || 'http://localhost:3000',
-=======
-        target: process.env.VITE_PROXY_TARGET || process.env.BACKEND_URL || 'http://backend:3000',
->>>>>>> 1c1276c3eeab8609d0bab542bba4b67e9700713d
+        target: process.env.VITE_PROXY_TARGET || process.env.BACKEND_URL || 'http://localhost:3000',
         changeOrigin: true
       }
     }
