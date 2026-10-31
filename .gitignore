@@ -6,12 +6,27 @@ node_modules/
 dist/
 dist-ssr/
 build/
+*.tsbuildinfo
 
 # Environment and secrets
+# (.env.example is the only env file that should ever be committed)
 .env
-.env.local
-.env.*.local
+.env.*
 *.env
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+service-account*.json
+credentials*.json
+secrets*.json
+
+# Supabase CLI local state
+supabase/.branches/
+supabase/.temp/
 
 # Logs
 logs/
@@ -20,10 +35,30 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
+
+# Caches & tooling output
+.cache/
+.eslintcache
+.vite/
+coverage/
+.nyc_output/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Deployment platform local state
+.vercel/
+.netlify/
+
+# AI assistant local workspace
+.claude/
 
 # OS & Editor files
 .DS_Store
 Thumbs.db
+desktop.ini
 .vscode/
 !.vscode/extensions.json
 .idea/
@@ -32,3 +67,6 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Office temp/lock files
+~$*
