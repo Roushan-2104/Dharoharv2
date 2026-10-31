@@ -73,6 +73,8 @@ export default function HeroSection() {
 
   const handleApplyPreference = (pref) => {
     setUserPreference(pref);
+    // Personalized filtering only runs on the "All" category, so clear any category filter
+    setActiveCategory('All');
     try {
       localStorage.setItem('dharohar_user_preference', JSON.stringify(pref));
     } catch (e) {}

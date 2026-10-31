@@ -130,7 +130,7 @@ export default function ContributePage() {
                     <option value="Classical Dance & Music">{translateCategory('Classical Dance & Music')}</option>
                     <option value="Festivals & Rituals">{translateCategory('Festivals & Rituals')}</option>
                     <option value="Culinary Heritage">{translateCategory('Culinary Heritage')}</option>
-                    <option value="Handicrafts & Handlooms">{translateCategory('Handicrafts & Handlooms')}</option>
+                    <option value="Handicrafts & Handlooms">{t('itinerary_theme_crafts')}</option>
                   </select>
                 </div>
               </div>

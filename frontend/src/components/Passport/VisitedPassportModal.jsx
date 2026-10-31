@@ -25,7 +25,7 @@ export default function VisitedPassportModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const totalPossible = 205;
+  const totalPossible = 201; // entities in the knowledge base (offline_data.json)
   const count = visitedSites.length;
   const percent = Math.min(100, Math.round((count / totalPossible) * 100));
 

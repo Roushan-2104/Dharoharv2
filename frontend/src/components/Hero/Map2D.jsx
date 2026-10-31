@@ -26,6 +26,21 @@ function MapController({ activeEntity }) {
   return null;
 }
 
+// Fit the view to a highlighted route (personalized map or itinerary) when it changes
+function RouteFramer({ route }) {
+  const map = useMap();
+  const routeKey = (route || []).map(c => c.join(',')).join('|');
+
+  useEffect(() => {
+    if (route && route.length > 1) {
+      map.flyToBounds(route, { padding: [80, 80], maxZoom: 10, duration: 1.5 });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeKey, map]);
+
+  return null;
+}
+
 // Track zoom level for dynamic marker scaling
 function ZoomTracker({ onZoomChange }) {
   const map = useMapEvents({
@@ -81,6 +96,7 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
         />
 
         <MapController activeEntity={activeEntity} />
+        <RouteFramer route={itineraryRoute} />
         <ZoomTracker onZoomChange={setCurrentZoom} />
 
         {entities.map(entity => {

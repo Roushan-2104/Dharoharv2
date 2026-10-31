@@ -294,7 +294,7 @@ export default function PersonalizeMapModal({
             className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-transparent hover:bg-white/5 text-zinc-400 hover:text-[#FFF8E7] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>{isHi ? 'रीसेट करें (सभी 205 स्थल देखें)' : isOr ? 'ରିସେଟ୍ କରନ୍ତୁ (ସମସ୍ତ ଦେଖନ୍ତୁ)' : 'Reset (Show All 205 Sites)'}</span>
+            <span>{isHi ? 'रीसेट करें (सभी स्थल देखें)' : isOr ? 'ରିସେଟ୍ କରନ୍ତୁ (ସମସ୍ତ ଦେଖନ୍ତୁ)' : 'Reset (Show All Sites)'}</span>
           </button>
 
           <button
