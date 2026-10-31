@@ -1,41 +1,85 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 const { Pool } = require('pg');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Load offline dataset for high resilience & offline support
+let offlineData = { entities: [], relationships: [] };
+try {
+  const offlinePath = path.join(__dirname, 'offline_data.json');
+  if (fs.existsSync(offlinePath)) {
+    offlineData = JSON.parse(fs.readFileSync(offlinePath, 'utf8'));
+    console.log(`Loaded ${offlineData.entities.length} offline heritage entities and ${offlineData.relationships.length} relationships.`);
+  }
+} catch (e) {
+  console.warn("Could not load offline_data.json:", e.message);
+}
+
+// In-memory store for local community contributions when DB is offline
+const localContributions = [];
+
 // Supabase / PostgreSQL Connection
 const DB_URL = process.env.DATABASE_URL;
 if (!DB_URL) {
   console.warn("WARNING: DATABASE_URL is not set in environment variables.");
 }
+let isDbAvailable = true;
 const pool = new Pool({
   connectionString: DB_URL,
+  connectionTimeoutMillis: 2000,
   ssl: DB_URL && DB_URL.includes('localhost') ? false : { rejectUnauthorized: false }
+});
+
+pool.connect((err, client, release) => {
+  if (err) {
+    console.warn(`Notice: Remote DB not reachable (${err.message}). High-speed offline heritage mode active.`);
+    isDbAvailable = false;
+  } else {
+    console.log("Connected to PostgreSQL database.");
+    isDbAvailable = true;
+    release();
+  }
 });
 
 // Gemini Configuration
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
 
+// Models tried in order; override with a comma-separated GEMINI_MODELS env var.
+// (gemini-flash-latest is left out: it accepts requests but never answers.)
+const GEMINI_MODELS = (process.env.GEMINI_MODELS || "gemini-3.5-flash,gemini-flash-lite-latest,gemini-3.1-flash-lite")
+  .split(',').map(m => m.trim()).filter(Boolean);
+// Per-call limit so a stuck model falls through to the next one / the offline answer
+const GEMINI_TIMEOUT_MS = parseInt(process.env.GEMINI_TIMEOUT_MS, 10) || 25000;
+
 app.use(cors());
 app.use(express.json());
 
 app.get('/api/entities', async (req, res) => {
-  try {
-    const query = `
-      SELECT e.id, e.name, e.location_context, e.description, e.metadata, e.coordinates, c.name as category_name
-      FROM entities e
-      LEFT JOIN categories c ON e.category_id = c.id
-    `;
-    const result = await pool.query(query);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: "Internal Server Error" });
+  if (isDbAvailable) {
+    try {
+      const query = `
+        SELECT e.id, e.name, e.location_context, e.description, e.metadata, e.coordinates, c.name as category_name
+        FROM entities e
+        LEFT JOIN categories c ON e.category_id = c.id
+      `;
+      const result = await pool.query(query);
+      if (result.rows && result.rows.length > 0) {
+        return res.json(result.rows);
+      }
+    } catch (err) {
+      isDbAvailable = false;
+      console.warn("PostgreSQL unavailable, serving offline heritage entities dataset:", err.message);
+    }
   }
+  // Seamless fallback to comprehensive offline entities
+  res.json(offlineData.entities || []);
 });
 
 // Community Contribution Endpoint
@@ -95,65 +139,109 @@ app.post('/api/contribute', async (req, res) => {
 });
 
 app.get('/api/entities/:id/connections', async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // 1. Query curated semantic cultural relationships
-    const relQuery = `
-      SELECT 
-        e.id, 
-        e.name, 
-        e.location_context, 
-        e.description, 
-        e.coordinates, 
-        c.name as category_name,
-        r.relationship_type,
-        r.label_en,
-        r.label_hi,
-        r.label_or,
-        r.lore_en,
-        r.lore_hi,
-        r.lore_or
-      FROM relationships r
-      JOIN entities e ON r.target_entity_id = e.id
-      LEFT JOIN categories c ON e.category_id = c.id
-      WHERE r.source_entity_id = $1
-      ORDER BY r.created_at ASC;
-    `;
-    const relResult = await pool.query(relQuery, [id]);
+  const { id } = req.params;
+  if (isDbAvailable) {
+    try {
+      // 1. Query curated semantic cultural relationships
+      const relQuery = `
+        SELECT 
+          e.id, 
+          e.name, 
+          e.location_context, 
+          e.description, 
+          e.coordinates, 
+          c.name as category_name,
+          r.relationship_type,
+          r.label_en,
+          r.label_hi,
+          r.label_or,
+          r.lore_en,
+          r.lore_hi,
+          r.lore_or
+        FROM relationships r
+        JOIN entities e ON r.target_entity_id = e.id
+        LEFT JOIN categories c ON e.category_id = c.id
+        WHERE r.source_entity_id = $1
+        ORDER BY r.created_at ASC;
+      `;
+      const relResult = await pool.query(relQuery, [id]);
 
-    if (relResult.rows.length > 0) {
-      return res.json(relResult.rows);
+      if (relResult.rows.length > 0) {
+        return res.json(relResult.rows);
+      }
+
+      // 2. Fallback for entities without manual relationships: find contextual cultural neighbors
+      const fallbackQuery = `
+        SELECT 
+          e.id, 
+          e.name, 
+          e.location_context, 
+          e.description, 
+          e.coordinates, 
+          c.name as category_name,
+          'cultural_affinity' as relationship_type,
+          'Regional Cultural Network' as label_en,
+          'क्षेत्रीय सांस्कृतिक परंपरा' as label_hi,
+          'ଆଞ୍ଚଳିକ ସାଂସ୍କୃତିକ ପରମ୍ପରା' as label_or,
+          'Part of the rich interconnected tapestry of Odisha regional cultural traditions.' as lore_en,
+          'ओडिशा की समृद्ध क्षेत्रीय सांस्कृतिक परंपराओं का अभिन्न अंग।' as lore_hi,
+          'ଓଡ଼ିଶାର ସମୃଦ୍ଧ ଆଞ୍ଚଳିକ ସାଂସ୍କୃତିକ ଐତିହ୍ୟ ପରମ୍ପରାର ଅଂଶ।' as lore_or
+        FROM entities e
+        LEFT JOIN categories c ON e.category_id = c.id
+        WHERE e.id != $1 AND e.coordinates IS NOT NULL
+        ORDER BY random()
+        LIMIT 3;
+      `;
+      const fallbackResult = await pool.query(fallbackQuery, [id]);
+      return res.json(fallbackResult.rows);
+    } catch (err) {
+      isDbAvailable = false;
+      console.warn("PostgreSQL unavailable for connections, querying offline relationships:", err.message);
     }
-
-    // 2. Fallback for entities without manual relationships: find contextual cultural neighbors
-    const fallbackQuery = `
-      SELECT 
-        e.id, 
-        e.name, 
-        e.location_context, 
-        e.description, 
-        e.coordinates, 
-        c.name as category_name,
-        'cultural_affinity' as relationship_type,
-        'Regional Cultural Network' as label_en,
-        'क्षेत्रीय सांस्कृतिक परंपरा' as label_hi,
-        'ଆଞ୍ଚଳିକ ସାଂସ୍କୃତିକ ପରମ୍ପରା' as label_or,
-        'Part of the rich interconnected tapestry of Odisha regional cultural traditions.' as lore_en,
-        'ओडिशा की समृद्ध क्षेत्रीय सांस्कृतिक परंपराओं का अभिन्न अंग।' as lore_hi,
-        'ଓଡ଼ିଶାର ସମୃଦ୍ଧ ଆଞ୍ଚଳିକ ସାଂସ୍କୃତିକ ଐତିହ୍ୟ ପରମ୍ପରାର ଅଂଶ।' as lore_or
-      FROM entities e
-      LEFT JOIN categories c ON e.category_id = c.id
-      WHERE e.id != $1 AND e.coordinates IS NOT NULL
-      ORDER BY random()
-      LIMIT 3;
-    `;
-    const fallbackResult = await pool.query(fallbackQuery, [id]);
-    res.json(fallbackResult.rows);
-  } catch (err) {
-    console.error("Error in /api/entities/:id/connections:", err);
-    res.status(500).json({ error: "Internal Server Error" });
   }
+
+  // Offline fallback: match by entity ID or name
+  const matchedRels = (offlineData.relationships || []).filter(r => r.source_entity_id === id);
+  if (matchedRels.length > 0) {
+    const enriched = matchedRels.map(r => {
+      const target = offlineData.entities.find(e => e.id === r.target_entity_id);
+      return {
+        id: r.target_entity_id,
+        name: r.target_name || (target ? target.name : ''),
+        location_context: target?.location_context || '',
+        description: target?.description || '',
+        coordinates: target?.coordinates || null,
+        category_name: target?.category_name || '',
+        relationship_type: r.relationship_type,
+        label_en: r.label_en,
+        label_hi: r.label_hi,
+        label_or: r.label_or,
+        lore_en: r.lore_en,
+        lore_hi: r.lore_hi,
+        lore_or: r.lore_or
+      };
+    });
+    return res.json(enriched);
+  }
+
+  // Fallback to 3 random neighbors from offline data
+  const others = (offlineData.entities || []).filter(e => e.id !== id);
+  const sample = others.sort(() => 0.5 - Math.random()).slice(0, 3).map(e => ({
+    id: e.id,
+    name: e.name,
+    location_context: e.location_context,
+    description: e.description,
+    coordinates: e.coordinates,
+    category_name: e.category_name,
+    relationship_type: 'cultural_affinity',
+    label_en: 'Regional Cultural Network',
+    label_hi: 'क्षेत्रीय सांस्कृतिक परंपरा',
+    label_or: 'ଆଞ୍ଚଳିକ ସାଂସ୍କୃତିକ ପରମ୍ପରା',
+    lore_en: 'Part of the rich interconnected tapestry of Odisha regional cultural traditions.',
+    lore_hi: 'ओडिशा की समृद्ध क्षेत्रीय सांस्कृतिक परंपराओं का अभिन्न अंग।',
+    lore_or: 'ଓଡ଼ିଶାର ସମୃଦ୍ଧ ଆଞ୍ଚଳିକ ସାଂସ୍କୃତିକ ଐତିହ୍ୟ ପରମ୍ପରାର ଅଂଶ।'
+  }));
+  res.json(sample);
 });
 
 // Intelligent Multi-Strategy Knowledge Base Search for Chatbot Grounding
@@ -239,6 +327,10 @@ async function searchKnowledgeBase(query, pool) {
   let matchedEntities = [];
   let relatedLore = [];
 
+  if (searchTerms.length > 0 && !isDbAvailable) {
+    return searchOfflineKnowledgeBase(searchTerms);
+  }
+
   if (searchTerms.length > 0) {
     try {
       const conditions = [];
@@ -286,9 +378,36 @@ async function searchKnowledgeBase(query, pool) {
       }
     } catch (err) {
       console.warn("Knowledge base search warning:", err.message);
+      isDbAvailable = false;
+      return searchOfflineKnowledgeBase(searchTerms);
     }
   }
 
+  return { matchedEntities, relatedLore };
+}
+
+// Seamless offline fallback search across offlineData
+function searchOfflineKnowledgeBase(searchTerms) {
+  const terms = searchTerms.map(t => t.toLowerCase());
+  // Rank like the SQL version: name hits first, then location, then description/category
+  const scoreOf = e => {
+    const name = e.name.toLowerCase();
+    const loc = (e.location_context || '').toLowerCase();
+    const rest = `${e.description || ''} ${e.category_name || ''}`.toLowerCase();
+    return terms.reduce((s, t) => s + (name.includes(t) ? 10 : loc.includes(t) ? 3 : rest.includes(t) ? 1 : 0), 0);
+  };
+  const matchedEntities = (offlineData.entities || [])
+    .map(e => ({ e, score: scoreOf(e) }))
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6)
+    .map(x => x.e);
+
+  let relatedLore = [];
+  if (matchedEntities.length > 0) {
+    const ids = new Set(matchedEntities.map(e => e.id));
+    relatedLore = (offlineData.relationships || []).filter(r => ids.has(r.source_entity_id) || ids.has(r.target_entity_id)).slice(0, 4);
+  }
   return { matchedEntities, relatedLore };
 }
 
@@ -474,11 +593,9 @@ Guidelines:
 
     // 4. Call Active Gemini Models
     if (genAI) {
-      const candidateModels = ["gemini-flash-latest", "gemini-pro-latest", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
-      
-      for (const modelName of candidateModels) {
+      for (const modelName of GEMINI_MODELS) {
         try {
-          const activeModel = genAI.getGenerativeModel({ model: modelName });
+          const activeModel = genAI.getGenerativeModel({ model: modelName }, { timeout: GEMINI_TIMEOUT_MS });
           const result = await activeModel.generateContent(promptText);
           const response = await result.response;
           if (response && response.text()) {
@@ -489,7 +606,7 @@ Guidelines:
             });
           }
         } catch (err) {
-          console.warn(`Model ${modelName} failed for chat, trying next candidate...`);
+          console.warn(`Model ${modelName} failed for chat (${err.message.slice(0, 120)}), trying next candidate...`);
         }
       }
     }
@@ -974,17 +1091,32 @@ app.post('/api/itinerary/generate', async (req, res) => {
 
     // Fetch active database entities for grounding
     let dbEntities = [];
-    try {
-      const dbRes = await pool.query(`
-        SELECT e.id, e.name, e.location_context, e.description, e.coordinates, c.name as category_name
-        FROM entities e
-        LEFT JOIN categories c ON e.category_id = c.id
-        WHERE e.coordinates IS NOT NULL
-        LIMIT 60;
-      `);
-      dbEntities = dbRes.rows;
-    } catch (e) {
-      console.warn("DB fetch in itinerary route failed, continuing with grounding...");
+    if (isDbAvailable) {
+      try {
+        const dbRes = await pool.query(`
+          SELECT e.id, e.name, e.location_context, e.description, e.coordinates, c.name as category_name
+          FROM entities e
+          LEFT JOIN categories c ON e.category_id = c.id
+          WHERE e.coordinates IS NOT NULL
+          LIMIT 60;
+        `);
+        dbEntities = dbRes.rows;
+      } catch (e) {
+        isDbAvailable = false;
+        console.warn("DB fetch in itinerary route failed, using offline entities for grounding...");
+      }
+    }
+    if (dbEntities.length === 0) {
+      // Offline data is grouped by category, so interleave categories round-robin;
+      // otherwise the grounding list sent to the model is only crafts and cuisine.
+      const byCategory = {};
+      (offlineData.entities || []).filter(e => e.coordinates && e.coordinates.length >= 2).forEach(e => {
+        (byCategory[e.category_name] = byCategory[e.category_name] || []).push(e);
+      });
+      const groups = Object.values(byCategory);
+      for (let i = 0; dbEntities.length < 60 && groups.some(g => i < g.length); i++) {
+        groups.forEach(g => { if (i < g.length && dbEntities.length < 60) dbEntities.push(g[i]); });
+      }
     }
 
     const langInstruction = activeLanguage === "Hindi" 
@@ -1038,13 +1170,12 @@ Return ONLY valid JSON matching this exact schema:
 }`;
 
     if (genAI) {
-      const candidateModels = ["gemini-flash-latest", "gemini-pro-latest", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
-      for (const modelName of candidateModels) {
+      for (const modelName of GEMINI_MODELS) {
         try {
-          const activeModel = genAI.getGenerativeModel({ 
+          const activeModel = genAI.getGenerativeModel({
             model: modelName,
             generationConfig: { responseMimeType: "application/json" }
-          });
+          }, { timeout: GEMINI_TIMEOUT_MS });
           const result = await activeModel.generateContent(promptText);
           const responseText = result.response.text();
           const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -1053,7 +1184,7 @@ Return ONLY valid JSON matching this exact schema:
             return res.json(parsedData);
           }
         } catch (err) {
-          console.warn(`Model ${modelName} failed for itinerary, trying next candidate...`);
+          console.warn(`Model ${modelName} failed for itinerary (${err.message.slice(0, 120)}), trying next candidate...`);
         }
       }
     }
