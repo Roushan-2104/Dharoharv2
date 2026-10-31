@@ -307,53 +307,27 @@ const CURATED_VERIFIED_OPINIONS = {
   ]
 };
 
-// GET Verified Community Opinions for an entity
-app.get('/api/entities/:id/opinions', async (req, res) => {
-  const { id } = req.params;
-  try {
-    // 1. Check if entity_opinions table exists in DB
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS entity_opinions (
-        id SERIAL PRIMARY KEY,
-        entity_id TEXT NOT NULL,
-        author_name TEXT NOT NULL,
-        role_tag TEXT DEFAULT 'Verified Heritage Traveler',
-        rating INTEGER DEFAULT 5,
-        visit_time TEXT,
-        opinion_text TEXT NOT NULL,
-        travel_tip TEXT,
-        is_verified BOOLEAN DEFAULT TRUE,
-        likes_count INTEGER DEFAULT 1,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+// User opinions kept in memory while the DB is unreachable (lost on restart)
+const localOpinions = {};
+const MAX_LOCAL_OPINIONS_PER_ENTITY = 50;
 
-    const dbOpinions = await pool.query(
-      `SELECT * FROM entity_opinions WHERE entity_id = $1 ORDER BY created_at DESC;`,
-      [id]
-    );
-
-    // 2. Resolve matching curated opinions by entity name
-    let entityName = '';
-    const entRes = await pool.query(`SELECT name, location_context FROM entities WHERE id = $1;`, [id]);
-    if (entRes.rows.length > 0) {
-      entityName = (entRes.rows[0].name || '').toLowerCase();
-    }
-
-    let curated = [];
-    if (entityName.includes('konark') || entityName.includes('sun temple')) {
-      curated = CURATED_VERIFIED_OPINIONS.konark;
-    } else if (entityName.includes('jagannath') || entityName.includes('puri')) {
-      curated = CURATED_VERIFIED_OPINIONS.jagannath;
-    } else if (entityName.includes('lingaraj') || entityName.includes('bhubaneswar')) {
-      curated = CURATED_VERIFIED_OPINIONS.lingaraj;
-    } else if (entityName.includes('raghurajpur') || entityName.includes('pattachitra')) {
-      curated = CURATED_VERIFIED_OPINIONS.raghurajpur;
-    } else if (entityName.includes('dhauli') || entityName.includes('shanti stupa')) {
-      curated = CURATED_VERIFIED_OPINIONS.dhauli;
-    } else {
+// Resolve the curated opinions shown for an entity, by name
+function getCuratedOpinions(entity) {
+  const entityName = (entity?.name || '').toLowerCase();
+  let curated = [];
+  if (entityName.includes('konark') || entityName.includes('sun temple')) {
+    curated = CURATED_VERIFIED_OPINIONS.konark;
+  } else if (entityName.includes('jagannath') || entityName.includes('puri')) {
+    curated = CURATED_VERIFIED_OPINIONS.jagannath;
+  } else if (entityName.includes('lingaraj') || entityName.includes('bhubaneswar')) {
+    curated = CURATED_VERIFIED_OPINIONS.lingaraj;
+  } else if (entityName.includes('raghurajpur') || entityName.includes('pattachitra')) {
+    curated = CURATED_VERIFIED_OPINIONS.raghurajpur;
+  } else if (entityName.includes('dhauli') || entityName.includes('shanti stupa')) {
+    curated = CURATED_VERIFIED_OPINIONS.dhauli;
+  } else {
       // General authentic verified opinion for heritage sites
-      const loc = entRes.rows[0]?.location_context || 'Odisha';
+      const loc = entity?.location_context || 'Odisha';
       curated = [
         {
           id: `op-gen-1`,
@@ -373,25 +347,98 @@ app.get('/api/entities/:id/opinions', async (req, res) => {
           likes_count: 45
         }
       ];
-    }
-
-    // Combine user-submitted DB opinions + curated verified voices
-    const combined = [...dbOpinions.rows, ...curated];
-    return res.json(combined);
-
-  } catch (err) {
-    console.warn("Opinions DB query warning, returning curated fallback:", err.message);
-    return res.json(CURATED_VERIFIED_OPINIONS.konark);
   }
+  return curated;
+}
+
+// GET Verified Community Opinions for an entity
+app.get('/api/entities/:id/opinions', async (req, res) => {
+  const { id } = req.params;
+  const offlineEntity = (offlineData.entities || []).find(e => e.id === id);
+  const memoryOpinions = localOpinions[id] || [];
+
+  if (isDbAvailable) {
+    try {
+      // 1. Check if entity_opinions table exists in DB
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS entity_opinions (
+          id SERIAL PRIMARY KEY,
+          entity_id TEXT NOT NULL,
+          author_name TEXT NOT NULL,
+          role_tag TEXT DEFAULT 'Verified Heritage Traveler',
+          rating INTEGER DEFAULT 5,
+          visit_time TEXT,
+          opinion_text TEXT NOT NULL,
+          travel_tip TEXT,
+          is_verified BOOLEAN DEFAULT TRUE,
+          likes_count INTEGER DEFAULT 1,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      const dbOpinions = await pool.query(
+        `SELECT * FROM entity_opinions WHERE entity_id = $1 ORDER BY created_at DESC;`,
+        [id]
+      );
+
+      // 2. Resolve matching curated opinions by entity name
+      const entRes = await pool.query(`SELECT name, location_context FROM entities WHERE id = $1;`, [id]);
+      const entity = entRes.rows[0] || offlineEntity;
+
+      // Combine user-submitted DB opinions + curated verified voices
+      return res.json([...memoryOpinions, ...dbOpinions.rows, ...getCuratedOpinions(entity)]);
+    } catch (err) {
+      isDbAvailable = false;
+      console.warn("Opinions DB query warning, returning curated fallback:", err.message);
+    }
+  }
+
+  // Offline: opinions submitted this session + curated opinions for this entity
+  return res.json([...memoryOpinions, ...getCuratedOpinions(offlineEntity)]);
 });
 
-// POST a new Verified Opinion for an entity
-app.post('/api/entities/:id/opinions', async (req, res) => {
+// POST a new community opinion for an entity
+app.post('/api/entities/:id/opinions', limiter(15, 10), async (req, res) => {
   const { id } = req.params;
   const { authorName, roleTag, rating, visitTime, opinionText, travelTip } = req.body;
 
-  if (!opinionText || !authorName) {
+  if (typeof opinionText !== 'string' || typeof authorName !== 'string' || !opinionText.trim() || !authorName.trim()) {
     return res.status(400).json({ error: "Author name and experience/opinion text are required." });
+  }
+  if (isLongString(authorName, 80) || isLongString(opinionText, 2000) || isLongString(travelTip, 500) ||
+      isLongString(roleTag, 80) || isLongString(visitTime, 80) || isLongString(id, 100)) {
+    return res.status(400).json({ error: "One or more fields are too long." });
+  }
+  const parsedRating = rating == null ? 5 : Number(rating);
+  if (!Number.isInteger(parsedRating) || parsedRating < 1 || parsedRating > 5) {
+    return res.status(400).json({ error: "Rating must be a whole number from 1 to 5." });
+  }
+
+  // Visitor submissions are not verified by anyone, so never mark them as verified
+  const opinion = {
+    entity_id: id,
+    author_name: authorName.trim(),
+    role_tag: roleTag || 'Explorer',
+    rating: parsedRating,
+    visit_time: visitTime || 'Recent Visit',
+    opinion_text: opinionText.trim(),
+    travel_tip: (travelTip || '').trim(),
+    is_verified: false,
+    likes_count: 1
+  };
+
+  const keepInMemory = () => {
+    const stored = { id: `local-${Date.now()}`, ...opinion, created_at: new Date().toISOString() };
+    localOpinions[id] = [stored, ...(localOpinions[id] || [])].slice(0, MAX_LOCAL_OPINIONS_PER_ENTITY);
+    return res.status(201).json({
+      success: true,
+      message: "Experience received and staged for verification!",
+      opinion: stored
+    });
+  };
+
+  if (!isDbAvailable) {
+    return keepInMemory();
   }
 
   try {
@@ -418,39 +465,25 @@ app.post('/api/entities/:id/opinions', async (req, res) => {
     `;
 
     const result = await pool.query(insertSql, [
-      id,
-      authorName,
-      roleTag || 'Verified Explorer',
-      rating || 5,
-      visitTime || 'Recent Visit',
-      opinionText,
-      travelTip || '',
-      true // Mark verified
+      opinion.entity_id,
+      opinion.author_name,
+      opinion.role_tag,
+      opinion.rating,
+      opinion.visit_time,
+      opinion.opinion_text,
+      opinion.travel_tip,
+      opinion.is_verified
     ]);
 
     return res.status(201).json({
       success: true,
-      message: "Your verified experience has been added to Dharohar Living Chronicle!",
+      message: "Your experience has been added to Dharohar Living Chronicle!",
       opinion: result.rows[0]
     });
   } catch (err) {
-    console.error("Error inserting opinion:", err);
-    return res.status(201).json({
-      success: true,
-      message: "Experience received and staged for verification!",
-      opinion: {
-        id: `local-${Date.now()}`,
-        entity_id: id,
-        author_name: authorName,
-        role_tag: roleTag || 'Verified Explorer',
-        rating: rating || 5,
-        visit_time: visitTime || 'Recent Visit',
-        opinion_text: opinionText,
-        travel_tip: travelTip,
-        is_verified: true,
-        likes_count: 1
-      }
-    });
+    isDbAvailable = false;
+    console.warn("Opinion insert failed, keeping it in memory:", err.message);
+    return keepInMemory();
   }
 });
 
@@ -658,6 +691,19 @@ const HERITAGE_QUIZ_BANK = [
   }
 ];
 
+// Shuffle a question's options (same order in every language) so the answer isn't always "A"
+function withShuffledOptions(q) {
+  const order = q.options.map((_, i) => i).sort(() => Math.random() - 0.5);
+  const reorder = arr => Array.isArray(arr) ? order.map(i => arr[i]) : arr;
+  return {
+    ...q,
+    options: reorder(q.options),
+    optionsHi: reorder(q.optionsHi),
+    optionsOr: reorder(q.optionsOr),
+    correctIndex: order.indexOf(q.correctIndex)
+  };
+}
+
 // GET Quizzes Endpoint
 app.get('/api/quizzes', (req, res) => {
   const { category, limit } = req.query;
@@ -670,35 +716,41 @@ app.get('/api/quizzes', (req, res) => {
   // Shuffle questions randomly
   questions.sort(() => Math.random() - 0.5);
 
-  const lim = limit ? parseInt(limit, 10) : 10;
-  return res.json(questions.slice(0, lim));
+  const lim = Math.min(50, Math.max(1, parseInt(limit, 10) || 10));
+  return res.json(questions.slice(0, lim).map(withShuffledOptions));
 });
 
-// GET Mini-Quiz for a specific entity
-app.get('/api/quizzes/entity/:entityId', (req, res) => {
-  const { entityId } = req.params;
-  const idLower = (entityId || '').toLowerCase();
+// "Konark Sun Temple" and "konark-sun-temple" both become "konark-sun-temple"
+const toSlug = s => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-  const matching = HERITAGE_QUIZ_BANK.filter(q => {
-    return q.entity_id && (
-      q.entity_id.toLowerCase().includes(idLower) || 
-      idLower.includes(q.entity_id.toLowerCase())
-    );
-  });
+// GET Mini-Quiz for a specific entity (the frontend passes the entity name)
+app.get('/api/quizzes/entity/:entityId', (req, res) => {
+  const idSlug = toSlug(req.params.entityId);
+
+  const matching = idSlug ? HERITAGE_QUIZ_BANK.filter(q => {
+    const qSlug = toSlug(q.entity_id);
+    return qSlug && (qSlug.includes(idSlug) || idSlug.includes(qSlug));
+  }) : [];
 
   if (matching.length > 0) {
-    return res.json(matching);
+    return res.json(matching.map(withShuffledOptions));
   }
 
   // Fallback to random 3 questions
   const shuffled = [...HERITAGE_QUIZ_BANK].sort(() => Math.random() - 0.5);
-  return res.json(shuffled.slice(0, 3));
+  return res.json(shuffled.slice(0, 3).map(withShuffledOptions));
 });
 
 // POST Submit Quiz Score and Badge Certification
-app.post('/api/quizzes/submit', async (req, res) => {
-  const { category, score, total, userBadge } = req.body;
-  const percentage = Math.round((score / Math.max(1, total)) * 100);
+app.post('/api/quizzes/submit', limiter(1, 20), async (req, res) => {
+  const { category, score, total } = req.body;
+  if (!Number.isInteger(score) || !Number.isInteger(total) || total < 1 || total > 1000 || score < 0 || score > total) {
+    return res.status(400).json({ error: "Invalid quiz score." });
+  }
+  if (isLongString(category, 50)) {
+    return res.status(400).json({ error: "Invalid quiz category." });
+  }
+  const percentage = Math.round((score / total) * 100);
 
   let earnedBadge = "Heritage Apprentice";
   let titleHi = "धरोहर शिक्षार्थी";
@@ -718,25 +770,28 @@ app.post('/api/quizzes/submit', async (req, res) => {
     titleOr = "ସାଂସ୍କୃତିକ ଐତିହ୍ୟ ଯାତ୍ରୀ";
   }
 
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS quiz_scores (
-        id SERIAL PRIMARY KEY,
-        category TEXT,
-        score INTEGER,
-        total INTEGER,
-        percentage INTEGER,
-        badge TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+  if (isDbAvailable) {
+    try {
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS quiz_scores (
+          id SERIAL PRIMARY KEY,
+          category TEXT,
+          score INTEGER,
+          total INTEGER,
+          percentage INTEGER,
+          badge TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
 
-    await pool.query(`
-      INSERT INTO quiz_scores (category, score, total, percentage, badge)
-      VALUES ($1, $2, $3, $4, $5);
-    `, [category || 'all', score, total, percentage, earnedBadge]);
-  } catch (dbErr) {
-    console.warn("Quiz score record warning:", dbErr.message);
+      await pool.query(`
+        INSERT INTO quiz_scores (category, score, total, percentage, badge)
+        VALUES ($1, $2, $3, $4, $5);
+      `, [category || 'all', score, total, percentage, earnedBadge]);
+    } catch (dbErr) {
+      isDbAvailable = false;
+      console.warn("Quiz score record warning:", dbErr.message);
+    }
   }
 
   return res.json({

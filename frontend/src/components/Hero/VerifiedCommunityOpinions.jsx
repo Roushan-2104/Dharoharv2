@@ -17,7 +17,7 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
 
   // Form State
   const [authorName, setAuthorName] = useState('');
-  const [roleTag, setRoleTag] = useState('Verified Explorer');
+  const [roleTag, setRoleTag] = useState('Cultural Traveler');
   const [rating, setRating] = useState(5);
   const [visitTime, setVisitTime] = useState('Recent Visit');
   const [opinionText, setOpinionText] = useState('');
@@ -59,7 +59,7 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
     try {
       const payload = {
         authorName: authorName.trim(),
-        roleTag: roleTag || 'Verified Explorer',
+        roleTag: roleTag || 'Cultural Traveler',
         rating: Number(rating) || 5,
         visitTime: visitTime || 'Recent Visit',
         opinionText: opinionText.trim(),
@@ -78,10 +78,10 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
       setIsFormOpen(false);
       setSuccessMsg(
         isHi 
-          ? 'आपका अनुभव सफलतापूर्वक सत्यापित होकर जुड़ गया है!' 
+          ? 'आपका अनुभव सफलतापूर्वक जुड़ गया है!' 
           : isOr 
           ? 'ଆପଣଙ୍କ ଅନୁଭୂତି ସଫଳତାର ସହ ଯୋଡ଼ାଗଲା!' 
-          : 'Your verified experience has been published to Dharohar!'
+          : 'Your experience has been published to Dharohar!'
       );
       setTimeout(() => setSuccessMsg(''), 5000);
     } catch (err) {
@@ -148,6 +148,7 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
                 type="text"
                 required
                 value={authorName}
+                maxLength={80}
                 onChange={e => setAuthorName(e.target.value)}
                 placeholder="e.g. Rahul Sharma"
                 className="w-full bg-[#090812] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#D4AF37]"
@@ -161,8 +162,8 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
                 onChange={e => setRoleTag(e.target.value)}
                 className="w-full bg-[#090812] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#D4AF37]"
               >
-                <option value="Verified Cultural Traveler">Verified Cultural Traveler</option>
-                <option value="Verified Local Resident">Verified Local Resident</option>
+                <option value="Cultural Traveler">Cultural Traveler</option>
+                <option value="Local Resident">Local Resident</option>
                 <option value="Archaeological Scholar">Archaeological / History Scholar</option>
                 <option value="Sacred Heritage Pilgrim">Sacred Heritage Pilgrim</option>
                 <option value="Hereditary Artisan">Hereditary Artisan / Artist</option>
@@ -176,6 +177,7 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
               required
               rows={3}
               value={opinionText}
+              maxLength={2000}
               onChange={e => setOpinionText(e.target.value)}
               placeholder="What makes this place special? What architecture, rituals, or story did you discover?"
               className="w-full bg-[#090812] border border-white/10 rounded-xl p-2.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#D4AF37]"
@@ -190,6 +192,7 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
             <input
               type="text"
               value={travelTip}
+              maxLength={500}
               onChange={e => setTravelTip(e.target.value)}
               placeholder="e.g. Visit at sunrise; hire ASI certified guide at East Gate"
               className="w-full bg-[#090812] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#D4AF37]"
@@ -284,10 +287,14 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
 
                 {/* Footer / Likes */}
                 <div className="flex items-center justify-between pt-1 text-[10px] text-zinc-500 border-t border-white/5">
-                  <span className="flex items-center gap-1 text-emerald-400 font-medium">
-                    <ShieldCheck className="w-3 h-3" />
-                    <span>Dharohar Verified</span>
-                  </span>
+                  {op.is_verified !== false ? (
+                    <span className="flex items-center gap-1 text-emerald-400 font-medium">
+                      <ShieldCheck className="w-3 h-3" />
+                      <span>Dharohar Verified</span>
+                    </span>
+                  ) : (
+                    <span className="text-zinc-500 font-medium">Community Review</span>
+                  )}
 
                   <button
                     onClick={() => handleLike(op.id || idx)}
