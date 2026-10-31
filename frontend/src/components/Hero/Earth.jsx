@@ -1,12 +1,13 @@
-import React, { useRef, useMemo, useState } from 'react';
-import { useLoader } from '@react-three/fiber';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
+import { useLoader, useThree } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import Connections from './Connections';
+import { THEME } from '../../config/theme';
 import { latLongToVector3 } from '../../utils/geo';
 import { useLanguage } from '../../context/LanguageContext';
 
-export default function Earth({ entities, categoryColors, activeEntity, setActiveEntity, itineraryRoute }) {
+export default function Earth({ entities, activeEntity, setActiveEntity, itineraryRoute, previewCategory = null, reduceMotion = false }) {
   const { translateEntityName, translateCategory } = useLanguage();
   const earthRef = useRef();
   const radius = 2.5;
@@ -18,122 +19,127 @@ export default function Earth({ entities, categoryColors, activeEntity, setActiv
     '/textures/earth-water.png',
   ]);
 
+  // The satellite image is sRGB; sample all three maps sharply at grazing angles
+  const { gl } = useThree();
+  useEffect(() => {
+    colorMap.colorSpace = THREE.SRGBColorSpace;
+    const maxAniso = gl.capabilities.getMaxAnisotropy();
+    [colorMap, bumpMap, specularMap].forEach(tex => {
+      tex.anisotropy = maxAniso;
+      tex.needsUpdate = true;
+    });
+  }, [colorMap, bumpMap, specularMap, gl]);
+
   const indiaLightPos = useMemo(() => {
     const pos = latLongToVector3(22, 82, 15);
     return [pos.x, pos.y, pos.z];
   }, []);
 
+  // A thin edge of atmosphere: brightest at the limb, gone across the face
+  const atmosphereMaterial = useMemo(() => new THREE.ShaderMaterial({
+    vertexShader: `
+      varying vec3 vNormal;
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vNormal;
+      void main() {
+        float intensity = pow(0.68 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 4.0);
+        gl_FragColor = vec4(0.42, 0.66, 1.0, 1.0) * intensity * 0.9;
+      }
+    `,
+    blending: THREE.AdditiveBlending,
+    side: THREE.BackSide,
+    transparent: true,
+    depthWrite: false,
+  }), []);
+
   return (
     <group>
-      {/* Warm Golden Illumination on Indian Subcontinent */}
-      <directionalLight position={indiaLightPos} intensity={4.0} color="#FFF4D6" />
-      <ambientLight intensity={0.35} color="#E8D8B8" />
+      {/* Daylight over the Indian subcontinent; a low fill keeps the night side readable */}
+      <directionalLight position={indiaLightPos} intensity={3.4} color="white" />
+      <ambientLight intensity={0.32} color="white" />
 
-      {/* Earth Sphere */}
+      {/* Earth Sphere: oceans (white in the water mask) catch the sun, land stays matte */}
       <mesh ref={earthRef} position={[0, 0, 0]}>
-        <sphereGeometry args={[radius, 64, 64]} />
-        <meshStandardMaterial
+        <sphereGeometry args={[radius, 128, 128]} />
+        <meshPhongMaterial
           map={colorMap}
           bumpMap={bumpMap}
-          bumpScale={0.06}
-          roughnessMap={specularMap}
-          roughness={0.65}
-          metalness={0.15}
+          bumpScale={0.05}
+          specularMap={specularMap}
+          specular={THEME.oceanGlint}
+          shininess={22}
         />
+
+        {/* Cultural arcs and itinerary routes */}
+        <Connections activeEntity={activeEntity} itineraryRoute={itineraryRoute} radius={radius} reduceMotion={reduceMotion} />
         
-        {/* Render Glowing Golden Cultural Arcs & Itinerary Routes */}
-        <Connections activeEntity={activeEntity} itineraryRoute={itineraryRoute} radius={radius} />
-        
-        {/* Render Refined Jewel Micro-Markers with Tooltips */}
-        {entities.map(entity => {
+        {/* Markers: paper dots that pop in when a set appears; the chosen record is mark red and pulses.
+            While a kind is previewed from the index, its places grow and the rest step back. */}
+        {entities.map((entity, index) => {
           const coords = entity.coordinates;
           if (!coords || coords.length < 2) return null;
-          
+
           const pos = latLongToVector3(coords[0], coords[1], radius + 0.012);
-          const color = categoryColors[entity.category_name] || '#D4AF37';
           const isActive = activeEntity?.id === entity.id;
           const isHovered = hoveredEntity?.id === entity.id;
+          const label = translateEntityName(entity.name, entity.location_context);
+          const previewing = previewCategory && previewCategory !== 'All';
+          const inPreview = previewing && entity.category_name === previewCategory;
+          const dimmed = previewing && !inPreview && !isActive;
 
           return (
             <group key={entity.id} position={pos}>
-              <Html center distanceFactor={12}>
-                <div 
-                  className="relative group cursor-pointer flex items-center justify-center"
+              {/* Fixed on-screen size, so markers stay small when the camera comes close */}
+              <Html center>
+                <button
+                  type="button"
+                  className="relative cursor-pointer flex items-center justify-center w-4 h-4 bg-transparent border-0 p-0"
                   onClick={(e) => { e.stopPropagation(); setActiveEntity(entity); }}
                   onMouseEnter={() => setHoveredEntity(entity)}
                   onMouseLeave={() => setHoveredEntity(null)}
+                  onFocus={() => setHoveredEntity(entity)}
+                  onBlur={() => setHoveredEntity(null)}
+                  aria-label={label}
                 >
-                  {/* Subtle Beacon Halo for Active or Hovered Marker */}
-                  {(isActive || isHovered) && (
-                    <div 
-                      className="absolute w-4 h-4 rounded-full animate-ping pointer-events-none"
-                      style={{ backgroundColor: color, opacity: 0.35 }}
+                  <span
+                    aria-hidden="true"
+                    className={`relative block ${reduceMotion ? '' : 'marker-pop'} transition-opacity duration-short ease-out ${dimmed ? 'opacity-25' : 'opacity-100'}`}
+                    style={reduceMotion ? undefined : { animationDelay: `${(index % 48) * 16}ms` }}
+                  >
+                    {isActive && !reduceMotion && (
+                      <span className="marker-pulse absolute inset-0 rounded-full border border-mark" />
+                    )}
+                    <span
+                      className={`block w-[7px] h-[7px] rounded-full border border-ink transition-transform duration-short ease-out ${
+                        isActive ? 'bg-mark scale-[1.6]' : isHovered || inPreview ? 'bg-paper scale-[1.6]' : 'bg-paper'
+                      }`}
                     />
-                  )}
+                  </span>
 
-                  {/* Refined Micro-Jewel Dot */}
-                  <div 
-                    className="relative rounded-full transition-all duration-300 transform hover:scale-125"
-                    style={{
-                      width: isActive ? '9px' : isHovered ? '7.5px' : '5px',
-                      height: isActive ? '9px' : isHovered ? '7.5px' : '5px',
-                      backgroundColor: color,
-                      boxShadow: isActive 
-                        ? `0 0 10px ${color}, 0 0 16px rgba(255,255,255,0.6)` 
-                        : isHovered 
-                          ? `0 0 8px ${color}` 
-                          : `0 0 4px ${color}`,
-                      border: '1px solid rgba(255,255,255,0.95)',
-                    }}
-                  />
-
-                  {/* Tooltip Card on Hover / Active */}
-                  {(isActive || isHovered) && (
-                    <div 
-                      className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none z-50 animate-fade-in-up"
+                  {isHovered && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none z-50 bg-paper text-ink px-2.5 py-1.5 text-left"
                     >
-                      <div className="dharohar-glass px-2.5 py-1 rounded-md border border-[#D4AF37]/50 shadow-[0_6px_20px_rgba(0,0,0,0.85)] flex flex-col items-center">
-                        <span className="text-[11px] font-bold font-cinzel text-[#FFF8E7] tracking-wide">
-                          {translateEntityName(entity.name, entity.location_context)}
-                        </span>
-                        <span 
-                          className="text-[8.5px] uppercase font-semibold tracking-wider mt-0.5"
-                          style={{ color: color }}
-                        >
-                          {translateCategory(entity.category_name)}
-                        </span>
-                      </div>
-                    </div>
+                      <span className="block font-display font-bold text-[13px] leading-tight">{label}</span>
+                      <span className="block text-[11px] text-muted leading-tight mt-0.5">{translateCategory(entity.category_name)}</span>
+                    </span>
                   )}
-                </div>
+                </button>
               </Html>
             </group>
           );
         })}
       </mesh>
-      
-      {/* Radiant Golden Atmospheric Corona Glow */}
-      <mesh>
-        <sphereGeometry args={[2.58, 64, 64]} />
-        <meshBasicMaterial
-          color="#D4AF37"
-          transparent={true}
-          opacity={0.12}
-          blending={THREE.AdditiveBlending}
-          side={THREE.BackSide}
-        />
-      </mesh>
 
-      {/* Outer Soft Amber Aura */}
-      <mesh>
-        <sphereGeometry args={[2.7, 64, 64]} />
-        <meshBasicMaterial
-          color="#F59E0B"
-          transparent={true}
-          opacity={0.05}
-          blending={THREE.AdditiveBlending}
-          side={THREE.BackSide}
-        />
+      {/* Atmosphere shell, just outside the surface */}
+      <mesh scale={1.1} material={atmosphereMaterial}>
+        <sphereGeometry args={[radius, 96, 96]} />
       </mesh>
     </group>
   );

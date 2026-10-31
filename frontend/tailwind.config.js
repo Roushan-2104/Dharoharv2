@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+// Colours and faces come from the tokens in src/index.css (Hallmark Grid theme).
 export default {
   content: [
     "./index.html",
@@ -7,33 +8,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        'primary-dark': '#08080C',
-        'obsidian-surface': '#101017',
-        'obsidian-card': '#161520',
-        'temple-gold': '#D4AF37',
-        'temple-gold-light': '#F5D77F',
-        'saffron': '#F59E0B',
-        'amber-glow': '#D97706',
-        'peacock-teal': '#0D9488',
-        'lapis-blue': '#3B82F6',
-        'terracotta': '#C2410C',
-        'lotus-rose': '#EC4899',
-        'light-bg': '#F4F4F5',
-        'zinc-accent': '#18181B',
+        paper: 'var(--color-paper)',
+        'paper-2': 'var(--color-paper-2)',
+        'paper-3': 'var(--color-paper-3)',
+        ink: 'var(--color-ink)',
+        'ink-2': 'var(--color-ink-2)',
+        muted: 'var(--color-muted)',
+        rule: 'var(--color-rule)',
+        field: 'var(--color-field)',
+        'field-ink': 'var(--color-field-ink)',
+        space: 'var(--color-space)',
+        mark: 'var(--color-mark)',
+        'mark-ink': 'var(--color-mark-ink)',
+        focus: 'var(--color-focus)',
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-        cinzel: ['Cinzel', 'serif'],
-        'cinzel-dec': ['"Cinzel Decorative"', 'serif'],
+        sans: ['var(--font-body)'],
+        display: ['var(--font-display)'],
+        cinzel: ['var(--font-display)'],
       },
-      boxShadow: {
-        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.45)',
-        'gold-glow': '0 0 25px rgba(212, 175, 55, 0.25)',
-        'gold-glow-lg': '0 0 50px rgba(212, 175, 55, 0.35)',
+      letterSpacing: {
+        display: 'var(--tracking-display)',
+        poster: '-0.045em',
       },
-      borderWidth: {
-        '1.5': '1.5px',
-      }
+      transitionDuration: {
+        short: '160ms',
+      },
+      transitionTimingFunction: {
+        out: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      },
+      spacing: {
+        nav: 'var(--nav-height)',
+      },
     },
   },
   plugins: [],

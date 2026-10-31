@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  X, Award, Sparkles, CheckCircle2, XCircle, ChevronRight, RotateCcw, 
-  Flame, BookOpen, Trophy, Compass, ShieldCheck, Share2, HelpCircle 
-} from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 const API_BASE = 'http://localhost:3000';
 
 const CATEGORIES = [
-  { id: 'all', name: 'All Domains', nameHi: 'समग्र धरोहर', nameOr: 'ସମସ୍ତ ବିଭାଗ', icon: '🏆', color: '#D4AF37' },
-  { id: 'architecture', name: 'Architecture & Temples', nameHi: 'स्थापत्य एवं मंदिर', nameOr: 'ସ୍ଥାପତ୍ୟ ଏବଂ ମନ୍ଦିର', icon: '🏛️', color: '#0D9488' },
-  { id: 'arts', name: 'Classical Arts & Crafts', nameHi: 'शास्त्रीय कला व शिल्प', nameOr: 'ଶାସ୍ତ୍ରୀୟ କଳା ଓ ହସ୍ତଶିଳ୍ପ', icon: '🎨', color: '#8B5CF6' },
-  { id: 'cuisine', name: 'Sacred Food & Lore', nameHi: 'पवित्र प्रसाद व पाक', nameOr: 'ପବିତ୍ର ପ୍ରସାଦ ଓ ଖାଦ୍ୟ', icon: '🍲', color: '#EA580C' },
-  { id: 'history', name: 'Dynasties & Legends', nameHi: 'राजवंश व इतिहास', nameOr: 'ରାଜବଂଶ ଓ ଇତିହାସ', icon: '⛵', color: '#10B981' },
+  { id: 'all', name: 'All Domains', nameHi: 'समग्र धरोहर', nameOr: 'ସମସ୍ତ ବିଭାଗ' },
+  { id: 'architecture', name: 'Architecture & Temples', nameHi: 'स्थापत्य एवं मंदिर', nameOr: 'ସ୍ଥାପତ୍ୟ ଏବଂ ମନ୍ଦିର' },
+  { id: 'arts', name: 'Classical Arts & Crafts', nameHi: 'शास्त्रीय कला व शिल्प', nameOr: 'ଶାସ୍ତ୍ରୀୟ କଳା ଓ ହସ୍ତଶିଳ୍ପ' },
+  { id: 'cuisine', name: 'Sacred Food & Lore', nameHi: 'पवित्र प्रसाद व पाक', nameOr: 'ପବିତ୍ର ପ୍ରସାଦ ଓ ଖାଦ୍ୟ' },
+  { id: 'history', name: 'Dynasties & Legends', nameHi: 'राजवंश व इतिहास', nameOr: 'ରାଜବଂଶ ଓ ଇତିହାସ' },
 ];
 
 export default function HeritageQuizModal() {
@@ -237,7 +234,7 @@ export default function HeritageQuizModal() {
   };
 
   const handleShareBadge = () => {
-    const shareText = `🎯 I scored ${score}/${(questions.length || 1) * 10} in the Dharohar Heritage Quiz! Test your knowledge on India's living heritage at Dharohar!`;
+    const shareText = `I scored ${score}/${(questions.length || 1) * 10} in the Dharohar Heritage Quiz! Test your knowledge on India's living heritage at Dharohar!`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText);
       setCopiedLink(true);
@@ -252,32 +249,22 @@ export default function HeritageQuizModal() {
   const activeCatMeta = CATEGORIES.find(c => c.id === selectedCategory) || CATEGORIES[0];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl animate-fade-in">
-      <div className="relative w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl bg-[#09090E]/95 border border-[#D4AF37]/35 shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden text-[#FFF8E7]">
-        
-        {/* Glowing Ambient Header Banner */}
-        <div className="relative px-6 py-5 border-b border-[#D4AF37]/20 bg-gradient-to-r from-[#141224] via-[#0D0D18] to-[#141224] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(212,175,55,0.2)]">
-              🎯
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg md:text-xl font-black font-cinzel gold-gradient-text tracking-wide uppercase">
-                  {isHi ? 'धरोहर ज्ञान क्विज़' : isOr ? 'ଐତିହ୍ୟ ଜ୍ଞାନ କୁଇଜ୍' : 'Heritage Lore Challenge'}
-                </h2>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#D4AF37]/20 text-[#F5D77F] border border-[#D4AF37]/40">
-                  {isHi ? 'प्रमाणित ज्ञान' : isOr ? 'ପ୍ରାମାଣିକ' : 'Verified'}
-                </span>
-              </div>
-              <p className="text-xs text-zinc-400">
-                {isHi 
-                  ? 'प्राचीन स्थापत्य, लोक संस्कृति, पाक परंपरा और ऐतिहासिक गाथाओं की परीक्षा' 
-                  : isOr 
-                  ? 'ପ୍ରାଚୀନ ସ୍ଥାପତ୍ୟ, ଲୋକ ସଂସ୍କୃତି, ପାରମ୍ପରିକ ଖାଦ୍ୟ ଓ ଐତିହ୍ୟର ପରୀକ୍ଷା' 
-                  : 'Test your mastery of sacred monuments, living crafts, and culinary folklore'}
-              </p>
-            </div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-[color-mix(in_oklab,var(--color-ink)_55%,transparent)]">
+      <div className="relative w-full max-w-3xl max-h-[92vh] flex flex-col bg-paper text-ink overflow-hidden">
+
+        {/* Header */}
+        <div className="px-6 md:px-8 pt-6 md:pt-8 pb-5 flex items-start justify-between gap-6">
+          <div>
+            <h2 className="font-display font-bold tracking-display text-4xl md:text-5xl text-ink">
+              {isHi ? 'धरोहर ज्ञान क्विज़' : isOr ? 'ଐତିହ୍ୟ ଜ୍ଞାନ କୁଇଜ୍' : 'Heritage Lore Challenge'}
+            </h2>
+            <p className="mt-2 text-base text-ink-2">
+              {isHi
+                ? 'प्राचीन स्थापत्य, लोक संस्कृति, पाक परंपरा और ऐतिहासिक गाथाओं की परीक्षा'
+                : isOr
+                ? 'ପ୍ରାଚୀନ ସ୍ଥାପତ୍ୟ, ଲୋକ ସଂସ୍କୃତି, ପାରମ୍ପରିକ ଖାଦ୍ୟ ଓ ଐତିହ୍ୟର ପରୀକ୍ଷା'
+                : 'Test your mastery of sacred monuments, living crafts, and culinary folklore'}
+            </p>
           </div>
 
           <button
@@ -285,16 +272,16 @@ export default function HeritageQuizModal() {
               setIsQuizOpen(false);
               setActiveQuizEntity(null);
             }}
-            className="w-9 h-9 rounded-full bg-white/5 hover:bg-[#D4AF37]/20 border border-white/10 hover:border-[#D4AF37]/40 flex items-center justify-center text-zinc-400 hover:text-[#F5D77F] transition-all cursor-pointer"
+            className="shrink-0 min-h-[44px] px-2 -mr-2 text-base font-medium text-ink underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out cursor-pointer"
             aria-label="Close Quiz"
           >
-            <X className="w-4 h-4" />
+            Close
           </button>
         </div>
 
         {/* Category Filter Tabs (Only shown when not locked to specific monument) */}
         {!activeQuizEntity && !isQuizCompleted && (
-          <div className="px-5 py-3 border-b border-[#D4AF37]/15 bg-[#0C0B14]/70 flex items-center gap-2 overflow-x-auto scrollbar-none">
+          <div className="px-6 md:px-8 border-b border-rule flex items-stretch overflow-x-auto scrollbar-none">
             {CATEGORIES.map(cat => {
               const isSelected = selectedCategory === cat.id;
               const catName = isOr ? cat.nameOr : isHi ? cat.nameHi : cat.name;
@@ -302,14 +289,13 @@ export default function HeritageQuizModal() {
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  className={`min-h-[44px] px-4 text-[15px] font-medium whitespace-nowrap transition-colors duration-short ease-out cursor-pointer ${
                     isSelected
-                      ? 'bg-[#D4AF37] text-[#08080C] shadow-[0_0_12px_rgba(212,175,55,0.4)] font-bold scale-105'
-                      : 'bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white border border-white/10'
+                      ? 'bg-ink text-paper'
+                      : 'bg-paper text-ink hover:bg-paper-2'
                   }`}
                 >
-                  <span>{cat.icon}</span>
-                  <span>{catName}</span>
+                  {catName}
                 </button>
               );
             })}
@@ -317,11 +303,10 @@ export default function HeritageQuizModal() {
         )}
 
         {/* Modal Body */}
-        <div className="flex-1 p-5 md:p-6 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 px-6 md:px-8 py-6 overflow-y-auto custom-scrollbar">
           {loading ? (
-            <div className="py-20 flex flex-col items-center justify-center gap-4 text-center">
-              <div className="w-12 h-12 rounded-full border-2 border-[#D4AF37]/20 border-t-[#D4AF37] animate-spin" />
-              <p className="text-sm font-cinzel text-[#F5D77F] tracking-wide">
+            <div className="py-16">
+              <p className="text-base text-muted">
                 {isHi ? 'धरोहर प्रश्न बैंक लोड हो रहा है...' : isOr ? 'ଐତିହ୍ୟ ପ୍ରଶ୍ନାବଳୀ ଖୋଜାଯାଉଛି...' : 'Gathering Sacred Lore Questions...'}
               </p>
             </div>
@@ -329,93 +314,73 @@ export default function HeritageQuizModal() {
             /* ========================================= */
             /* FINAL SCORE & CERTIFICATE SUMMARY SCREEN */
             /* ========================================= */
-            <div className="py-4 flex flex-col items-center text-center animate-fade-in-up">
-              
-              {/* Score Celebration Emblem */}
-              <div className="relative mb-5">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#D4AF37]/20 via-[#F5D77F]/30 to-[#D4AF37]/10 border-2 border-[#D4AF37] flex flex-col items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.3)]">
-                  <Trophy className="w-9 h-9 text-[#F5D77F] mb-1 animate-bounce" />
-                  <span className="text-xs font-black text-[#F5D77F] tracking-wider">
-                    {submissionResult ? `${submissionResult.percentage}%` : `${Math.round((score / Math.max(1, questions.length * 10)) * 100)}%`}
-                  </span>
-                </div>
-                <div className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-[#10B981] border border-white/20 flex items-center justify-center text-xs shadow-md">
-                  ✨
-                </div>
-              </div>
+            <div className="flex flex-col">
 
-              {/* Title & Badge */}
-              <h3 className="text-2xl font-black font-cinzel gold-gradient-text tracking-wider uppercase mb-1">
-                {isHi ? 'अभिनंदन! क्विज़ पूर्ण' : isOr ? 'ଅଭିନନ୍ଦନ! କୁଇଜ୍ ସମ୍ପୂର୍ଣ୍ଣ' : 'Lore Mastery Achieved!'}
-              </h3>
-              
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#F5D77F] text-sm font-bold my-3 shadow-inner">
-                <Award className="w-4 h-4 text-[#D4AF37]" />
-                <span>
-                  {submissionResult 
-                    ? (isOr ? submissionResult.badgeTitleOr : isHi ? submissionResult.badgeTitleHi : submissionResult.badge) 
+              {/* Result band: the percentage is the hero */}
+              <div className="bg-field text-field-ink px-6 md:px-8 py-8 -mx-6 md:-mx-8 -mt-6">
+                <p className="text-[15px] font-medium text-field-ink">
+                  {isHi ? 'अभिनंदन! क्विज़ पूर्ण' : isOr ? 'ଅଭିନନ୍ଦନ! କୁଇଜ୍ ସମ୍ପୂର୍ଣ୍ଣ' : 'Lore Mastery Achieved!'}
+                </p>
+                <p className="mt-2 font-display font-bold tracking-display text-8xl leading-none text-field-ink">
+                  {submissionResult ? `${submissionResult.percentage}%` : `${Math.round((score / Math.max(1, questions.length * 10)) * 100)}%`}
+                </p>
+                <h3 className="mt-4 font-display font-bold tracking-display text-3xl text-field-ink">
+                  {submissionResult
+                    ? (isOr ? submissionResult.badgeTitleOr : isHi ? submissionResult.badgeTitleHi : submissionResult.badge)
                     : (isHi ? 'धरोहर अन्वेषक' : isOr ? 'ଐତିହ୍ୟ ଅନୁସନ୍ଧାନକାରୀ' : 'Cultural Heritage Explorer')}
-                </span>
+                </h3>
               </div>
 
-              {/* Performance Stats Grid */}
-              <div className="w-full grid grid-cols-3 gap-3 my-5">
-                <div className="p-3 rounded-2xl bg-[#141224] border border-[#D4AF37]/20 flex flex-col items-center">
-                  <span className="text-xs text-zinc-400">{isHi ? 'अर्जित अंक' : isOr ? 'ପ୍ରାପ୍ତ ସ୍କୋର' : 'Points Earned'}</span>
-                  <span className="text-xl font-black text-[#F5D77F] mt-1">{score} <span className="text-xs text-zinc-500 font-normal">/ {questions.length * 10}</span></span>
+              {/* Performance Stats */}
+              <dl className="grid grid-cols-3 gap-6 mt-8">
+                <div>
+                  <dt className="text-[15px] font-medium text-muted">{isHi ? 'अर्जित अंक' : isOr ? 'ପ୍ରାପ୍ତ ସ୍କୋର' : 'Points Earned'}</dt>
+                  <dd className="mt-1 font-display font-bold tracking-display text-4xl text-ink">
+                    {score} <span className="text-base font-sans font-normal text-muted">/ {questions.length * 10}</span>
+                  </dd>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-[#141224] border border-[#D4AF37]/20 flex flex-col items-center">
-                  <span className="text-xs text-zinc-400">{isHi ? 'सही उत्तर' : isOr ? 'ସଠିକ୍ ଉତ୍ତର' : 'Correct'}</span>
-                  <span className="text-xl font-black text-[#10B981] mt-1">
-                    {userAnswers.filter(a => a.isCorrect).length} <span className="text-xs text-zinc-500 font-normal">/ {questions.length}</span>
-                  </span>
+                <div>
+                  <dt className="text-[15px] font-medium text-muted">{isHi ? 'सही उत्तर' : isOr ? 'ସଠିକ୍ ଉତ୍ତର' : 'Correct'}</dt>
+                  <dd className="mt-1 font-display font-bold tracking-display text-4xl text-ink">
+                    {userAnswers.filter(a => a.isCorrect).length} <span className="text-base font-sans font-normal text-muted">/ {questions.length}</span>
+                  </dd>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-[#141224] border border-[#D4AF37]/20 flex flex-col items-center">
-                  <span className="text-xs text-zinc-400">{isHi ? 'सर्वोत्तम स्ट्रीक' : isOr ? 'ସର୍ବୋଚ୍ଚ ଷ୍ଟ୍ରିକ୍' : 'Best Streak'}</span>
-                  <span className="text-xl font-black text-[#EA580C] mt-1 flex items-center gap-1">
-                    🔥 {maxStreak}
-                  </span>
+                <div>
+                  <dt className="text-[15px] font-medium text-muted">{isHi ? 'सर्वोत्तम स्ट्रीक' : isOr ? 'ସର୍ବୋଚ୍ଚ ଷ୍ଟ୍ରିକ୍' : 'Best Streak'}</dt>
+                  <dd className="mt-1 font-display font-bold tracking-display text-4xl text-ink">
+                    {maxStreak}
+                  </dd>
                 </div>
-              </div>
+              </dl>
 
-              {/* Digital Certificate Badge Token */}
+              {/* Digital Certificate Token */}
               {submissionResult && (
-                <div className="w-full p-4 rounded-2xl bg-gradient-to-r from-[#141224] via-[#10101C] to-[#141224] border border-[#D4AF37]/30 text-left my-2 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-lg">
-                      📜
-                    </div>
-                    <div>
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-[#D4AF37]">
-                        {isHi ? 'धरोहर डिजिटल प्रमाण-पत्र टोकन' : isOr ? 'ଐତିହ୍ୟ ଡିଜିଟାଲ୍ ସାର୍ଟିଫିକେଟ୍' : 'Verified Knowledge Token'}
-                      </span>
-                      <p className="text-xs font-mono text-zinc-300 font-semibold tracking-wider">
-                        {submissionResult.certificateId || `DHAROHAR-CERT-${Date.now().toString(36).toUpperCase()}`}
-                      </p>
-                    </div>
-                  </div>
-                  <ShieldCheck className="w-5 h-5 text-[#10B981]" />
+                <div className="mt-8 pt-5 border-t border-rule">
+                  <p className="text-[15px] font-medium text-muted">
+                    {isHi ? 'धरोहर डिजिटल प्रमाण-पत्र टोकन' : isOr ? 'ଐତିହ୍ୟ ଡିଜିଟାଲ୍ ସାର୍ଟିଫିକେଟ୍' : 'Knowledge Token'}
+                  </p>
+                  <p className="mt-1 text-base font-mono text-ink break-all">
+                    {submissionResult.certificateId || `DHAROHAR-CERT-${Date.now().toString(36).toUpperCase()}`}
+                  </p>
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center justify-center gap-3 mt-6 w-full">
+              <div className="flex flex-wrap items-center gap-6 mt-8">
                 <button
                   onClick={handleRestartQuiz}
-                  className="flex-1 min-w-[140px] flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#F5D77F] text-[#08080C] font-bold text-sm shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:scale-102 transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center min-h-[48px] px-6 bg-ink text-paper font-medium hover:bg-ink-2 transition-colors duration-short ease-out cursor-pointer"
                 >
-                  <RotateCcw className="w-4 h-4" />
-                  <span>{isHi ? 'पुनः खेलें' : isOr ? 'ପୁଣି ଖେଳନ୍ତୁ' : 'Play Another Round'}</span>
+                  {isHi ? 'पुनः खेलें' : isOr ? 'ପୁଣି ଖେଳନ୍ତୁ' : 'Play Another Round'}
                 </button>
 
                 <button
                   onClick={handleShareBadge}
-                  className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-[#141224] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#F5D77F] font-semibold text-sm transition-all cursor-pointer"
+                  className="min-h-[44px] text-base font-medium text-ink underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out cursor-pointer"
                 >
-                  <Share2 className="w-4 h-4" />
-                  <span>{copiedLink ? (isHi ? 'कॉपी हुआ!' : isOr ? 'କପି ହେଲା!' : 'Copied!') : (isHi ? 'शेयर करें' : isOr ? 'ସେୟାର କରନ୍ତୁ' : 'Share Lore Score')}</span>
+                  {copiedLink ? (isHi ? 'कॉपी हुआ!' : isOr ? 'କପି ହେଲା!' : 'Copied!') : (isHi ? 'शेयर करें' : isOr ? 'ସେୟାର କରନ୍ତୁ' : 'Share Lore Score')}
                 </button>
               </div>
 
@@ -424,64 +389,67 @@ export default function HeritageQuizModal() {
             /* ========================================= */
             /* ACTIVE QUESTION PLAYING SCREEN            */
             /* ========================================= */
-            <div className="flex flex-col gap-5">
-              
-              {/* Top Progress & Score Stats Bar */}
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-[#F5D77F]">
-                    {isHi ? 'प्रश्न' : isOr ? 'ପ୍ରଶ୍ନ' : 'Question'} {currentIndex + 1} / {questions.length}
+            <div className="flex flex-col gap-6">
+
+              {/* Counter, streak and score */}
+              <div className="flex items-baseline justify-between gap-4">
+                <div className="flex items-baseline gap-6">
+                  <span className="text-[15px] font-medium text-muted">
+                    {isHi ? 'प्रश्न' : isOr ? 'ପ୍ରଶ୍ନ' : 'Question'}{' '}
+                    <span className="font-display font-bold text-xl text-ink">{currentIndex + 1}</span> / {questions.length}
                   </span>
                   {streak > 1 && (
-                    <span className="px-2.5 py-1 rounded-full bg-[#EA580C]/20 border border-[#EA580C]/40 text-[#EA580C] flex items-center gap-1 animate-pulse">
-                      🔥 {streak} {isHi ? 'स्ट्रीक' : isOr ? 'ଷ୍ଟ୍ରିକ୍' : 'Streak'}
+                    <span className="text-[15px] font-medium text-muted">
+                      {isHi ? 'स्ट्रीक' : isOr ? 'ଷ୍ଟ୍ରିକ୍' : 'Streak'}{' '}
+                      <span className="font-display font-bold text-xl text-ink">{streak}</span>
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-zinc-400">{isHi ? 'अंक:' : isOr ? 'ସ୍କୋର:' : 'Score:'}</span>
-                  <span className="text-[#F5D77F] font-black text-sm">{score}</span>
-                </div>
+                <span className="text-[15px] font-medium text-muted">
+                  {isHi ? 'अंक:' : isOr ? 'ସ୍କୋର:' : 'Score:'}{' '}
+                  <span className="font-display font-bold text-xl text-ink">{score}</span>
+                </span>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-[#D4AF37] to-[#F5D77F] transition-all duration-300"
+              <div className="w-full h-1 bg-paper-3 overflow-hidden">
+                <div
+                  className="h-full bg-ink"
                   style={{ width: `${((currentIndex + (isAnswerSubmitted ? 1 : 0)) / questions.length) * 100}%` }}
                 />
               </div>
 
               {/* Question Statement */}
-              <div className="p-4 md:p-5 rounded-2xl bg-[#141224]/90 border border-[#D4AF37]/25 shadow-inner">
-                <span className="text-[10px] uppercase font-bold tracking-widest text-[#D4AF37]/80 mb-1.5 block">
+              <div>
+                <span className="text-[15px] font-medium text-muted block mb-2">
                   {getLocalizedField(currentQ, 'categoryLabel') || activeCatMeta.name}
                 </span>
-                <h3 className="text-base md:text-lg font-bold text-white leading-relaxed">
+                <h3 className="font-display font-bold tracking-display text-3xl text-ink">
                   {getLocalizedField(currentQ, 'question')}
                 </h3>
               </div>
 
               {/* Multiple Choice Options */}
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col border-t border-b border-rule divide-y divide-rule">
                 {getLocalizedOptions(currentQ).map((opt, idx) => {
                   const isSelected = selectedOption === idx;
                   const isCorrect = idx === correctIdx;
-                  
-                  let optionStyles = "bg-[#101018] hover:bg-[#161626] border-white/10 hover:border-[#D4AF37]/40 text-zinc-200";
+                  const isWrongChoice = isAnswerSubmitted && isSelected && !isCorrect;
+
+                  let optionStyles = "bg-paper text-ink hover:bg-paper-2";
 
                   if (isSelected && !isAnswerSubmitted) {
-                    optionStyles = "bg-[#D4AF37]/20 border-[#D4AF37] text-[#FFF8E7] shadow-[0_0_12px_rgba(212,175,55,0.25)]";
+                    optionStyles = "bg-ink text-paper";
                   }
 
                   if (isAnswerSubmitted) {
                     if (isCorrect) {
-                      optionStyles = "bg-[#10B981]/25 border-[#10B981] text-[#A7F3D0] font-bold shadow-[0_0_15px_rgba(16,185,129,0.3)]";
-                    } else if (isSelected && !isCorrect) {
-                      optionStyles = "bg-[#E11D48]/25 border-[#E11D48] text-[#FECDD3]";
+                      optionStyles = "bg-field text-field-ink";
+                    } else if (isWrongChoice) {
+                      optionStyles = "bg-paper text-mark";
                     } else {
-                      optionStyles = "bg-[#0B0B10]/50 border-white/5 text-zinc-500 opacity-60";
+                      optionStyles = "bg-paper text-muted";
                     }
                   }
 
@@ -490,86 +458,64 @@ export default function HeritageQuizModal() {
                       key={idx}
                       onClick={() => handleSelectOption(idx)}
                       disabled={isAnswerSubmitted}
-                      className={`w-full p-3.5 rounded-2xl border text-left text-sm font-medium transition-all flex items-center justify-between cursor-pointer ${optionStyles}`}
+                      className={`w-full min-h-[56px] px-4 py-3 text-left text-base transition-colors duration-short ease-out flex items-center justify-between gap-4 cursor-pointer disabled:cursor-default ${optionStyles}`}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className={`w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold ${
-                          isAnswerSubmitted && isCorrect
-                            ? 'bg-[#10B981] text-white'
-                            : isAnswerSubmitted && isSelected && !isCorrect
-                            ? 'bg-[#E11D48] text-white'
-                            : isSelected
-                            ? 'bg-[#D4AF37] text-black'
-                            : 'bg-white/10 text-zinc-400'
-                        }`}>
+                      <span className="flex items-baseline gap-4">
+                        <span className="font-display font-bold text-xl w-5 shrink-0">
                           {String.fromCharCode(65 + idx)}
                         </span>
-                        <span>{opt}</span>
-                      </div>
+                        <span className={isWrongChoice ? 'line-through' : ''}>{opt}</span>
+                      </span>
 
-                      {isAnswerSubmitted && (
-                        <div>
-                          {isCorrect && <CheckCircle2 className="w-5 h-5 text-[#10B981]" />}
-                          {isSelected && !isCorrect && <XCircle className="w-5 h-5 text-[#E11D48]" />}
-                        </div>
+                      {isAnswerSubmitted && (isCorrect || isWrongChoice) && (
+                        <span className="shrink-0 flex items-center gap-2 text-[15px] font-medium">
+                          {isWrongChoice && <span>Your answer</span>}
+                          {isCorrect && <CheckCircle2 className="w-5 h-5" aria-hidden="true" />}
+                        </span>
                       )}
                     </button>
                   );
                 })}
               </div>
 
-              {/* Explanatory Lore Fact Box (Revealed after answer submission) */}
+              {/* Explanatory Lore Fact (Revealed after answer submission) */}
               {isAnswerSubmitted && (
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-[#141224] to-[#1A182E] border border-[#D4AF37]/35 text-xs text-zinc-200 animate-fade-in">
-                  <div className="flex items-center gap-2 text-[#F5D77F] font-bold mb-1.5">
-                    <BookOpen className="w-4 h-4 text-[#D4AF37]" />
-                    <span>{isHi ? 'ऐतिहासिक तथ्य एवं रहस्य:' : isOr ? 'ଐତିହାସିକ ତଥ୍ୟ ଓ ରହସ୍ୟ:' : 'Sacred Lore & Architecture Fact:'}</span>
-                  </div>
-                  <p className="leading-relaxed text-zinc-300">
+                <div className="bg-paper-2 p-5">
+                  <p className="text-[15px] font-medium text-muted mb-2">
+                    {isHi ? 'ऐतिहासिक तथ्य एवं रहस्य:' : isOr ? 'ଐତିହାସିକ ତଥ୍ୟ ଓ ରହସ୍ୟ:' : 'Sacred Lore & Architecture Fact:'}
+                  </p>
+                  <p className="text-base leading-relaxed text-ink-2">
                     {getLocalizedField(currentQ, 'explanation')}
                   </p>
                 </div>
               )}
 
               {/* Action Buttons: Submit Answer or Next Question */}
-              <div className="mt-2 flex items-center justify-end gap-3">
+              <div className="flex items-center justify-end">
                 {!isAnswerSubmitted ? (
                   <button
                     onClick={handleConfirmAnswer}
                     disabled={selectedOption === null}
-                    className={`py-3 px-6 rounded-2xl font-bold text-sm transition-all flex items-center gap-2 ${
-                      selectedOption !== null
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F5D77F] text-[#08080C] shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:scale-102 cursor-pointer'
-                        : 'bg-white/10 text-zinc-500 cursor-not-allowed'
-                    }`}
+                    className="inline-flex items-center justify-center min-h-[48px] px-6 bg-ink text-paper font-medium hover:bg-ink-2 transition-colors duration-short ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <span>{isHi ? 'उत्तर लॉक करें' : isOr ? 'ଉତ୍ତର ଲକ୍ କରନ୍ତୁ' : 'Submit Answer'}</span>
-                    <ChevronRight className="w-4 h-4" />
+                    {isHi ? 'उत्तर लॉक करें' : isOr ? 'ଉତ୍ତର ଲକ୍ କରନ୍ତୁ' : 'Submit Answer'}
                   </button>
                 ) : (
                   <button
                     onClick={handleNextQuestion}
-                    className="py-3 px-6 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#F5D77F] text-[#08080C] font-bold text-sm shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:scale-102 transition-all flex items-center gap-2 cursor-pointer animate-pulse"
+                    className="inline-flex items-center justify-center min-h-[48px] px-6 bg-ink text-paper font-medium hover:bg-ink-2 transition-colors duration-short ease-out cursor-pointer"
                   >
-                    <span>{currentIndex + 1 < questions.length ? (isHi ? 'अगला प्रश्न' : isOr ? 'ପରବର୍ତ୍ତୀ ପ୍ରଶ୍ନ' : 'Next Question') : (isHi ? 'परिणाम देखें' : isOr ? 'ଫଳାଫଳ ଦେଖନ୍ତୁ' : 'View Lore Results')}</span>
-                    <ChevronRight className="w-4 h-4" />
+                    {currentIndex + 1 < questions.length ? (isHi ? 'अगला प्रश्न' : isOr ? 'ପରବର୍ତ୍ତୀ ପ୍ରଶ୍ନ' : 'Next Question') : (isHi ? 'परिणाम देखें' : isOr ? 'ଫଳାଫଳ ଦେଖନ୍ତୁ' : 'View Lore Results')}
                   </button>
                 )}
               </div>
 
             </div>
           ) : (
-            <div className="py-12 text-center text-zinc-400">
-              <HelpCircle className="w-10 h-10 text-[#D4AF37] mx-auto mb-2 opacity-50" />
-              <p>{isHi ? 'कोई प्रश्न उपलब्ध नहीं है।' : isOr ? 'କୌଣସି ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ନାହିଁ।' : 'No lore questions found for this topic.'}</p>
+            <div className="py-12">
+              <p className="text-base text-muted">{isHi ? 'कोई प्रश्न उपलब्ध नहीं है।' : isOr ? 'କୌଣସି ପ୍ରଶ୍ନ ଉପଲବ୍ଧ ନାହିଁ।' : 'No lore questions found for this topic.'}</p>
             </div>
           )}
-        </div>
-
-        {/* Footer info note */}
-        <div className="px-6 py-2.5 bg-[#07070B] border-t border-[#D4AF37]/15 flex items-center justify-between text-[11px] text-zinc-500 font-sans">
-          <span>🏛️ Dharohar Digital Living Chronicle</span>
-          <span className="text-[#D4AF37]/80">AI & Oral Tradition Verified</span>
         </div>
 
       </div>

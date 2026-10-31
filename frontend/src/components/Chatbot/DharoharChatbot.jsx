@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Bot, Sparkles, Send, X, Minimize2, Maximize2, Volume2, VolumeX, 
-  Trash2, Compass, MessageSquare, Mic, MicOff, Copy, Check, 
-  Landmark, Music, Utensils, Calendar, MapPin, ChevronDown, 
-  ArrowRight, ExternalLink, HelpCircle, Layers, Scroll, Compass as ExploreIcon
+import {
+  Send, X, Minimize2, Maximize2, Volume2, VolumeX,
+  Trash2, Mic, MicOff, Copy, Check, ChevronDown
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -27,7 +25,7 @@ export default function DharoharChatbot() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showCallout, setShowCallout] = useState(true);
+  const [, setShowCallout] = useState(true); // callout bubble removed; setter still called by open handlers
   const [isListening, setIsListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
@@ -53,20 +51,20 @@ export default function DharoharChatbot() {
 
   // Topic Categories for quick prompt exploration
   const categoryTabs = [
-    { id: 'all', label: '✨ All Topics', icon: <Layers className="w-3 h-3" /> },
-    { id: 'temples', label: '🏛️ Temples', icon: <Landmark className="w-3 h-3" /> },
-    { id: 'arts', label: '🎭 Arts & Dance', icon: <Music className="w-3 h-3" /> },
-    { id: 'food', label: '🍲 Food & Lore', icon: <Utensils className="w-3 h-3" /> },
-    { id: 'trails', label: '🗺️ Trip Planner', icon: <Compass className="w-3 h-3" /> },
-    { id: 'folklore', label: '📜 Folklore', icon: <Scroll className="w-3 h-3" /> },
+    { id: 'all', label: 'All topics' },
+    { id: 'temples', label: 'Temples' },
+    { id: 'arts', label: 'Arts & dance' },
+    { id: 'food', label: 'Food & lore' },
+    { id: 'trails', label: 'Trip planner' },
+    { id: 'folklore', label: 'Folklore' },
   ];
 
   const categorizedPrompts = {
     all: [
-      { text: t('bot_quick_1') || '🏛️ Ancient Temples in Puri & Konark', query: 'Tell me about the most ancient and sacred temples in Puri and Konark.' },
-      { text: t('bot_quick_2') || '🎭 Odissi & Chhau Dance Heritage', query: 'What is the cultural history and significance of Odissi and Chhau dance?' },
-      { text: t('bot_quick_3') || '🍲 Traditional Food & Mahaprasad', query: 'What makes Puri Mahaprasad and traditional Odia sweets so unique?' },
-      { text: t('bot_quick_4') || '🌿 Hidden Heritage Spots', query: 'What are some unexplored or secret heritage spots across Odisha?' },
+      { text: t('bot_quick_1') || 'Ancient Temples in Puri & Konark', query: 'Tell me about the most ancient and sacred temples in Puri and Konark.' },
+      { text: t('bot_quick_2') || 'Odissi & Chhau Dance Heritage', query: 'What is the cultural history and significance of Odissi and Chhau dance?' },
+      { text: t('bot_quick_3') || 'Traditional Food & Mahaprasad', query: 'What makes Puri Mahaprasad and traditional Odia sweets so unique?' },
+      { text: t('bot_quick_4') || 'Hidden Heritage Spots', query: 'What are some unexplored or secret heritage spots across Odisha?' },
     ],
     temples: [
       { text: 'Konark Wheel Geometry & Astronomy', query: 'Explain the astronomical and sun-dial calculation features of Konark Sun Temple.' },
@@ -112,9 +110,9 @@ export default function DharoharChatbot() {
         text: t('bot_welcome'),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         suggestedQuestions: [
-          t('bot_quick_1') || '🏛️ Ancient Temples in Puri & Konark',
-          t('bot_quick_2') || '🎭 Odissi & Chhau Dance Heritage',
-          t('bot_quick_3') || '🍲 Traditional Cuisine & Mahaprasad'
+          t('bot_quick_1') || 'Ancient Temples in Puri & Konark',
+          t('bot_quick_2') || 'Odissi & Chhau Dance Heritage',
+          t('bot_quick_3') || 'Traditional Cuisine & Mahaprasad'
         ]
       }
     ];
@@ -311,9 +309,9 @@ export default function DharoharChatbot() {
         text: t('bot_welcome'),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         suggestedQuestions: [
-          t('bot_quick_1') || '🏛️ Ancient Temples in Puri & Konark',
-          t('bot_quick_2') || '🎭 Odissi & Chhau Dance Heritage',
-          t('bot_quick_3') || '🍲 Traditional Cuisine & Mahaprasad'
+          t('bot_quick_1') || 'Ancient Temples in Puri & Konark',
+          t('bot_quick_2') || 'Odissi & Chhau Dance Heritage',
+          t('bot_quick_3') || 'Traditional Cuisine & Mahaprasad'
         ]
       }
     ]);
@@ -326,14 +324,14 @@ export default function DharoharChatbot() {
       const parts = line.split(/(\*\*.*?\*\*)/g);
       const formattedLine = parts.map((part, pIdx) => {
         if (part.startsWith('**') && part.endsWith('**')) {
-          return <strong key={pIdx} className="text-[#F5D77F] font-bold">{part.slice(2, -2)}</strong>;
+          return <strong key={pIdx} className="font-bold text-ink">{part.slice(2, -2)}</strong>;
         }
         return part;
       });
 
       if (line.trim().startsWith('* ') || line.trim().startsWith('- ')) {
         return (
-          <li key={lIdx} className="ml-3.5 my-1 list-disc text-zinc-200">
+          <li key={lIdx} className="ml-5 my-1 list-disc">
             {formattedLine.slice(1)}
           </li>
         );
@@ -341,14 +339,14 @@ export default function DharoharChatbot() {
 
       if (line.trim().startsWith('>')) {
         return (
-          <div key={lIdx} className="border-l-2 border-[#D4AF37] pl-3 py-1 my-1.5 italic text-[#F5D77F]/90 bg-[#D4AF37]/5 rounded-r-lg text-[11px]">
+          <div key={lIdx} className="bg-paper-2 px-3 py-2 my-2 italic text-ink">
             {formattedLine}
           </div>
         );
       }
 
       if (line.trim() === '') {
-        return <div key={lIdx} className="h-1.5" />;
+        return <div key={lIdx} className="h-2" />;
       }
 
       return (
@@ -359,107 +357,74 @@ export default function DharoharChatbot() {
     });
   };
 
+  const iconButton = 'inline-flex items-center justify-center w-11 h-11 shrink-0 cursor-pointer transition-colors duration-short ease-out';
+
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-auto">
-      
-      {/* Floating Animated Callout Pill (When Closed) */}
-      {!isOpen && showCallout && (
-        <div className="relative mb-3 animate-bounce">
-          <div className="dharohar-glass px-4 py-2 rounded-full border border-[#D4AF37]/50 shadow-[0_8px_30px_rgba(212,175,55,0.3)] flex items-center gap-2.5 text-xs font-semibold text-[#FFF8E7] bg-[#12121E]/95 cursor-pointer hover:border-[#F5D77F] transition-all">
-            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shadow-[0_0_8px_#10B981]"></span>
-            <span onClick={() => { setIsOpen(true); setShowCallout(false); }}>
-              {t('bot_callout')}
-            </span>
-            <button 
-              onClick={(e) => { e.stopPropagation(); setShowCallout(false); }}
-              className="text-zinc-400 hover:text-zinc-200 ml-1 p-0.5 rounded-full hover:bg-white/10"
-              title="Dismiss"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-          <div className="w-2.5 h-2.5 bg-[#12121E] border-r border-b border-[#D4AF37]/50 rotate-45 absolute -bottom-1.5 right-6"></div>
-        </div>
-      )}
+    <div className="fixed bottom-6 right-6 z-40 md:bottom-12 md:right-16 flex flex-col items-end pointer-events-auto">
 
       {/* Main Chatbot Window */}
       {isOpen && (
-        <div 
-          className={`dharohar-glass border border-[#D4AF37]/40 shadow-[0_25px_70px_rgba(0,0,0,0.9)] rounded-3xl flex flex-col overflow-hidden transition-all duration-300 backdrop-blur-2xl mb-3 ${
-            isExpanded 
-              ? 'w-[94vw] sm:w-[580px] h-[85vh] max-h-[800px]' 
-              : isMinimized 
-              ? 'w-[320px] sm:w-[360px] h-[64px]' 
+        <div
+          className={`bg-paper text-ink border border-rule flex flex-col overflow-hidden mb-3 ${
+            isExpanded
+              ? 'w-[94vw] sm:w-[580px] h-[85vh] max-h-[800px]'
+              : isMinimized
+              ? 'w-[94vw] sm:w-[440px] h-auto'
               : 'w-[94vw] sm:w-[440px] h-[600px] max-h-[85vh]'
           }`}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#171625] via-[#1C1A2E] to-[#121120] px-4 py-3.5 border-b border-[#D4AF37]/25 flex items-center justify-between select-none shrink-0 shadow-sm">
-            <div className="flex items-center gap-3">
-              {/* Bot Avatar with Status */}
-              <div className="relative">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#D4AF37] via-[#F59E0B] to-[#B45309] p-0.5 shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center justify-center">
-                  <div className="w-full h-full bg-[#0E0E17] rounded-[14px] flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-[#F5D77F]" />
-                  </div>
-                </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#10B981] border-2 border-[#0E0E17] shadow-[0_0_8px_#10B981]"></span>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <h3 className="font-cinzel text-sm font-bold text-[#FFF8E7] tracking-wide">
-                    {t('bot_title')}
-                  </h3>
-                  <Sparkles className="w-3.5 h-3.5 text-[#F59E0B] animate-pulse" />
-                </div>
-                <p className="text-[10px] font-sans text-[#D4AF37]/90 flex items-center gap-1.5">
-                  <span className="text-emerald-400 font-semibold">{t('bot_online')}</span> • <span className="text-zinc-400">{t('bot_subtitle')}</span>
-                </p>
-              </div>
+          <div className={`pl-4 pr-1 py-2 flex items-center justify-between gap-2 select-none shrink-0 ${isMinimized ? '' : 'border-b border-rule'}`}>
+            <div className="min-w-0">
+              <h3 className="font-display font-bold tracking-display text-2xl leading-tight text-ink">
+                {t('bot_title')}
+              </h3>
+              <p className="text-[15px] font-medium text-muted">
+                {t('bot_subtitle')}
+              </p>
             </div>
 
             {/* Header Controls */}
-            <div className="flex items-center gap-1 text-zinc-400">
+            <div className="flex items-center text-ink shrink-0">
               {/* Voice Read Aloud Toggle */}
               <button
                 onClick={() => setVoiceEnabled(!voiceEnabled)}
-                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                  voiceEnabled ? 'text-[#F5D77F] bg-[#D4AF37]/25 border border-[#D4AF37]/40' : 'hover:text-zinc-200 hover:bg-white/5'
+                className={`${iconButton} ${
+                  voiceEnabled ? 'bg-ink text-paper' : 'bg-paper text-ink hover:bg-paper-2'
                 }`}
                 title={voiceEnabled ? t('bot_voice_on') : t('bot_voice_off')}
                 aria-label={voiceEnabled ? t('bot_voice_on') : t('bot_voice_off')}
               >
-                {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                {voiceEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
               </button>
 
               {/* Clear Chat */}
               <button
                 onClick={handleClearChat}
-                className="p-1.5 rounded-lg hover:text-zinc-200 hover:bg-white/5 transition-colors cursor-pointer"
+                className={`${iconButton} hover:bg-paper-2`}
                 title={t('bot_clear')}
                 aria-label={t('bot_clear')}
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-5 h-5" />
               </button>
 
               {/* Expand / Minimize Controls */}
               <button
                 onClick={() => { setIsExpanded(!isExpanded); setIsMinimized(false); }}
-                className="p-1.5 rounded-lg hover:text-zinc-200 hover:bg-white/5 transition-colors cursor-pointer hidden sm:block"
+                className={`${iconButton} hover:bg-paper-2 hidden sm:inline-flex`}
                 title={isExpanded ? "Collapse" : "Expand"}
                 aria-label={isExpanded ? "Collapse chat" : "Expand chat"}
               >
-                {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                {isExpanded ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
               </button>
 
               <button
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="p-1.5 rounded-lg hover:text-zinc-200 hover:bg-white/5 transition-colors cursor-pointer"
+                className={`${iconButton} hover:bg-paper-2`}
                 title={isMinimized ? "Restore" : "Minimize"}
                 aria-label={isMinimized ? "Restore chat" : "Minimize chat"}
               >
-                <ChevronDown className={`w-4 h-4 transition-transform ${isMinimized ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-5 h-5 transition-transform duration-short ease-out ${isMinimized ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Close Button */}
@@ -469,11 +434,11 @@ export default function DharoharChatbot() {
                   setIsChatOpen(false);
                   if (window.speechSynthesis) window.speechSynthesis.cancel();
                 }}
-                className="p-1.5 rounded-lg hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                className={`${iconButton} hover:bg-paper-2`}
                 title="Close"
                 aria-label="Close chat"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -482,144 +447,129 @@ export default function DharoharChatbot() {
           {!isMinimized && (
             <>
               {/* Category Explorer Tabs */}
-              <div className="px-3 py-2 bg-[#0E0E18] border-b border-white/5 flex gap-1.5 overflow-x-auto hud-scrollbar shrink-0">
+              <div className="flex overflow-x-auto border-b border-rule shrink-0">
                 {categoryTabs.map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-1.5 whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+                    className={`min-h-[44px] px-4 whitespace-nowrap text-[15px] font-medium cursor-pointer transition-colors duration-short ease-out ${
                       activeTab === tab.id
-                        ? 'bg-[#D4AF37]/20 text-[#F5D77F] border border-[#D4AF37]/50 shadow-[0_0_10px_rgba(212,175,55,0.2)]'
-                        : 'bg-[#151424]/60 text-zinc-400 border border-transparent hover:text-zinc-200 hover:bg-white/5'
+                        ? 'bg-ink text-paper'
+                        : 'bg-paper text-ink hover:bg-paper-2'
                     }`}
                   >
-                    <span>{tab.label}</span>
+                    {tab.label}
                   </button>
                 ))}
               </div>
 
               {/* Messages Container */}
-              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 hud-scrollbar">
+              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
                 {messages.map((msg, index) => {
                   const isBot = msg.sender === 'bot';
                   return (
-                    <div 
+                    <div
                       key={index}
-                      className={`flex flex-col ${isBot ? 'items-start' : 'items-end'} transition-all`}
+                      className={`flex flex-col ${isBot ? 'items-start' : 'items-end'}`}
                     >
-                      <div className={`flex gap-2.5 max-w-[90%] ${isBot ? 'flex-row' : 'flex-row-reverse'}`}>
-                        
-                        {/* Bot Avatar Icon */}
-                        {isBot && (
-                          <div className="w-7 h-7 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center shrink-0 mt-1 shadow-sm">
-                            <Bot className="w-4 h-4 text-[#F5D77F]" />
+                      {/* Message */}
+                      <div
+                        className={`text-base ${
+                          isBot
+                            ? 'w-full text-ink-2'
+                            : 'max-w-[85%] bg-ink text-paper px-4 py-3'
+                        }`}
+                      >
+                        {isBot ? renderFormattedText(msg.text) : msg.text}
+
+                        {/* Grounded Entity Preview Cards (If returned from DB) */}
+                        {isBot && msg.matchedEntities && msg.matchedEntities.length > 0 && (
+                          <div className="mt-4">
+                            <div className="text-[15px] font-medium text-muted mb-1">
+                              Heritage sites mentioned
+                            </div>
+                            <ul className="border-t border-rule">
+                              {msg.matchedEntities.map((entity, eIdx) => (
+                                <li
+                                  key={eIdx}
+                                  className="py-3 border-b border-rule flex items-center justify-between gap-3"
+                                >
+                                  <div className="min-w-0 flex-1">
+                                    <h4 className="font-display font-bold tracking-display text-xl text-ink truncate">
+                                      {entity.name}
+                                    </h4>
+                                    <p className="text-[15px] text-muted truncate">
+                                      {entity.location_context || entity.category_name || 'Odisha Heritage'}
+                                    </p>
+                                  </div>
+                                  <button
+                                    onClick={() => {
+                                      navigate('/', { state: { selectedEntityId: entity.id, selectedEntity: entity } });
+                                      setIsOpen(false);
+                                    }}
+                                    className="min-h-[44px] px-1 shrink-0 text-base font-medium text-ink underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out cursor-pointer"
+                                    title="Locate on Map"
+                                  >
+                                    Map
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                         )}
 
-                        {/* Message Bubble */}
-                        <div 
-                          className={`rounded-2xl px-4 py-3 text-xs shadow-md ${
-                            isBot 
-                              ? 'bg-[#151424]/95 text-zinc-200 border border-[#D4AF37]/25 rounded-tl-sm' 
-                              : 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#0A0A10] font-medium rounded-tr-sm shadow-[0_4px_15px_rgba(212,175,55,0.3)]'
-                          }`}
-                        >
-                          {isBot ? renderFormattedText(msg.text) : msg.text}
-
-                          {/* Grounded Entity Preview Cards (If returned from DB) */}
-                          {isBot && msg.matchedEntities && msg.matchedEntities.length > 0 && (
-                            <div className="mt-3 pt-2.5 border-t border-[#D4AF37]/20 space-y-2">
-                              <div className="text-[10px] font-bold text-[#F5D77F] uppercase tracking-wider flex items-center gap-1.5">
-                                <Landmark className="w-3 h-3 text-[#F59E0B]" />
-                                <span>Verified Heritage Sites Mentioned:</span>
-                              </div>
-                              <div className="grid grid-cols-1 gap-2">
-                                {msg.matchedEntities.map((entity, eIdx) => (
-                                  <div 
-                                    key={eIdx}
-                                    className="p-2 rounded-xl bg-[#0F0E1A] border border-[#D4AF37]/30 flex items-center justify-between gap-2 hover:border-[#F5D77F] transition-all"
-                                  >
-                                    <div className="min-w-0 flex-1">
-                                      <h4 className="font-cinzel text-xs font-bold text-[#FFF8E7] truncate">
-                                        {entity.name}
-                                      </h4>
-                                      <p className="text-[10px] text-zinc-400 truncate flex items-center gap-1 mt-0.5">
-                                        <MapPin className="w-2.5 h-2.5 text-[#D4AF37]" />
-                                        <span>{entity.location_context || entity.category_name || 'Odisha Heritage'}</span>
-                                      </p>
-                                    </div>
-                                    <button
-                                      onClick={() => {
-                                        navigate('/', { state: { selectedEntityId: entity.id, selectedEntity: entity } });
-                                        setIsOpen(false);
-                                      }}
-                                      className="px-2 py-1 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 text-[#F5D77F] text-[10px] font-semibold border border-[#D4AF37]/40 flex items-center gap-1 shrink-0 cursor-pointer"
-                                      title="Locate on Map"
-                                    >
-                                      <span>Map</span>
-                                      <ArrowRight className="w-2.5 h-2.5" />
-                                    </button>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Action Button to Open Itinerary inside message */}
-                          {msg.isItinerarySuggestion && (
-                            <button
-                              onClick={() => {
-                                setIsItineraryOpen(true);
-                                setIsOpen(false);
-                              }}
-                              className="mt-3 w-full flex items-center justify-center gap-2 py-2 px-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37]/25 to-[#F59E0B]/25 hover:from-[#D4AF37]/40 hover:to-[#F59E0B]/40 border border-[#D4AF37]/50 text-[#F5D77F] font-bold text-xs transition-all cursor-pointer shadow-[0_0_12px_rgba(212,175,55,0.2)]"
-                            >
-                              <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
-                              <span>{t('itinerary_btn')} • Launch AI Trip Planner</span>
-                            </button>
-                          )}
-                        </div>
+                        {/* Action Button to Open Itinerary inside message */}
+                        {msg.isItinerarySuggestion && (
+                          <button
+                            onClick={() => {
+                              setIsItineraryOpen(true);
+                              setIsOpen(false);
+                            }}
+                            className="mt-4 inline-flex items-center justify-center min-h-[48px] px-6 bg-ink text-paper font-medium hover:bg-ink-2 transition-colors duration-short ease-out cursor-pointer"
+                          >
+                            {t('itinerary_btn')}
+                          </button>
+                        )}
                       </div>
 
                       {/* Message Tools (Bot Only) */}
                       {isBot && (
-                        <div className="flex items-center gap-2.5 mt-1.5 ml-9 text-[10px] text-zinc-500">
-                          <span>{msg.time}</span>
-                          
+                        <div className="flex items-center gap-1 mt-1 text-sm text-muted">
+                          <span className="mr-2">{msg.time}</span>
+
                           {/* Listen Button */}
                           <button
                             onClick={() => speakText(msg.text, index)}
-                            className={`hover:text-[#F5D77F] transition-colors p-0.5 cursor-pointer flex items-center gap-1 ${
-                              speakingIndex === index ? 'text-[#F5D77F] font-bold animate-pulse' : ''
+                            className={`inline-flex items-center justify-center gap-2 min-w-[44px] min-h-[44px] px-2 cursor-pointer transition-colors duration-short ease-out ${
+                              speakingIndex === index ? 'text-mark' : 'hover:text-ink'
                             }`}
                             title="Read Aloud"
                           >
-                            <Volume2 className="w-3.5 h-3.5" />
+                            <Volume2 className="w-4 h-4" />
                             {speakingIndex === index && <span>Speaking...</span>}
                           </button>
 
                           {/* Copy Button */}
                           <button
                             onClick={() => handleCopy(msg.text, index)}
-                            className="hover:text-[#F5D77F] transition-colors p-0.5 cursor-pointer"
+                            className="inline-flex items-center justify-center w-11 h-11 hover:text-ink cursor-pointer transition-colors duration-short ease-out"
                             title="Copy Response"
                           >
-                            {copiedIndex === index ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                            {copiedIndex === index ? <Check className="w-4 h-4 text-ink" /> : <Copy className="w-4 h-4" />}
                           </button>
                         </div>
                       )}
 
                       {/* Suggested Dynamic Follow-Up Chips */}
                       {isBot && msg.suggestedQuestions && msg.suggestedQuestions.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-2 ml-9">
+                        <div className="flex flex-wrap gap-2 mt-2">
                           {msg.suggestedQuestions.map((sq, sIdx) => (
                             <button
                               key={sIdx}
                               onClick={() => handleSendMessage(sq)}
-                              className="px-3 py-1 rounded-full bg-[#181728] hover:bg-[#D4AF37]/25 text-[#E6D5A8] border border-[#D4AF37]/35 text-[11px] font-medium transition-all hover:scale-105 cursor-pointer shadow-sm flex items-center gap-1"
+                              className="min-h-[44px] px-4 py-2 text-left text-[15px] font-medium border border-rule bg-paper text-ink hover:bg-paper-2 cursor-pointer transition-colors duration-short ease-out"
                             >
-                              <Sparkles className="w-2.5 h-2.5 text-[#F59E0B]" />
-                              <span>{sq}</span>
+                              {sq}
                             </button>
                           ))}
                         </div>
@@ -630,29 +580,21 @@ export default function DharoharChatbot() {
 
                 {/* Loading / Typing Indicator */}
                 {loading && (
-                  <div className="flex items-center gap-2.5 text-xs text-zinc-400 ml-1">
-                    <div className="w-7 h-7 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-[#F5D77F] animate-spin" />
-                    </div>
-                    <div className="dharohar-glass px-3.5 py-2 rounded-2xl border border-[#D4AF37]/20 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-bounce"></span>
-                      <span className="w-2 h-2 rounded-full bg-[#F59E0B] animate-bounce [animation-delay:0.2s]"></span>
-                      <span className="w-2 h-2 rounded-full bg-[#FFF8E7] animate-bounce [animation-delay:0.4s]"></span>
-                      <span className="text-[11px] text-[#F5D77F] font-medium ml-1">{t('chat_typing')}</span>
-                    </div>
+                  <div className="text-base text-muted">
+                    {t('chat_typing')}
                   </div>
                 )}
-                
+
                 <div ref={messagesEndRef} />
               </div>
 
               {/* Categorized Quick Prompts Suggestion Bar */}
-              <div className="px-3 py-2 bg-[#0C0B14] border-t border-white/5 flex gap-2 overflow-x-auto hud-scrollbar shrink-0">
+              <div className="flex overflow-x-auto border-t border-rule shrink-0">
                 {(categorizedPrompts[activeTab] || categorizedPrompts.all).map((item, pIdx) => (
                   <button
                     key={pIdx}
                     onClick={() => handleSendMessage(item.query || item.text)}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#141322] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-[11px] font-medium text-[#F5D77F] transition-all hover:scale-102 cursor-pointer shadow-sm"
+                    className="min-h-[44px] px-4 whitespace-nowrap text-[15px] font-medium bg-paper text-ink hover:bg-paper-2 border-r border-rule last:border-r-0 cursor-pointer transition-colors duration-short ease-out"
                   >
                     {item.text}
                   </button>
@@ -660,8 +602,8 @@ export default function DharoharChatbot() {
               </div>
 
               {/* Input Area */}
-              <div className="p-3 bg-[#11101C] border-t border-[#D4AF37]/20 shrink-0">
-                <div className="flex items-center gap-2 bg-[#09090F] px-3.5 py-2 rounded-2xl border border-[#D4AF37]/35 focus-within:border-[#F5D77F] shadow-inner transition-colors">
+              <div className="px-4 pt-2 pb-3 border-t border-rule shrink-0">
+                <div className="flex items-end gap-2">
                   <input
                     ref={inputRef}
                     type="text"
@@ -670,45 +612,39 @@ export default function DharoharChatbot() {
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={isListening ? "Listening... speak now" : t('bot_placeholder')}
-                    className="flex-1 bg-transparent text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none"
+                    className="flex-1 min-w-0 bg-transparent border-0 border-b border-muted px-0 py-2 text-lg text-ink placeholder:text-muted focus:outline-none focus-visible:border-ink disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={loading}
                   />
 
                   {/* Mic Voice Input */}
                   <button
                     onClick={toggleSpeechRecognition}
-                    className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-                      isListening 
-                        ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.6)]' 
-                        : 'text-zinc-400 hover:text-[#F5D77F] hover:bg-white/5'
+                    className={`${iconButton} ${
+                      isListening
+                        ? 'bg-mark text-mark-ink'
+                        : 'bg-paper text-ink hover:bg-paper-2'
                     }`}
                     title={isListening ? "Stop Listening" : "Speak Query"}
                     aria-label={isListening ? "Stop Listening" : "Voice search"}
                   >
-                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                    {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                   </button>
 
                   {/* Send Button */}
                   <button
                     onClick={() => handleSendMessage()}
                     disabled={!inputMessage.trim() || loading}
-                    className={`p-2 rounded-xl transition-all duration-300 cursor-pointer ${
-                      inputMessage.trim() && !loading
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#0A0A10] font-bold shadow-[0_0_15px_rgba(212,175,55,0.45)] scale-105'
-                        : 'bg-zinc-800/60 text-zinc-600 cursor-not-allowed'
-                    }`}
+                    className={`${iconButton} bg-ink text-paper hover:bg-ink-2 disabled:opacity-50 disabled:cursor-not-allowed`}
                     title={t('chat_send')}
                     aria-label={t('chat_send')}
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-5 h-5" />
                   </button>
                 </div>
 
-                <div className="text-center mt-1.5">
-                  <span className="text-[9px] text-zinc-500 font-sans tracking-wide">
-                    {t('bot_disclaimer')}
-                  </span>
-                </div>
+                <p className="mt-2 text-[13px] text-muted">
+                  {t('bot_disclaimer')}
+                </p>
               </div>
             </>
           )}
@@ -722,29 +658,11 @@ export default function DharoharChatbot() {
           setIsMinimized(false);
           setShowCallout(false);
         }}
-        className="group relative flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#D4AF37] via-[#F59E0B] to-[#C2410C] text-[#0A0A10] shadow-[0_10px_35px_rgba(212,175,55,0.5)] hover:shadow-[0_15px_45px_rgba(245,158,11,0.7)] transform hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer border border-[#FFF8E7]/40"
+        className="inline-flex items-center justify-center min-h-[52px] px-6 bg-ink text-paper font-medium border border-paper hover:bg-ink-2 transition-colors duration-short ease-out cursor-pointer"
         title="Dharohar AI Guide"
         aria-label="Toggle Dharohar AI Guide"
       >
-        {/* Glow Pulse Aura */}
-        <span className="absolute -inset-1 rounded-2xl bg-[#F59E0B]/35 blur-md group-hover:bg-[#F59E0B]/60 transition-all"></span>
-
-        {/* Icon */}
-        <div className="relative z-10 flex items-center justify-center">
-          {isOpen ? (
-            <X className="w-6 h-6 text-[#0A0A10] group-hover:rotate-90 transition-transform" />
-          ) : (
-            <>
-              <Bot className="w-6 h-6 text-[#0A0A10] group-hover:scale-110 transition-transform" />
-              <Sparkles className="w-3.5 h-3.5 text-[#FFF8E7] absolute -top-1.5 -right-1.5 animate-spin [animation-duration:4s]" />
-            </>
-          )}
-        </div>
-
-        {/* Active Live Indicator Badge */}
-        {!isOpen && (
-          <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-[#10B981] border-2 border-[#08080C] shadow-[0_0_8px_#10B981]"></span>
-        )}
+        {isOpen ? 'Close' : 'Ask the guide'}
       </button>
 
     </div>

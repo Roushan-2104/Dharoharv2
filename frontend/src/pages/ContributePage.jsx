@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Feather, CheckCircle2, UploadCloud, Sparkles, MapPin, BookOpen, ShieldCheck, Loader2 } from 'lucide-react';
 import API_BASE_URL from '../config/api';
 import { useLanguage } from '../context/LanguageContext';
+
+const labelClass = 'block text-[15px] font-medium text-muted mb-1';
+const fieldClass = 'w-full bg-transparent border-0 border-b border-muted px-0 py-2 text-lg text-ink placeholder:text-muted focus:outline-none focus-visible:border-ink transition-colors duration-short ease-out';
 
 export default function ContributePage() {
   const { t, translateCategory } = useLanguage();
@@ -32,34 +34,20 @@ export default function ContributePage() {
   };
 
   return (
-    <div className="min-h-screen pt-28 px-6 md:px-12 pb-32 flex items-center justify-center">
-      <div className="w-full max-w-3xl dharohar-card rounded-3xl p-8 md:p-12 relative border border-[#D4AF37]/30 shadow-[0_20px_60px_rgba(0,0,0,0.7)]">
-        
-        {/* Subtle Decorative Golden Corner Accents */}
-        <div className="absolute top-4 left-4 w-3 h-3 border-t-2 border-l-2 border-[#D4AF37]/60 rounded-tl-sm" />
-        <div className="absolute top-4 right-4 w-3 h-3 border-t-2 border-r-2 border-[#D4AF37]/60 rounded-tr-sm" />
-        <div className="absolute bottom-4 left-4 w-3 h-3 border-b-2 border-l-2 border-[#D4AF37]/60 rounded-bl-sm" />
-        <div className="absolute bottom-4 right-4 w-3 h-3 border-b-2 border-r-2 border-[#D4AF37]/60 rounded-br-sm" />
+    <div className="min-h-screen pt-[var(--nav-height)] pb-32 bg-paper text-ink">
+      <div className="mx-auto max-w-[1440px] px-4 md:px-16">
 
         {submitted ? (
-          <div className="text-center py-16 animate-fade-in-up">
-            <div className="w-20 h-20 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(212,175,55,0.4)]">
-              <CheckCircle2 className="w-10 h-10 text-[#F5D77F]" />
-            </div>
-
-            <span className="heritage-badge text-[#F5D77F] tracking-[0.25em]">
-              {t('contribute_badge')}
-            </span>
-
-            <h2 className="text-3xl md:text-5xl font-cinzel font-black text-[#FFF8E7] mt-2 mb-4">
+          <div className="mt-16 md:mt-24 bg-field text-field-ink on-field px-6 py-16 md:px-16 md:py-24">
+            <h2 className="font-display font-bold tracking-poster leading-[0.9] text-5xl md:text-7xl text-field-ink max-w-[16ch]">
               {t('contribute_success_title')}
             </h2>
 
-            <p className="text-zinc-300 mb-10 max-w-lg mx-auto leading-relaxed text-sm md:text-base font-sans">
+            <p className="mt-8 max-w-2xl text-lg text-field-ink">
               {t('contribute_success_msg')}
             </p>
 
-            <button 
+            <button
               onClick={() => {
                 setSubmitted(false);
                 setFormData({
@@ -72,7 +60,7 @@ export default function ContributePage() {
                   photoUrl: ''
                 });
               }}
-              className="bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] px-8 py-3.5 rounded-full font-bold text-xs heritage-badge hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all"
+              className="mt-10 min-h-[44px] text-lg font-medium text-field-ink underline underline-offset-[0.32em] decoration-1 hover:decoration-2"
             >
               {t('contribute_another')}
             </button>
@@ -80,163 +68,135 @@ export default function ContributePage() {
         ) : (
           <>
             {/* Header */}
-            <div className="mb-10 text-center md:text-left">
-              <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
-                <span className="w-8 h-[1.5px] bg-[#D4AF37]" />
-                <span className="heritage-badge text-[#F5D77F] tracking-[0.25em]">
-                  {t('contribute_badge')}
-                </span>
-              </div>
-
-              <h1 className="text-3xl md:text-5xl font-cinzel font-black text-[#FFF8E7] leading-tight mb-3">
+            <header className="pt-16 md:pt-24 mb-14">
+              <h1 className="font-display font-bold tracking-poster leading-[0.9] text-6xl md:text-8xl text-ink max-w-[14ch]">
                 {t('contribute_title')}
               </h1>
 
-              <p className="text-zinc-400 text-sm md:text-base max-w-xl leading-relaxed">
+              <p className="mt-8 max-w-2xl text-lg text-ink-2">
                 {t('contribute_subtitle')}
               </p>
-            </div>
+            </header>
 
             {/* Submission Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    {t('contribute_name_label')}
-                  </label>
-                  <input 
-                    required 
-                    type="text" 
-                    placeholder={t('contribute_name_placeholder')}
-                    value={formData.title}
-                    maxLength={200}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
-                  />
-                </div>
+            <form onSubmit={handleSubmit} className="max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
 
-                <div>
-                  <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    {t('contribute_cat_label')}
-                  </label>
-                  <select 
-                    value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all"
-                  >
-                    <option value="Oral Tradition & Folklore">{translateCategory('Folk Traditions & Lore')}</option>
-                    <option value="Monuments & Temples">{translateCategory('Monuments & Temples')}</option>
-                    <option value="Classical Dance & Music">{translateCategory('Classical Dance & Music')}</option>
-                    <option value="Festivals & Rituals">{translateCategory('Festivals & Rituals')}</option>
-                    <option value="Culinary Heritage">{translateCategory('Culinary Heritage')}</option>
-                    <option value="Handicrafts & Handlooms">{t('itinerary_theme_crafts')}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    {t('contribute_loc_label')}
-                  </label>
-                  <div className="relative">
-                    <MapPin className="w-4 h-4 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
-                    <input 
-                      required 
-                      type="text" 
-                      placeholder={t('contribute_loc_placeholder')}
-                      value={formData.location}
-                      maxLength={200}
-                      onChange={(e) => setFormData({...formData, location: e.target.value})}
-                      className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl pl-11 pr-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    {t('contribute_source_label')}
-                  </label>
-                  <select 
-                    value={formData.sourceType}
-                    onChange={(e) => setFormData({...formData, sourceType: e.target.value})}
-                    className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all"
-                  >
-                    <option value="Community Oral Lore">{t('contribute_source_opt1')}</option>
-                    <option value="Temple Chronicle / Pothi">{t('contribute_source_opt2')}</option>
-                    <option value="Local Artisan Tradition">{t('contribute_source_opt3')}</option>
-                    <option value="Field Research">{t('contribute_source_opt4')}</option>
-                  </select>
-                </div>
+              <div>
+                <label className={labelClass}>
+                  {t('contribute_name_label')}
+                </label>
+                <input
+                  required
+                  type="text"
+                  placeholder={t('contribute_name_placeholder')}
+                  value={formData.title}
+                  maxLength={200}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  className={fieldClass}
+                />
               </div>
 
               <div>
-                <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
+                <label className={labelClass}>
+                  {t('contribute_cat_label')}
+                </label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  className={`${fieldClass} cursor-pointer`}
+                >
+                  <option value="Oral Tradition & Folklore">{translateCategory('Folk Traditions & Lore')}</option>
+                  <option value="Monuments & Temples">{translateCategory('Monuments & Temples')}</option>
+                  <option value="Classical Dance & Music">{translateCategory('Classical Dance & Music')}</option>
+                  <option value="Festivals & Rituals">{translateCategory('Festivals & Rituals')}</option>
+                  <option value="Culinary Heritage">{translateCategory('Culinary Heritage')}</option>
+                  <option value="Handicrafts & Handlooms">{t('itinerary_theme_crafts')}</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={labelClass}>
+                  {t('contribute_loc_label')}
+                </label>
+                <input
+                  required
+                  type="text"
+                  placeholder={t('contribute_loc_placeholder')}
+                  value={formData.location}
+                  maxLength={200}
+                  onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  className={fieldClass}
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>
+                  {t('contribute_source_label')}
+                </label>
+                <select
+                  value={formData.sourceType}
+                  onChange={(e) => setFormData({...formData, sourceType: e.target.value})}
+                  className={`${fieldClass} cursor-pointer`}
+                >
+                  <option value="Community Oral Lore">{t('contribute_source_opt1')}</option>
+                  <option value="Temple Chronicle / Pothi">{t('contribute_source_opt2')}</option>
+                  <option value="Local Artisan Tradition">{t('contribute_source_opt3')}</option>
+                  <option value="Field Research">{t('contribute_source_opt4')}</option>
+                </select>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className={labelClass}>
                   {t('contribute_desc_label')}
                 </label>
-                <textarea 
-                  required 
-                  rows={4} 
+                <textarea
+                  required
+                  rows={4}
                   placeholder={t('contribute_desc_placeholder')}
                   value={formData.lore}
                   maxLength={5000}
                   onChange={(e) => setFormData({...formData, lore: e.target.value})}
-                  className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl p-5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600 resize-none font-sans leading-relaxed" 
+                  className={`${fieldClass} resize-y`}
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    {t('contribute_contributor_label')}
-                  </label>
-                  <input 
-                    type="text" 
-                    placeholder={t('contribute_contributor_placeholder')}
-                    value={formData.contributor}
-                    maxLength={200}
-                    onChange={(e) => setFormData({...formData, contributor: e.target.value})}
-                    className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl px-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
-                  />
-                </div>
+              <div>
+                <label className={labelClass}>
+                  {t('contribute_contributor_label')}
+                </label>
+                <input
+                  type="text"
+                  placeholder={t('contribute_contributor_placeholder')}
+                  value={formData.contributor}
+                  maxLength={200}
+                  onChange={(e) => setFormData({...formData, contributor: e.target.value})}
+                  className={fieldClass}
+                />
+              </div>
 
-                <div>
-                  <label className="block heritage-badge text-[#F5D77F] mb-2 text-[10px]">
-                    {t('contribute_photo_label')}
-                  </label>
-                  <div className="relative">
-                    <UploadCloud className="w-4 h-4 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
-                    <input 
-                      type="url" 
-                      placeholder={t('contribute_photo_placeholder')}
-                      value={formData.photoUrl}
-                      maxLength={500}
-                      onChange={(e) => setFormData({...formData, photoUrl: e.target.value})}
-                      className="w-full bg-[#101018] border border-[#D4AF37]/30 rounded-2xl pl-11 pr-5 py-3.5 text-sm text-[#FFF8E7] focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-zinc-600" 
-                    />
-                  </div>
-                </div>
+              <div>
+                <label className={labelClass}>
+                  {t('contribute_photo_label')}
+                </label>
+                <input
+                  type="url"
+                  placeholder={t('contribute_photo_placeholder')}
+                  value={formData.photoUrl}
+                  maxLength={500}
+                  onChange={(e) => setFormData({...formData, photoUrl: e.target.value})}
+                  className={fieldClass}
+                />
               </div>
 
               {/* Submit CTA */}
-              <div className="pt-4">
-                <button 
+              <div className="md:col-span-2 pt-2">
+                <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D4AF37] text-[#08080C] font-bold text-xs heritage-badge shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                  aria-busy={submitting}
+                  className="inline-flex items-center justify-center min-h-[48px] px-6 bg-ink text-paper font-medium hover:bg-ink-2 transition-colors duration-short ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {submitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin text-[#08080C]" />
-                      <span>Recording to Heritage Knowledge System...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Feather className="w-4 h-4" />
-                      <span>{t('contribute_submit')}</span>
-                    </>
-                  )}
+                  {submitting ? 'Recording to Heritage Knowledge System...' : t('contribute_submit')}
                 </button>
               </div>
 

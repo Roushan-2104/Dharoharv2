@@ -1,104 +1,88 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+/* Hallmark · theme: grid · redesign: full · hero: globe on the field (/), poster entry (/discover)
+   critique: one ink, one ultramarine field, one red mark for the chosen thing; no glass, glow, gradients or tracked capitals */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-paper: oklch(97.5% 0.005 90);
+  --color-paper-2: oklch(94.2% 0.006 90);
+  --color-paper-3: oklch(90.5% 0.008 90);
+  --color-ink: oklch(19% 0.022 266);
+  --color-ink-2: oklch(31% 0.02 266);
+  --color-muted: oklch(47% 0.016 266);
+  --color-rule: oklch(87.5% 0.008 90);
+  --color-field: oklch(44% 0.2 266);
+  --color-field-ink: oklch(97.5% 0.005 90);
+  --color-space: oklch(12% 0.015 266);
+  --color-mark: oklch(57% 0.215 29);
+  --color-mark-ink: oklch(97.5% 0.005 90);
+  --color-focus: oklch(46% 0.2 266);
+
+  --font-display: "Radio Canada Big", "Noto Sans Devanagari", "Noto Sans Oriya", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Radio Canada", "Noto Sans Devanagari", "Noto Sans Oriya", ui-sans-serif, system-ui, sans-serif;
+
+  --tracking-display: -0.035em;
+  --dur-short: 160ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --nav-height: 72px;
+}
+
 @layer base {
+  html,
   body {
-    @apply bg-[#08080C] text-[#F3F3EE] overflow-x-hidden;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    background-image: 
-      radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
-      radial-gradient(circle at 100% 100%, rgba(194, 65, 12, 0.05) 0%, transparent 50%);
-    background-attachment: fixed;
+    overflow-x: clip;
   }
 
-  h1, h2, h3, h4 {
-    font-family: 'Cinzel', serif;
-    letter-spacing: -0.01em;
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+    overflow-wrap: break-word;
+    min-width: 0;
+  }
+
+  ::selection {
+    background: var(--color-mark);
+    color: var(--color-mark-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .on-field :focus-visible {
+    outline-color: var(--color-field-ink);
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
   }
 }
 
 @layer utilities {
-  .font-serif-italic {
-    font-family: 'Playfair Display', 'Cinzel', serif;
-    font-style: italic;
-  }
-
-  .font-cinzel {
-    font-family: 'Cinzel', serif;
-  }
-
-  .font-cinzel-dec {
-    font-family: 'Cinzel Decorative', serif;
-  }
-
-  .heritage-badge, .tech-label {
-    @apply font-sans font-semibold uppercase tracking-[0.16em] text-[11px];
-  }
-
-  .gold-gradient-text {
-    background: linear-gradient(135deg, #FFF6D6 0%, #D4AF37 50%, #B8860B 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .saffron-gradient-text {
-    background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 50%, #EA580C 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .stroke-text {
-    -webkit-text-stroke: 1px #F3F3EE;
-    color: transparent;
-  }
-
-  .stroke-text-gold {
-    -webkit-text-stroke: 1px #D4AF37;
-    color: transparent;
-  }
-
-  .transition-custom {
-    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  /* Clip-path reveal animation */
-  .clip-hidden {
-    clip-path: inset(0 0 0 100%);
-  }
-  
-  .clip-reveal {
-    clip-path: inset(0 0 0 0);
-  }
-
-  /* Indic Glass & Borders */
-  .dharohar-glass, .industrial-panel {
-    background: rgba(16, 16, 23, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(212, 175, 55, 0.18);
-  }
-
-  .dharohar-card {
-    background: linear-gradient(180deg, rgba(24, 23, 34, 0.7) 0%, rgba(16, 15, 23, 0.85) 100%);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.15);
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  }
-
-  .dharohar-card:hover {
-    border-color: rgba(212, 175, 55, 0.4);
-    box-shadow: 0 15px 35px -5px rgba(212, 175, 55, 0.15);
-  }
-
-  .industrial-border {
-    border: 1px solid rgba(212, 175, 55, 0.2);
-  }
-
-  .gold-glow {
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+  /* Visually hidden, still read by screen readers */
+  .sr-only-grid {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -109,70 +93,93 @@
     scrollbar-width: none;
   }
 
-  .hud-scrollbar::-webkit-scrollbar {
-    height: 4px;
-    display: block;
+  /* Legacy class names still used in a few places, mapped onto the Grid system */
+  .font-cinzel,
+  .font-cinzel-dec {
+    font-family: var(--font-display);
   }
-  .hud-scrollbar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 9999px;
-    margin: 0 8px;
+  .heritage-badge,
+  .tech-label {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 15px;
+    text-transform: none;
+    letter-spacing: 0;
   }
-  .hud-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(90deg, #D4AF37, #F59E0B);
-    border-radius: 9999px;
-    box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+  .gold-gradient-text,
+  .saffron-gradient-text {
+    color: var(--color-ink);
   }
-  .hud-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #FFF6D6;
+  .dharohar-glass,
+  .industrial-panel,
+  .dharohar-card {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border: 0;
+    box-shadow: none;
   }
-}
-
-/* Subtle Starry Atmospheric Overlay */
-.atmospheric-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.02;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-/* Status Pulse Animation */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.85);
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+  .industrial-border {
+    border: 1px solid var(--color-rule);
   }
-  70% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0);
-  }
-  100% {
-    transform: scale(0.85);
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  .gold-glow {
+    box-shadow: none;
   }
 }
 
-.status-pulse {
-  animation: pulse-ring 2.4s infinite cubic-bezier(0.16, 1, 0.3, 1);
+/* Motion: markers arrive, the chosen one breathes, columns rise in. All of it stops under reduced motion. */
+@keyframes marker-pop {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.marker-pop {
+  animation: marker-pop 420ms var(--ease-out) both;
 }
 
-/* Custom Gold Scrollbar */
+@keyframes marker-pulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(4.2); opacity: 0; }
+}
+.marker-pulse {
+  animation: marker-pulse 1800ms var(--ease-out) infinite;
+}
+
+@keyframes rise-in {
+  from { transform: translateY(14px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.rise-in > * {
+  animation: rise-in 520ms var(--ease-out) both;
+}
+.rise-in > *:nth-child(2) { animation-delay: 60ms; }
+.rise-in > *:nth-child(3) { animation-delay: 120ms; }
+.rise-in > *:nth-child(4) { animation-delay: 180ms; }
+.rise-in > *:nth-child(5) { animation-delay: 240ms; }
+.rise-in > *:nth-child(6) { animation-delay: 300ms; }
+.rise-in > *:nth-child(n+7) { animation-delay: 360ms; }
+
+/* Thin scrollbars in the paper's own tones */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #08080C;
+  background: var(--color-paper-2);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.25);
-  border-radius: 9999px;
+  background: var(--color-paper-3);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.5);
+  background: var(--color-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

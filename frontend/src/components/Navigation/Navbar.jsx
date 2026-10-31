@@ -1,200 +1,157 @@
-import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { Compass, Map, Feather, Sparkles, Languages, Check, Award, HelpCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 
+const linkBase = 'inline-flex items-center min-h-[44px] text-[16px] font-medium transition-colors duration-short ease-out hover:text-mark';
+
 export default function Navbar() {
-  const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const { 
-    language, 
-    setLanguage, 
-    t, 
-    setIsItineraryOpen, 
-    visitedSites, 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const {
+    language,
+    setLanguage,
+    t,
+    setIsItineraryOpen,
+    visitedSites,
     setIsPassportOpen,
     setIsQuizOpen,
     setActiveQuizEntity
   } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Close the phone menu whenever the route changes
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   const languageOptions = [
-    { code: 'en', label: 'English', short: 'EN' },
-    { code: 'hi', label: 'हिन्दी', short: 'हि' },
-    { code: 'or', label: 'ଓଡ଼ିଆ', short: 'ଓଡ଼ି' },
+    { code: 'en', label: 'English' },
+    { code: 'hi', label: 'हिन्दी' },
+    { code: 'or', label: 'ଓଡ଼ିଆ' },
   ];
 
-  const currentOption = languageOptions.find(l => l.code === language) || languageOptions[0];
+  const isHi = language === 'hi';
+  const isOr = language === 'or';
+  const passportTitle = isHi ? 'पासपोर्ट' : isOr ? 'ପାସପୋର୍ଟ' : 'Passport';
+  const countryName = isHi ? 'भारत' : isOr ? 'ଭାରତ' : 'India';
+  const menuLabel = isHi ? 'मेनू' : isOr ? 'ମେନୁ' : 'Menu';
+  const closeLabel = t('panel_close');
 
   const handleOpenItinerary = () => {
+    setMenuOpen(false);
     setIsItineraryOpen(true);
     if (window.location.pathname !== '/') {
       navigate('/');
     }
   };
 
-  const isHi = language === 'hi';
-  const isOr = language === 'or';
-  const passportTitle = isHi ? 'पासपोर्ट' : isOr ? 'ପାସପୋର୍ଟ' : 'Passport';
+  const handleOpenQuiz = () => {
+    setMenuOpen(false);
+    setActiveQuizEntity(null);
+    setIsQuizOpen(true);
+  };
+
+  const handleOpenPassport = () => {
+    setMenuOpen(false);
+    setIsPassportOpen(true);
+  };
+
+  const navLinkClass = ({ isActive }) =>
+    `${linkBase} ${isActive ? 'underline underline-offset-[0.32em] decoration-1' : ''}`;
+
+  const passportButton = (extra = '') => (
+    <button
+      type="button"
+      onClick={handleOpenPassport}
+      className={`${linkBase} gap-2 cursor-pointer ${extra}`}
+      aria-label={`${passportTitle}${visitedSites.length > 0 ? `, ${visitedSites.length}` : ''}`}
+    >
+      <span>{passportTitle}</span>
+      {visitedSites.length > 0 && (
+        <span className="font-display font-bold">{visitedSites.length}</span>
+      )}
+    </button>
+  );
+
+  const languageSwitch = (extra = '') => (
+    <div role="group" aria-label={t('lang_switch_tooltip')} className={`flex items-center gap-5 ${extra}`}>
+      {languageOptions.map(opt => (
+        <button
+          key={opt.code}
+          type="button"
+          lang={opt.code}
+          onClick={() => setLanguage(opt.code)}
+          aria-pressed={language === opt.code}
+          aria-label={`Select ${opt.label}`}
+          className={`${linkBase} cursor-pointer ${language === opt.code ? 'underline underline-offset-[0.32em] decoration-1' : ''}`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 h-20 flex justify-between items-center px-6 md:px-10 border-b border-[#D4AF37]/20 bg-[#08080C]/80 backdrop-blur-xl">
-      
-      {/* Left Navigation Links */}
-      <div className="flex items-center gap-6 md:gap-10 flex-1">
-        <NavLink 
-          to="/" 
-          className={({ isActive }) => 
-            `heritage-badge flex items-center gap-2.5 transition-all duration-300 py-1.5 px-3 rounded-full ${
-              isActive 
-                ? 'text-[#F5D77F] bg-[#D4AF37]/15 border border-[#D4AF37]/40 shadow-[0_0_15px_rgba(212,175,55,0.2)]' 
-                : 'text-zinc-400 hover:text-[#F5D77F] hover:bg-white/5 border border-transparent'
-            }`
-          }
+    <header className="fixed top-0 left-0 z-50 w-full h-nav bg-paper text-ink">
+      <div className="mx-auto h-full max-w-[1920px] px-4 md:px-8 xl:px-16 flex items-center gap-6 xl:gap-12">
+
+        {/* Wordmark: the name over the country, beside a square of the mark red */}
+        <NavLink
+          to="/"
+          aria-label={`${t('nav_title')}, ${countryName}`}
+          className="inline-grid grid-cols-[auto_auto] gap-x-2.5 items-center font-display text-[22px] leading-[0.92] tracking-[-0.02em] shrink-0"
         >
-          <Map className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>{t('nav_map')}</span>
+          <span aria-hidden="true" className="row-span-2 w-[41px] h-[41px] bg-mark" />
+          <span className="font-bold">{t('nav_title')}</span>
+          <span className="font-normal">{countryName}</span>
         </NavLink>
 
-        <NavLink 
-          to="/discover" 
-          className={({ isActive }) => 
-            `heritage-badge flex items-center gap-2.5 transition-all duration-300 py-1.5 px-3 rounded-full ${
-              isActive 
-                ? 'text-[#F5D77F] bg-[#D4AF37]/15 border border-[#D4AF37]/40 shadow-[0_0_15px_rgba(212,175,55,0.2)]' 
-                : 'text-zinc-400 hover:text-[#F5D77F] hover:bg-white/5 border border-transparent'
-            }`
-          }
-        >
-          <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>{t('nav_discover')}</span>
-        </NavLink>
-
-        <NavLink 
-          to="/contribute" 
-          className={({ isActive }) => 
-            `heritage-badge flex items-center gap-2.5 transition-all duration-300 py-1.5 px-3 rounded-full ${
-              isActive 
-                ? 'text-[#F5D77F] bg-[#D4AF37]/15 border border-[#D4AF37]/40 shadow-[0_0_15px_rgba(212,175,55,0.2)]' 
-                : 'text-zinc-400 hover:text-[#F5D77F] hover:bg-white/5 border border-transparent'
-            }`
-          }
-        >
-          <Feather className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>{t('nav_contribute')}</span>
-        </NavLink>
-      </div>
-
-      {/* Centered Logo: DHAROHAR */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 cursor-pointer select-none">
-        {/* Golden Indic Chakra Emblem SVG */}
-        <div className="relative w-8 h-8 flex items-center justify-center">
-          <div className="absolute inset-0 rounded-full border border-[#D4AF37]/40 animate-[spin_20s_linear_infinite]" />
-          <svg viewBox="0 0 24 24" className="w-6 h-6 text-[#D4AF37]" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <circle cx="12" cy="12" r="9" stroke="#D4AF37" strokeWidth="1.2" />
-            <circle cx="12" cy="12" r="3" fill="#D4AF37" />
-            <path d="M12 3v6M12 15v6M3 12h6M15 12h6M5.6 5.6l4.2 4.2M14.2 14.2l4.2 4.2M5.6 18.4l4.2-4.2M14.2 9.8l4.2-4.2" stroke="#D4AF37" strokeWidth="1" />
-          </svg>
-        </div>
-        <NavLink to="/" className="flex flex-col items-center">
-          <h1 className="text-2xl md:text-3xl font-black tracking-[0.2em] font-cinzel gold-gradient-text uppercase leading-none">
-            {t('nav_title')}
-          </h1>
-          <span className="text-[8px] uppercase tracking-[0.3em] text-[#D4AF37]/70 font-sans mt-0.5">
-            {t('nav_subtitle')}
-          </span>
-        </NavLink>
-      </div>
-
-      {/* Right Controls / Cultural Status */}
-      <div className="flex items-center justify-end flex-1 gap-2.5 sm:gap-3.5 md:gap-4">
-        
-        {/* Visited Sites Passport Action Button */}
-        <button
-          onClick={() => setIsPassportOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#141224]/90 hover:bg-[#D4AF37]/20 shadow-[0_0_12px_rgba(212,175,55,0.15)] transition-all transform hover:scale-105 cursor-pointer"
-          title="Visited Heritage Sites Passport"
-          aria-label="Visited Heritage Sites Passport"
-        >
-          <Award className="w-3.5 h-3.5 text-[#F5D77F]" />
-          <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide hidden sm:inline">
-            {passportTitle}
-          </span>
-          {visitedSites.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full bg-[#D4AF37] text-[#08080C] text-[10px] font-black leading-tight">
-              {visitedSites.length}
-            </span>
-          )}
-        </button>
-
-        {/* Itinerary Action Button */}
-        <button
-          onClick={handleOpenItinerary}
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#12121E]/90 hover:bg-[#D4AF37]/20 shadow-[0_0_12px_rgba(212,175,55,0.2)] transition-all transform hover:scale-105 cursor-pointer"
-          title={t('itinerary_btn')}
-          aria-label={t('itinerary_btn')}
-        >
-          <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
-          <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide hidden sm:inline">
+        {/* Desktop links */}
+        <nav aria-label="Main" className="hidden lg:flex items-center gap-7 flex-1 min-w-0">
+          <NavLink to="/" end className={navLinkClass}>{t('nav_map')}</NavLink>
+          <NavLink to="/discover" className={navLinkClass}>{t('nav_discover')}</NavLink>
+          <button type="button" onClick={handleOpenItinerary} className={`${linkBase} cursor-pointer whitespace-nowrap`}>
             {t('itinerary_btn')}
-          </span>
-        </button>
-
-        {/* Heritage Quiz Challenge Button */}
-        <button
-          onClick={() => {
-            setActiveQuizEntity(null);
-            setIsQuizOpen(true);
-          }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#141224]/90 hover:bg-[#D4AF37]/20 shadow-[0_0_12px_rgba(212,175,55,0.15)] transition-all transform hover:scale-105 cursor-pointer"
-          title={t('quiz_btn')}
-          aria-label={t('quiz_btn')}
-        >
-          <span className="text-xs">🎯</span>
-          <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide hidden sm:inline">
-            {t('nav_quiz')}
-          </span>
-        </button>
-
-        {/* Multi-Language Selector Dropdown */}
-        <div className="relative">
-          <button 
-            onClick={() => setLangMenuOpen(!langMenuOpen)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#101017] border border-[#D4AF37]/35 text-[#F5D77F] hover:border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.15)] transition-all text-xs font-semibold cursor-pointer"
-            title={t('lang_switch_tooltip')}
-            aria-label={t('lang_switch_tooltip')}
-            aria-expanded={langMenuOpen}
-          >
-            <Languages className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>{currentOption.label}</span>
           </button>
+          <button type="button" onClick={handleOpenQuiz} className={`${linkBase} cursor-pointer`}>
+            {t('nav_quiz')}
+          </button>
+          <NavLink to="/contribute" className={navLinkClass}>{t('nav_contribute')}</NavLink>
+        </nav>
 
-          {/* Language Options Dropdown Menu */}
-          {langMenuOpen && (
-            <div className="absolute right-0 mt-2 w-36 rounded-xl dharohar-glass border border-[#D4AF37]/40 shadow-[0_10px_30px_rgba(0,0,0,0.8)] py-1.5 z-50 animate-fade-in-up">
-              {languageOptions.map(opt => (
-                <button
-                  key={opt.code}
-                  onClick={() => {
-                    setLanguage(opt.code);
-                    setLangMenuOpen(false);
-                  }}
-                  aria-label={`Select ${opt.label}`}
-                  className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-medium transition-colors cursor-pointer ${
-                    language === opt.code
-                      ? 'text-[#F5D77F] bg-[#D4AF37]/20 font-bold'
-                      : 'text-zinc-300 hover:text-[#F5D77F] hover:bg-white/5'
-                  }`}
-                >
-                  <span>{opt.label}</span>
-                  {language === opt.code && <Check className="w-3.5 h-3.5 text-[#D4AF37]" />}
-                </button>
-              ))}
-            </div>
-          )}
+        <div className="hidden lg:flex items-center gap-8 shrink-0">
+          {passportButton()}
+          {languageSwitch()}
         </div>
 
+        {/* Phone and tablet: one menu button */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen(open => !open)}
+          aria-expanded={menuOpen}
+          aria-controls="site-menu"
+          className="lg:hidden ml-auto min-h-[44px] px-4 bg-ink text-paper font-medium transition-colors duration-short ease-out hover:bg-ink-2 cursor-pointer"
+        >
+          {menuOpen ? closeLabel : menuLabel}
+        </button>
       </div>
 
-    </nav>
+      {menuOpen && (
+        <div
+          id="site-menu"
+          className="lg:hidden fixed inset-x-0 top-nav bottom-0 z-50 overflow-y-auto bg-paper px-4 md:px-8 pt-6 pb-10 flex flex-col gap-8"
+        >
+          <nav aria-label="Main" className="flex flex-col font-display font-bold text-4xl tracking-display leading-[1.15]">
+            <NavLink to="/" end className={({ isActive }) => `py-1 hover:text-mark ${isActive ? 'text-mark' : ''}`}>{t('nav_map')}</NavLink>
+            <NavLink to="/discover" className={({ isActive }) => `py-1 hover:text-mark ${isActive ? 'text-mark' : ''}`}>{t('nav_discover')}</NavLink>
+            <button type="button" onClick={handleOpenItinerary} className="py-1 text-left hover:text-mark cursor-pointer">{t('itinerary_btn')}</button>
+            <button type="button" onClick={handleOpenQuiz} className="py-1 text-left hover:text-mark cursor-pointer">{t('nav_quiz')}</button>
+            <NavLink to="/contribute" className={({ isActive }) => `py-1 hover:text-mark ${isActive ? 'text-mark' : ''}`}>{t('nav_contribute')}</NavLink>
+          </nav>
+          {passportButton('self-start text-lg')}
+          {languageSwitch('flex-wrap')}
+        </div>
+      )}
+    </header>
   );
 }

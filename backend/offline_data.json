@@ -3873,24 +3873,6 @@
         84.5175
       ],
       "category_name": "Tradition"
-    },
-    {
-      "id": "eb1c6e92-6490-448b-aedc-1695a12d4a60",
-      "name": "Odisha government tourism/culture portals",
-      "location_context": "and GI-tag documentation. The explanations add historical and cultural context but stay tied to the same verified entities — nothing new was introduced that couldn't be traced back to a real source.*",
-      "description": "",
-      "metadata": {
-        "Category": "*Same sourcing as before: ASI's official monument records",
-        "No.": "Wikipedia's Odisha-specific lists",
-        "Name": "Odisha government tourism/culture portals",
-        "Location / Context": "and GI-tag documentation. The explanations add historical and cultural context but stay tied to the same verified entities — nothing new was introduced that couldn't be traced back to a real source.*",
-        "Description / Significance": ""
-      },
-      "coordinates": [
-        20.4835,
-        84.4957
-      ],
-      "category_name": "*Same sourcing as before: ASI's official monument records"
     }
   ],
   "relationships": [

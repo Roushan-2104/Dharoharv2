@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Tooltip, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import Connections2D from './Connections2D';
+import { THEME } from '../../config/theme';
 import { useLanguage } from '../../context/LanguageContext';
 
 // Component to handle auto-panning when an entity is selected
@@ -56,25 +57,11 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
   const [currentZoom, setCurrentZoom] = useState(6);
   
   // Custom Leaflet DivIcon creator with refined micro-jewel styling
-  const createCustomIcon = (color, isActive) => {
-    // Dynamic scale based on map zoom
-    const baseSize = currentZoom <= 6 ? 5 : currentZoom <= 8 ? 6 : 8;
-    const activeSize = currentZoom <= 6 ? 9 : currentZoom <= 8 ? 10 : 12;
-    const size = isActive ? activeSize : baseSize;
-
+  const createCustomIcon = (isActive) => {
+    const size = currentZoom <= 6 ? 7 : currentZoom <= 8 ? 8 : 10;
     return L.divIcon({
       className: 'custom-leaflet-marker',
-      html: `<div class="marker-dot ${isActive ? 'active-pulse' : ''}" style="
-        width: ${size}px;
-        height: ${size}px;
-        background-color: ${color};
-        border-radius: 50%;
-        box-shadow: ${isActive ? `0 0 10px ${color}, 0 0 18px rgba(255,255,255,0.5)` : `0 0 5px ${color}`};
-        border: 1px solid rgba(255,255,255,0.95);
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        transform: translate(-50%, -50%);
-        cursor: pointer;
-      "></div>`,
+      html: `<span class="marker-dot${isActive ? ' is-active' : ''}" style="width:${size}px;height:${size}px"></span>`,
       iconSize: [0, 0],
       iconAnchor: [0, 0],
     });
@@ -85,7 +72,7 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
       <MapContainer 
         center={[20.5, 84.5]} // Center on Odisha / Eastern India
         zoom={6} 
-        style={{ width: '100%', height: '100%', background: '#08080C' }}
+        style={{ width: '100%', height: '100%', background: THEME.field }}
         zoomControl={false} // Clean modern look
       >
         
@@ -103,24 +90,21 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
           const coords = entity.coordinates;
           if (!coords || coords.length < 2) return null;
           
-          const color = categoryColors[entity.category_name] || '#D4AF37';
           const isActive = activeEntity?.id === entity.id;
 
           return (
             <Marker 
               key={entity.id}
               position={[coords[0], coords[1]]}
-              icon={createCustomIcon(color, isActive)}
+              icon={createCustomIcon(isActive)}
               eventHandlers={{
                 click: () => setActiveEntity(entity),
               }}
             >
               <Tooltip direction="top" offset={[0, -6]} opacity={0.95}>
-                <div className="px-2 py-1 bg-[#0C0C14] text-[#FFF8E7] rounded border border-[#D4AF37]/50 shadow-lg text-center pointer-events-none">
-                  <div className="font-cinzel text-xs font-bold">{translateEntityName(entity.name, entity.location_context)}</div>
-                  <div className="text-[9px] uppercase tracking-wider font-semibold" style={{ color: color }}>
-                    {translateCategory(entity.category_name)}
-                  </div>
+                <div className="bg-paper text-ink px-2.5 py-1.5 text-left pointer-events-none">
+                  <div className="font-display font-bold text-[13px] leading-tight">{translateEntityName(entity.name, entity.location_context)}</div>
+                  <div className="text-[11px] text-muted leading-tight mt-0.5">{translateCategory(entity.category_name)}</div>
                 </div>
               </Tooltip>
             </Marker>
@@ -138,27 +122,27 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
           background: transparent;
           border: none;
         }
+        .marker-dot {
+          display: block;
+          box-sizing: border-box;
+          border-radius: 50%;
+          background: var(--color-paper);
+          border: 1px solid var(--color-ink);
+          transform: translate(-50%, -50%);
+          transition: transform var(--dur-short) var(--ease-out);
+          cursor: pointer;
+        }
         .custom-leaflet-marker:hover .marker-dot {
           transform: translate(-50%, -50%) scale(1.4);
-          z-index: 1000 !important;
         }
-        .active-pulse {
-          animation: pulse-ring 2.2s infinite ease-out;
-          z-index: 999 !important;
-        }
-        @keyframes pulse-ring {
-          0% {
-            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7), 0 0 8px rgba(212, 175, 55, 0.9);
-          }
-          70% {
-            box-shadow: 0 0 0 8px rgba(212, 175, 55, 0), 0 0 12px rgba(212, 175, 55, 0.9);
-          }
-          100% {
-            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0), 0 0 8px rgba(212, 175, 55, 0.9);
-          }
+        .marker-dot.is-active {
+          background: var(--color-mark);
+          transform: translate(-50%, -50%) scale(1.6);
+          z-index: 999;
         }
         .leaflet-container {
-          background: #08080C;
+          background: var(--color-field);
+          font-family: var(--font-body);
         }
         .leaflet-tooltip {
           background: transparent !important;
@@ -167,7 +151,7 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
           padding: 0 !important;
         }
         .leaflet-tooltip-top:before {
-          border-top-color: #0C0C14 !important;
+          border-top-color: var(--color-paper) !important;
         }
       `}</style>
     </div>

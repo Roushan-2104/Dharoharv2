@@ -1,22 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Sparkles, 
-  Compass, 
-  X, 
-  Clock, 
-  MapPin, 
-  Calendar, 
-  Check, 
-  Copy, 
-  Navigation, 
-  Utensils, 
-  BookOpen, 
-  ChevronRight, 
-  RotateCcw,
-  Eye,
-  Sliders,
-  Flame
-} from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 import axios from 'axios';
 import API_BASE_URL from '../../config/api';
 import { useLanguage } from '../../context/LanguageContext';
@@ -56,12 +39,12 @@ export default function ItineraryModal({
 
   // Available Themes
   const themes = [
-    { id: 'temples', label: t('itinerary_theme_temples'), icon: '🏛️' },
-    { id: 'dance', label: t('itinerary_theme_dance'), icon: '💃' },
-    { id: 'food', label: t('itinerary_theme_food'), icon: '🍛' },
-    { id: 'crafts', label: t('itinerary_theme_crafts'), icon: '🎨' },
-    { id: 'wildlife', label: t('itinerary_theme_wildlife'), icon: '🌿' },
-    { id: 'history', label: t('itinerary_theme_history'), icon: '🏰' }
+    { id: 'temples', label: t('itinerary_theme_temples') },
+    { id: 'dance', label: t('itinerary_theme_dance') },
+    { id: 'food', label: t('itinerary_theme_food') },
+    { id: 'crafts', label: t('itinerary_theme_crafts') },
+    { id: 'wildlife', label: t('itinerary_theme_wildlife') },
+    { id: 'history', label: t('itinerary_theme_history') }
   ];
 
   const toggleTheme = (themeId) => {
@@ -112,7 +95,7 @@ export default function ItineraryModal({
   const handleCopyItinerary = () => {
     if (!itinerary) return;
 
-    let text = `✨ DHAROHAR - ${itinerary.title}\n`;
+    let text = `DHAROHAR - ${itinerary.title}\n`;
     text += `Duration: ${itinerary.duration} | Focus: ${itinerary.themes?.join(', ') || ''}\n\n`;
     text += `${itinerary.summary || itinerary.subtitle || ''}\n\n`;
 
@@ -120,7 +103,7 @@ export default function ItineraryModal({
       const dayNum = d.dayNumber || d.day;
       const dayTitle = d.dayTitle || d.title;
       text += `━━━━━━━━━━━━━━━━━━━━\n`;
-      text += `📅 DAY ${dayNum}: ${dayTitle} (${d.theme})\n`;
+      text += `DAY ${dayNum}: ${dayTitle} (${d.theme})\n`;
       (d.stops || []).forEach((s, idx) => {
         text += `  ${idx + 1}. ${s.name} [${s.location}]\n`;
         text += `     • Experience: ${s.activity}\n`;
@@ -160,135 +143,114 @@ export default function ItineraryModal({
     }
   };
 
+  const isRouteActive = activeRoute && activeRoute.length > 0;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/75 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col bg-[#0A0A12]/95 border border-[#D4AF37]/35 rounded-2xl shadow-[0_12px_60px_rgba(0,0,0,0.85)] overflow-hidden">
-        
-        {/* Header Bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#D4AF37]/20 bg-gradient-to-r from-[#12121E] via-[#0D0D18] to-[#12121E]">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#F59E0B]/10 border border-[#D4AF37]/40 text-[#F5D77F] shadow-[0_0_15px_rgba(212,175,55,0.25)]">
-              <Compass className="w-5 h-5 animate-spin-slow" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="font-cinzel text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFF8E7] via-[#F5D77F] to-[#D4AF37]">
-                  {t('itinerary_modal_title')}
-                </h2>
-                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-[#F59E0B]/15 text-[#F5D77F] border border-[#F59E0B]/30">
-                  <Sparkles className="w-2.5 h-2.5" /> Darshak AI
-                </span>
-              </div>
-              <p className="text-xs text-zinc-400 font-sans line-clamp-1">
-                {t('itinerary_modal_subtitle')}
-              </p>
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-[color-mix(in_oklab,var(--color-ink)_55%,transparent)]">
+      <div className="relative w-full max-w-[960px] max-h-[90vh] flex flex-col bg-paper text-ink overflow-hidden">
+
+        {/* Header */}
+        <div className="flex items-start justify-between gap-6 px-6 sm:px-10 pt-8 pb-6">
+          <div className="min-w-0">
+            <h2 className="font-display font-bold tracking-display text-4xl sm:text-5xl text-ink leading-[1.05]">
+              {t('itinerary_modal_title')}
+            </h2>
+            <p className="mt-3 text-base text-ink-2 max-w-[60ch]">
+              {t('itinerary_modal_subtitle')}
+            </p>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 text-zinc-400 hover:text-[#FFF8E7] hover:bg-white/5 rounded-xl transition-all border border-transparent hover:border-[#D4AF37]/20"
+            className="shrink-0 inline-flex items-center min-h-[44px] px-2 -mr-2 text-base font-medium text-ink underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out"
             aria-label="Close"
           >
-            <X className="w-5 h-5" />
+            Close
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6 custom-scrollbar text-[#FFF8E7]">
-          
+        <div className="flex-1 overflow-y-auto px-6 sm:px-10 pb-10 custom-scrollbar">
+
           {isLoading ? (
-            /* Animated Darshak AI Generation Loader */
-            <div className="py-16 flex flex-col items-center justify-center text-center space-y-6 animate-pulse">
-              <div className="relative w-20 h-20 flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-2 border-[#D4AF37]/30 border-t-[#F59E0B] animate-spin"></div>
-                <div className="absolute inset-2 rounded-full border-2 border-[#D4AF37]/20 border-b-[#D4AF37] animate-spin-reverse"></div>
-                <Sparkles className="w-8 h-8 text-[#F5D77F] animate-bounce" />
-              </div>
-              <div className="space-y-2 max-w-md">
-                <h3 className="font-cinzel text-lg font-bold text-[#F5D77F]">
-                  {t('itinerary_generating')}
-                </h3>
-                <p className="text-xs text-zinc-400">
-                  Connecting sacred sites, route times, and delicious local food stops...
-                </p>
-              </div>
+            /* Generation state */
+            <div className="py-16 max-w-md" role="status">
+              <h3 className="font-display font-bold tracking-display text-3xl text-ink">
+                {t('itinerary_generating')}
+              </h3>
+              <p className="mt-3 text-base text-ink-2">
+                Connecting sacred sites, route times, and delicious local food stops...
+              </p>
             </div>
           ) : !itinerary ? (
             /* Generator Form / Preferences Screen */
-            <div className="space-y-6">
-              
+            <div className="space-y-10">
+
               {/* Duration Options */}
               <div>
-                <label className="block font-cinzel text-xs font-bold text-[#F5D77F] uppercase tracking-wider mb-2.5">
+                <label className="block text-[15px] font-medium text-muted mb-3">
                   1. {t('itinerary_duration_label')}
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-px bg-rule border border-rule">
                   {[
-                    { id: '1', label: t('itinerary_1day'), desc: '2-3 Highlights', icon: '⚡' },
-                    { id: '2', label: t('itinerary_2day'), desc: '4-5 Stops', icon: '🌿' },
-                    { id: '3', label: t('itinerary_3day'), desc: '6-8 Heritage Sites', icon: '🌟' },
-                    { id: '5', label: t('itinerary_5day'), desc: '10-12 Stops', icon: '👑' },
-                    { id: '7', label: t('itinerary_7day'), desc: 'Full Expedition', icon: '🔱' },
-                  ].map(option => (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => setDuration(option.id)}
-                      className={`p-3 rounded-xl border text-left transition-all duration-300 flex flex-col justify-between ${
-                        duration === option.id
-                          ? 'bg-gradient-to-br from-[#D4AF37]/25 to-[#F59E0B]/10 border-[#F59E0B] shadow-[0_0_20px_rgba(212,175,55,0.25)]'
-                          : 'bg-[#12121E]/60 border-zinc-800 hover:border-[#D4AF37]/40 text-zinc-300 hover:text-[#FFF8E7]'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between w-full mb-1">
-                        <span className="text-base">{option.icon}</span>
-                        {duration === option.id && (
-                          <span className="w-2 h-2 rounded-full bg-[#F5D77F] shadow-[0_0_8px_#F5D77F]"></span>
-                        )}
-                      </div>
-                      <div>
-                        <div className="font-cinzel text-xs font-bold text-[#FFF8E7]">
+                    { id: '1', label: t('itinerary_1day'), desc: '2-3 Highlights' },
+                    { id: '2', label: t('itinerary_2day'), desc: '4-5 Stops' },
+                    { id: '3', label: t('itinerary_3day'), desc: '6-8 Heritage Sites' },
+                    { id: '5', label: t('itinerary_5day'), desc: '10-12 Stops' },
+                    { id: '7', label: t('itinerary_7day'), desc: 'Full Expedition' },
+                  ].map(option => {
+                    const isSelected = duration === option.id;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => setDuration(option.id)}
+                        aria-pressed={isSelected}
+                        className={`min-h-[64px] p-3 text-left flex flex-col justify-between transition-colors duration-short ease-out ${
+                          isSelected
+                            ? 'bg-ink text-paper'
+                            : 'bg-paper text-ink hover:bg-paper-2'
+                        }`}
+                      >
+                        <span className="text-base font-medium">
                           {option.label}
-                        </div>
-                        <div className="text-[10px] text-zinc-400 font-sans mt-0.5">
+                        </span>
+                        <span className={`text-[13px] mt-1 ${isSelected ? 'text-paper' : 'text-muted'}`}>
                           {option.desc}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Starting Hub / Region */}
               <div>
-                <label className="block font-cinzel text-xs font-bold text-[#F5D77F] uppercase tracking-wider mb-2.5">
+                <label className="block text-[15px] font-medium text-muted mb-1">
                   2. {t('itinerary_hub_label')}
                 </label>
-                <div className="relative">
-                  <select
-                    value={selectedHub}
-                    onChange={(e) => setSelectedHub(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#12121E]/80 border border-zinc-700/80 hover:border-[#D4AF37]/50 rounded-xl text-sm text-[#FFF8E7] focus:outline-none focus:border-[#F5D77F] focus:ring-1 focus:ring-[#F5D77F] transition-all cursor-pointer font-sans"
-                  >
-                    {availableHubs.map(hub => (
-                      <option key={hub.id} value={hub.id} className="bg-[#0C0C14] text-[#FFF8E7]">
-                        {hub.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <select
+                  value={selectedHub}
+                  onChange={(e) => setSelectedHub(e.target.value)}
+                  className="w-full min-h-[44px] bg-transparent border-0 border-b border-muted px-0 py-2 text-lg text-ink focus:outline-none focus-visible:border-ink cursor-pointer"
+                >
+                  {availableHubs.map(hub => (
+                    <option key={hub.id} value={hub.id} className="bg-paper text-ink">
+                      {hub.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Cultural Themes (Multi-select) */}
               <div>
-                <div className="flex items-center justify-between mb-2.5">
-                  <label className="font-cinzel text-xs font-bold text-[#F5D77F] uppercase tracking-wider">
+                <div className="flex items-baseline justify-between gap-4 mb-3">
+                  <label className="text-[15px] font-medium text-muted">
                     3. {t('itinerary_theme_label')}
                   </label>
-                  <span className="text-[11px] text-zinc-400">Select 1 or more</span>
+                  <span className="text-[13px] text-muted">Select 1 or more</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-px bg-rule border border-rule">
                   {themes.map(th => {
                     const isSelected = selectedThemes.includes(th.id);
                     return (
@@ -296,23 +258,15 @@ export default function ItineraryModal({
                         key={th.id}
                         type="button"
                         onClick={() => toggleTheme(th.id)}
-                        className={`px-3 py-2.5 rounded-xl border text-left transition-all duration-200 flex items-center justify-between ${
+                        aria-pressed={isSelected}
+                        className={`min-h-[48px] px-4 py-3 text-left text-base font-medium flex items-center justify-between gap-3 transition-colors duration-short ease-out ${
                           isSelected
-                            ? 'bg-[#D4AF37]/15 border-[#D4AF37] text-[#FFF8E7] shadow-[0_0_12px_rgba(212,175,55,0.15)]'
-                            : 'bg-[#12121E]/40 border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-zinc-200'
+                            ? 'bg-ink text-paper'
+                            : 'bg-paper text-ink hover:bg-paper-2'
                         }`}
                       >
-                        <div className="flex items-center gap-2">
-                          <span className="text-base">{th.icon}</span>
-                          <span className="text-xs font-medium">{th.label}</span>
-                        </div>
-                        <div className={`w-4 h-4 rounded flex items-center justify-center border transition-all ${
-                          isSelected 
-                            ? 'bg-[#D4AF37] border-[#D4AF37] text-black' 
-                            : 'border-zinc-700'
-                        }`}>
-                          {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
-                        </div>
+                        <span>{th.label}</span>
+                        {isSelected && <Check className="w-4 h-4 shrink-0" aria-hidden="true" />}
                       </button>
                     );
                   })}
@@ -321,7 +275,7 @@ export default function ItineraryModal({
 
               {/* Custom User Preferences & Notes */}
               <div>
-                <label className="block font-cinzel text-xs font-bold text-[#F5D77F] uppercase tracking-wider mb-2">
+                <label className="block text-[15px] font-medium text-muted mb-1">
                   4. {t('itinerary_custom_prompt_label')}
                 </label>
                 <textarea
@@ -330,60 +284,53 @@ export default function ItineraryModal({
                   onChange={(e) => setCustomPrompt(e.target.value)}
                   placeholder={t('itinerary_custom_prompt_placeholder')}
                   rows={2}
-                  className="w-full px-4 py-3 bg-[#12121E]/80 border border-zinc-700/80 hover:border-[#D4AF37]/50 rounded-xl text-sm text-[#FFF8E7] placeholder-zinc-500 focus:outline-none focus:border-[#F5D77F] focus:ring-1 focus:ring-[#F5D77F] transition-all font-sans resize-none"
+                  className="w-full bg-transparent border-0 border-b border-muted px-0 py-2 text-lg text-ink placeholder:text-muted focus:outline-none focus-visible:border-ink resize-none"
                 />
               </div>
 
               {/* Action Button */}
-              <div className="pt-2">
+              <div>
                 <button
                   type="button"
                   onClick={handleGenerate}
-                  className="w-full py-3.5 px-6 rounded-xl font-cinzel font-bold text-sm text-[#08080C] bg-gradient-to-r from-[#D4AF37] via-[#F5D77F] to-[#F59E0B] hover:opacity-95 shadow-[0_4px_25px_rgba(212,175,55,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
+                  className="inline-flex items-center justify-center min-h-[48px] px-6 bg-ink text-paper font-medium hover:bg-ink-2 transition-colors duration-short ease-out w-full sm:w-auto"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  <span>{t('itinerary_generate_btn')}</span>
+                  {t('itinerary_generate_btn')}
                 </button>
               </div>
 
             </div>
           ) : (
             /* Generated Itinerary Display */
-            <div className="space-y-6 animate-fade-in">
-              
-              {/* Summary Header Card */}
-              <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#181828]/90 via-[#12121E] to-[#181828]/90 border border-[#D4AF37]/35 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                  <h3 className="font-cinzel text-lg sm:text-xl font-bold text-[#F5D77F]">
-                    {itinerary.title}
-                  </h3>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#D4AF37]/20 text-[#F5D77F] border border-[#D4AF37]/40">
-                      {itinerary.duration}
-                    </span>
-                    {itinerary.bestTimeToVisit && (
-                      <span className="px-2.5 py-1 rounded-full text-[10px] text-zinc-300 bg-white/5 border border-white/10">
-                        🗓️ {itinerary.bestTimeToVisit}
-                      </span>
-                    )}
-                  </div>
+            <div className="space-y-10">
+
+              {/* Result header band */}
+              <div className="bg-field text-field-ink -mx-6 sm:-mx-10 px-6 sm:px-10 py-8">
+                <h3 className="font-display font-bold tracking-display text-3xl sm:text-4xl leading-[1.1]">
+                  {itinerary.title}
+                </h3>
+                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-[15px] font-medium">
+                  <span>{itinerary.duration}</span>
+                  {itinerary.bestTimeToVisit && (
+                    <span>{itinerary.bestTimeToVisit}</span>
+                  )}
                 </div>
-                <p className="text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed">
+                <p className="mt-4 text-base sm:text-lg leading-relaxed max-w-[65ch]">
                   {itinerary.summary}
                 </p>
-
-                {/* Cultural Protocol Tip */}
-                {itinerary.culturalProtocol && (
-                  <div className="mt-3 pt-3 border-t border-white/10 flex items-start gap-2 text-xs text-[#F5D77F]/90 font-sans">
-                    <Flame className="w-4 h-4 text-[#F59E0B] shrink-0 mt-0.5" />
-                    <span><strong>Cultural Note:</strong> {itinerary.culturalProtocol}</span>
-                  </div>
-                )}
               </div>
 
+              {/* Cultural Protocol Tip */}
+              {itinerary.culturalProtocol && (
+                <div className="bg-paper-2 p-5 text-base text-ink-2 leading-relaxed">
+                  <span className="block text-[15px] font-medium text-muted mb-1">Cultural Note</span>
+                  {itinerary.culturalProtocol}
+                </div>
+              )}
+
               {/* Action Toolbar */}
-              <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-zinc-800">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between gap-x-6 gap-y-2 flex-wrap pb-4 border-b border-rule">
+                <div className="flex items-center gap-x-6 gap-y-2 flex-wrap">
                   <button
                     type="button"
                     onClick={() => {
@@ -393,26 +340,23 @@ export default function ItineraryModal({
                         onHighlightRoute(itinerary.routeCoordinates);
                       }
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                      activeRoute && activeRoute.length > 0
-                        ? 'bg-[#F59E0B] text-black shadow-[0_0_12px_rgba(245,158,11,0.4)]'
-                        : 'bg-[#1A1A2A] text-[#F5D77F] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30'
+                    className={`inline-flex items-center justify-center min-h-[44px] px-5 font-medium transition-colors duration-short ease-out ${
+                      isRouteActive
+                        ? 'bg-ink text-paper hover:bg-ink-2'
+                        : 'border border-ink bg-paper text-ink hover:bg-paper-2'
                     }`}
                   >
-                    <Navigation className="w-3.5 h-3.5" />
-                    <span>
-                      {activeRoute && activeRoute.length > 0
-                        ? t('itinerary_clear_route')
-                        : t('itinerary_highlight_route')}
-                    </span>
+                    {isRouteActive
+                      ? t('itinerary_clear_route')
+                      : t('itinerary_highlight_route')}
                   </button>
 
                   <button
                     type="button"
                     onClick={handleCopyItinerary}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1A1A2A] text-zinc-300 hover:text-[#FFF8E7] hover:bg-white/10 border border-zinc-700 transition-all flex items-center gap-1.5"
+                    className="inline-flex items-center gap-2 min-h-[44px] text-base font-medium text-ink underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out"
                   >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied && <Check className="w-4 h-4" aria-hidden="true" />}
                     <span>{copied ? t('itinerary_copied') : t('itinerary_copy_btn')}</span>
                   </button>
                 </div>
@@ -420,129 +364,117 @@ export default function ItineraryModal({
                 <button
                   type="button"
                   onClick={() => setItinerary(null)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-[#F5D77F] hover:bg-white/5 transition-all flex items-center gap-1"
+                  className="inline-flex items-center min-h-[44px] text-base font-medium text-ink underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>{t('itinerary_reset')}</span>
+                  {t('itinerary_reset')}
                 </button>
               </div>
 
               {/* Day-by-Day Accordion Schedule */}
-              <div className="space-y-4">
+              <div className="border-t border-ink">
                 {itinerary.days?.map((day, dIdx) => {
                   const dayNum = day.dayNumber || day.day || (dIdx + 1);
                   const dayTitle = day.dayTitle || day.title || `Day ${dayNum}`;
                   const isDayExpanded = expandedDay === dayNum;
                   return (
-                    <div 
+                    <div
                       key={dayNum}
-                      className="rounded-xl border border-zinc-800/80 bg-[#0E0E18]/80 overflow-hidden transition-all duration-300 shadow-md"
+                      className="border-b border-rule"
                     >
                       {/* Day Header Trigger */}
                       <button
                         type="button"
                         onClick={() => setExpandedDay(isDayExpanded ? null : dayNum)}
-                        className="w-full px-4 py-3.5 flex items-center justify-between bg-gradient-to-r from-[#141424] to-[#0E0E18] hover:bg-[#18182A] transition-all text-left"
+                        aria-expanded={isDayExpanded}
+                        className="w-full min-h-[64px] py-5 flex items-start justify-between gap-4 text-left text-ink hover:text-mark transition-colors duration-short ease-out"
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="px-2.5 py-0.5 rounded-md font-cinzel text-xs font-bold bg-[#D4AF37]/20 text-[#F5D77F] border border-[#D4AF37]/40">
+                        <div className="min-w-0">
+                          <h4 className="font-display font-bold tracking-display text-2xl">
                             {t('itinerary_day')} {dayNum}
-                          </span>
-                          <div>
-                            <h4 className="font-cinzel text-sm font-bold text-[#FFF8E7]">
-                              {dayTitle}
-                            </h4>
-                            <span className="text-[11px] text-zinc-400 font-sans">
+                          </h4>
+                          <p className="mt-1 text-lg text-ink-2">
+                            {dayTitle}
+                          </p>
+                          {day.theme && (
+                            <p className="mt-1 text-[15px] text-muted">
                               {day.theme}
-                            </span>
-                          </div>
+                            </p>
+                          )}
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-zinc-400 hidden sm:inline">
+                        <div className="flex items-center gap-3 shrink-0 pt-1">
+                          <span className="text-[15px] text-muted hidden sm:inline">
                             {day.stops?.length || 0} stops
                           </span>
-                          <ChevronRight className={`w-4 h-4 text-[#F5D77F] transition-transform duration-200 ${
-                            isDayExpanded ? 'rotate-90' : ''
-                          }`} />
+                          <ChevronRight
+                            aria-hidden="true"
+                            className={`w-5 h-5 transition-transform duration-short ease-out ${
+                              isDayExpanded ? 'rotate-90' : ''
+                            }`}
+                          />
                         </div>
                       </button>
 
-                      {/* Day Stops Timeline */}
+                      {/* Day Stops */}
                       {isDayExpanded && (
-                        <div className="p-4 sm:p-5 space-y-4 border-t border-zinc-800 bg-[#0A0A12]/90">
+                        <ol className="pb-6">
                           {day.stops?.map((stop, sIdx) => {
                             const food = stop.foodTip || stop.culinaryTip;
                             const lore = stop.loreHighlight || stop.culturalLore;
                             return (
-                              <div 
+                              <li
                                 key={sIdx}
-                                className="relative pl-6 pb-4 last:pb-0 border-l border-[#D4AF37]/30 last:border-l-transparent group"
+                                className="grid grid-cols-[2.5rem_1fr] gap-x-4 py-5 border-t border-rule"
                               >
-                                {/* Step Node Dot */}
-                                <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-[#08080C] border-2 border-[#D4AF37] flex items-center justify-center shadow-[0_0_8px_rgba(212,175,55,0.5)]">
-                                  <span className="text-[8px] font-bold text-[#F5D77F]">{sIdx + 1}</span>
-                                </div>
+                                <span className="font-display font-bold text-xl text-muted">
+                                  {sIdx + 1}
+                                </span>
 
-                                <div className="p-3.5 rounded-xl bg-[#141424]/70 border border-zinc-800/80 hover:border-[#D4AF37]/40 transition-all">
-                                  
-                                  {/* Stop Title & Location */}
-                                  <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
-                                    <div>
-                                      <h5 className="font-cinzel text-sm font-bold text-[#FFF8E7] group-hover:text-[#F5D77F] transition-colors">
-                                        {translateEntityName(stop.name, stop.location)}
-                                      </h5>
-                                      <div className="flex items-center gap-1 text-[11px] text-zinc-400 font-sans">
-                                        <MapPin className="w-3 h-3 text-[#D4AF37]" />
-                                        <span>{translateLocation(stop.location)}</span>
-                                      </div>
-                                    </div>
+                                <div className="min-w-0">
+                                  {stop.timeSlot && (
+                                    <span className="block text-[15px] font-medium text-muted">
+                                      {stop.timeSlot}
+                                    </span>
+                                  )}
+                                  <h5 className="font-display font-bold tracking-display text-xl text-ink">
+                                    {translateEntityName(stop.name, stop.location)}
+                                  </h5>
+                                  <p className="mt-0.5 text-[15px] text-muted">
+                                    {translateLocation(stop.location)}
+                                  </p>
 
-                                    <button
-                                      type="button"
-                                      onClick={() => handleInspectStop(stop)}
-                                      className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#D4AF37]/15 hover:bg-[#D4AF37]/30 text-[#F5D77F] border border-[#D4AF37]/30 transition-all flex items-center gap-1"
-                                    >
-                                      <Eye className="w-3 h-3" />
-                                      <span>{t('itinerary_view_stop')}</span>
-                                    </button>
-                                  </div>
-
-                                  {/* Experience / Activity */}
-                                  <div className="space-y-2 text-xs font-sans text-zinc-300">
-                                    <div className="flex items-start gap-2 bg-black/30 p-2.5 rounded-lg border border-white/5">
-                                      <Compass className="w-3.5 h-3.5 text-[#F5D77F] shrink-0 mt-0.5" />
-                                      <div>
-                                        <span className="font-semibold text-[#FFF8E7]">{t('itinerary_activity')}: </span>
-                                        {stop.activity}
-                                      </div>
-                                    </div>
+                                  <div className="mt-3 space-y-2 text-base text-ink-2 leading-relaxed">
+                                    <p>
+                                      <span className="font-medium text-ink">{t('itinerary_activity')}: </span>
+                                      {stop.activity}
+                                    </p>
 
                                     {/* Food Tip */}
                                     {food && (
-                                      <div className="flex items-start gap-2 bg-black/20 p-2.5 rounded-lg border border-white/5 text-[#F5D77F]/90">
-                                        <Utensils className="w-3.5 h-3.5 text-[#F59E0B] shrink-0 mt-0.5" />
-                                        <div>
-                                          <span className="font-semibold text-[#F5D77F]">{t('itinerary_food_tip')}: </span>
-                                          {food}
-                                        </div>
-                                      </div>
+                                      <p>
+                                        <span className="font-medium text-ink">{t('itinerary_food_tip')}: </span>
+                                        {food}
+                                      </p>
                                     )}
 
                                     {/* Lore Highlight */}
                                     {lore && (
-                                      <div className="flex items-start gap-2 text-[11px] text-zinc-400 italic pt-1 pl-1">
-                                        <BookOpen className="w-3 h-3 text-[#D4AF37] shrink-0 mt-0.5 not-italic" />
-                                        <span>"{lore}"</span>
-                                      </div>
+                                      <p className="italic">"{lore}"</p>
                                     )}
                                   </div>
 
+                                  <button
+                                    type="button"
+                                    onClick={() => handleInspectStop(stop)}
+                                    className="mt-3 inline-flex items-center min-h-[44px] text-base font-medium text-ink underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out"
+                                  >
+                                    {t('itinerary_view_stop')}
+                                  </button>
                                 </div>
-                              </div>
+                              </li>
                             );
                           })}
-                        </div>
+                        </ol>
                       )}
                     </div>
                   );

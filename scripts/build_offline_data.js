@@ -128,7 +128,9 @@ function getCoordinates(name, locationContext) {
 }
 
 function parseCSV(content) {
-  const lines = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim().length > 0);
+  // Skip blank lines and footnotes ("*Same sourcing as before...") at the end of a dataset
+  const lines = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n')
+    .filter(l => l.trim().length > 0 && !l.trim().startsWith('*'));
   if (lines.length < 2) return [];
 
   function parseLine(line) {

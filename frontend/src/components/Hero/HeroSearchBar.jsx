@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, MapPin, X, Sparkles, Navigation, CornerDownLeft, SlidersHorizontal } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function HeroSearchBar({ 
@@ -118,22 +118,17 @@ export default function HeroSearchBar({
   };
 
   return (
-    <div 
+    <div
       ref={searchContainerRef}
-      className="absolute top-24 left-4 sm:left-8 md:left-10 z-30 w-[calc(100vw-2rem)] sm:w-[420px] md:w-[460px] pointer-events-auto"
+      className="relative w-full"
     >
-      {/* Modern Integrated Search & Filter Command Bar */}
-      <div 
-        className={`relative dharohar-glass rounded-2xl border transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.7)] ${
-          isOpen && results.length > 0 
-            ? 'border-[#D4AF37] rounded-b-none bg-[#0D0D16]/95' 
-            : 'border-[#D4AF37]/35 hover:border-[#D4AF37]/70 bg-[#0C0C14]/85'
-        }`}
-      >
-        <div className="flex items-center px-3.5 py-2.5 gap-2.5">
-          <Search className="w-4 h-4 text-[#D4AF37] shrink-0" />
-          
+      {/* Search: an underline field set in the display face */}
+      <div className="flex items-end gap-4">
+        <div className="relative flex-1 min-w-0 flex items-center border-b border-muted focus-within:border-ink transition-colors duration-short ease-out">
+          <Search className="w-5 h-5 text-muted shrink-0" aria-hidden="true" />
+          <label htmlFor="hero-search" className="sr-only-grid">{t('hero_search_placeholder')}</label>
           <input
+            id="hero-search"
             ref={inputRef}
             type="text"
             value={query}
@@ -147,90 +142,77 @@ export default function HeroSearchBar({
             }}
             onKeyDown={handleKeyDown}
             placeholder={t('hero_search_placeholder')}
-            className="w-full bg-transparent border-none outline-none text-xs sm:text-sm text-[#FFF8E7] placeholder:text-zinc-500 font-sans tracking-wide"
+            className="w-full min-w-0 bg-transparent border-0 outline-none px-3 py-2 font-display font-bold tracking-display text-2xl text-ink placeholder:text-muted placeholder:font-sans placeholder:font-normal placeholder:text-base placeholder:tracking-normal"
+            role="combobox"
+            aria-expanded={isOpen && query.trim().length > 0}
+            aria-controls="hero-search-results"
+            aria-autocomplete="list"
           />
 
-          {/* Clear Button */}
           {query && (
             <button
+              type="button"
               onClick={handleClear}
-              className="p-1 rounded-full text-zinc-400 hover:text-[#FFF8E7] hover:bg-white/10 transition-colors"
-              title="Clear"
+              className="w-11 h-11 flex items-center justify-center text-muted hover:text-ink transition-colors duration-short ease-out cursor-pointer"
               aria-label="Clear search"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-4 h-4" />
             </button>
           )}
-
-          {/* Vertical Divider */}
-          <div className="w-[1px] h-4 bg-white/15 shrink-0" />
-
-          {/* Modern Personalize / Filter Button */}
-          {onOpenPersonalize && (
-            <button
-              onClick={onOpenPersonalize}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 border ${
-                userPreference?.isActive
-                  ? 'bg-[#D4AF37]/25 border-[#F5D77F] text-[#F5D77F] shadow-[0_0_12px_rgba(212,175,55,0.3)]'
-                  : 'bg-white/5 hover:bg-[#D4AF37]/20 border-white/10 hover:border-[#D4AF37]/50 text-zinc-300 hover:text-[#F5D77F]'
-              }`}
-              title="Personalize Map (Custom Location, Radius & Cultural Vibe)"
-              aria-label="Personalize Map"
-            >
-              <SlidersHorizontal className={`w-3.5 h-3.5 ${userPreference?.isActive ? 'text-[#F5D77F]' : 'text-[#D4AF37]'}`} />
-              <span className="text-[11px] sm:text-xs">Personalize</span>
-              {userPreference?.isActive && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-              )}
-            </button>
-          )}
-
         </div>
+
+        {onOpenPersonalize && (
+          <button
+            type="button"
+            onClick={onOpenPersonalize}
+            className="min-h-[44px] shrink-0 font-medium underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out cursor-pointer"
+            aria-label="Personalize Map"
+          >
+            Personalize
+          </button>
+        )}
       </div>
 
-      {/* Active Personalization Chip (Attached directly beneath search bar) */}
+      {/* The personalized view, stated in a line with its two actions */}
       {userPreference?.isActive && (
-        <div className="mt-2 animate-fade-in">
-          <div className="dharohar-glass px-3.5 py-1.5 rounded-xl border border-[#D4AF37]/45 shadow-[0_6px_25px_rgba(0,0,0,0.7)] flex items-center justify-between gap-2 text-xs backdrop-blur-xl bg-[#0D0D18]/90">
-            <div className="flex items-center gap-2 truncate">
-              <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping shrink-0" />
-              <span className="text-[11px] text-zinc-300 truncate">
-                Curated near <strong className="text-[#F5D77F]">{userPreference.locationLabel}</strong> ({filteredCount} sites)
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <button
-                onClick={onOpenPersonalize}
-                className="px-2 py-0.5 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 text-[#F5D77F] text-[10px] font-semibold border border-[#D4AF37]/30 transition-all cursor-pointer"
-              >
-                Change
-              </button>
-              {onResetPreference && (
-                <button
-                  onClick={onResetPreference}
-                  className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-                  title="Reset to all sites"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-          </div>
+        <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[15px]">
+          <span className="text-ink-2">
+            Curated near <strong className="font-medium text-ink">{userPreference.locationLabel}</strong>, {filteredCount} sites
+          </span>
+          <button
+            type="button"
+            onClick={onOpenPersonalize}
+            className="font-medium underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out cursor-pointer"
+          >
+            Change
+          </button>
+          {onResetPreference && (
+            <button
+              type="button"
+              onClick={onResetPreference}
+              className="font-medium underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out cursor-pointer"
+            >
+              Reset to all sites
+            </button>
+          )}
         </div>
       )}
 
-      {/* Dropdown Results Menu */}
+      {/* Results: a ruled list under the field */}
       {isOpen && query.trim().length > 0 && (
-        <div className="dharohar-glass bg-[#0C0C14]/95 border-x border-b border-[#D4AF37] rounded-b-2xl shadow-[0_15px_40px_rgba(0,0,0,0.85)] max-h-80 overflow-y-auto no-scrollbar py-1.5 animate-fade-in-up divide-y divide-white/5">
+        <div
+          id="hero-search-results"
+          role="listbox"
+          className="absolute left-0 right-0 top-full z-40 bg-paper max-h-96 overflow-y-auto border-b border-rule"
+        >
           {results.length === 0 ? (
-            <div className="p-4 text-center">
-              <p className="text-xs text-zinc-400 mb-1">{t('hero_search_no_results')}</p>
-              <span className="text-[10px] text-zinc-500 font-sans">{t('hero_search_hint')}</span>
+            <div className="py-4">
+              <p className="text-ink-2">{t('hero_search_no_results')}</p>
+              <p className="mt-1 text-[15px] text-muted">{t('hero_search_hint')}</p>
             </div>
           ) : (
             results.map((entity, idx) => {
               const isSelected = idx === selectedIndex;
-              const catColor = categoryColors[entity.category_name] || '#D4AF37';
               const localizedTitle = translateEntityName(entity.name, entity.location_context);
               const localizedCat = translateCategory(entity.category_name);
               const localizedLoc = translateLocation(entity.location_context);
@@ -238,51 +220,19 @@ export default function HeroSearchBar({
               return (
                 <div
                   key={entity.id}
+                  role="option"
+                  aria-selected={isSelected}
                   onClick={() => handleSelect(entity)}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`px-4 py-3 flex items-start justify-between gap-3 cursor-pointer transition-colors ${
-                    isSelected 
-                      ? 'bg-[#D4AF37]/20 border-l-2 border-[#D4AF37]' 
-                      : 'hover:bg-white/5 border-l-2 border-transparent'
+                  className={`py-3 border-t border-rule cursor-pointer transition-colors duration-short ease-out ${
+                    isSelected ? 'text-mark' : 'text-ink'
                   }`}
                 >
-                  <div className="flex-1 min-w-0">
-                    {/* Entity Title */}
-                    <div className="flex items-center gap-2">
-                      <span 
-                        className="w-2 h-2 rounded-full shrink-0" 
-                        style={{ backgroundColor: catColor, boxShadow: `0 0 6px ${catColor}` }}
-                      />
-                      <h4 className="text-xs sm:text-sm font-cinzel font-bold text-[#FFF8E7] truncate">
-                        {localizedTitle}
-                      </h4>
-                    </div>
-
-                    {/* Metadata Row: Category & Location */}
-                    <div className="flex items-center gap-3 mt-1 text-[11px] text-zinc-400">
-                      <span 
-                        className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border"
-                        style={{
-                          color: catColor,
-                          borderColor: `${catColor}40`,
-                          backgroundColor: `${catColor}15`
-                        }}
-                      >
-                        {localizedCat}
-                      </span>
-
-                      {localizedLoc && (
-                        <div className="flex items-center gap-1 text-zinc-400 truncate">
-                          <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
-                          <span className="truncate">{localizedLoc}</span>
-                        </div>
-                      )}
-                    </div>
+                  <div className="font-display font-bold tracking-display text-xl leading-tight">
+                    {localizedTitle}
                   </div>
-
-                  {/* Fly-To Action Indicator */}
-                  <div className="shrink-0 flex items-center gap-1 text-[10px] text-[#F5D77F] self-center">
-                    <Navigation className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <div className="mt-1 text-[15px] text-muted">
+                    {localizedCat}{localizedLoc ? `, ${localizedLoc}` : ''}
                   </div>
                 </div>
               );

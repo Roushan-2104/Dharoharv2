@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { 
-  CheckCircle, Star, MessageSquareQuote, Lightbulb, 
-  Send, User, ThumbsUp, Sparkles, ShieldCheck, Plus, X 
-} from 'lucide-react';
+import { ThumbsUp } from 'lucide-react';
 import API_BASE_URL from '../../config/api';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -93,57 +90,42 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
 
   if (!activeEntity) return null;
 
-  return (
-    <div className="p-5 border-b border-[#D4AF37]/15 bg-[#0B0A14]">
-      
-      {/* Section Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center">
-            <MessageSquareQuote className="w-4 h-4 text-[#F5D77F]" />
-          </div>
-          <div>
-            <h4 className="font-cinzel text-sm font-bold text-[#FFF8E7] leading-none flex items-center gap-1.5">
-              <span>{isHi ? 'सत्यापित जन-अनुभव व समीक्षाएं' : isOr ? 'ପ୍ରମାଣିତ ଯାତ୍ରୀ ଅନୁଭୂତି ଓ ମତାମତ' : 'Verified Community Voices & Reviews'}</span>
-            </h4>
-            <p className="text-[10px] text-[#D4AF37]/80 font-sans mt-0.5">
-              {isHi ? 'इतिहासकारों, स्थानीय निवासियों व यात्रियों के प्रामाणिक अनुभव' : isOr ? 'ଐତିହାସିକ, ସ୍ଥାନୀୟ ବାସିନ୍ଦା ଓ ଯାତ୍ରୀଙ୍କ ସତ୍ୟାପିତ ମତାମତ' : 'Real, verified insights from cultural scholars, locals & explorers'}
-            </p>
-          </div>
-        </div>
+  const textLink = 'min-h-[44px] inline-flex items-center font-medium underline underline-offset-[0.32em] decoration-1 hover:text-mark transition-colors duration-short ease-out cursor-pointer';
+  const fieldClass = 'w-full bg-transparent border-0 border-b border-muted px-0 py-2 text-[17px] text-ink placeholder:text-muted focus:outline-none focus-visible:border-ink';
+  const labelClass = 'block text-[15px] font-medium text-muted';
 
+  return (
+    <section className="mt-14">
+
+      <div className="flex items-end justify-between gap-4">
+        <h3 className="text-3xl">
+          {isHi ? 'जन-अनुभव व समीक्षाएं' : isOr ? 'ଯାତ୍ରୀ ଅନୁଭୂତି ଓ ମତାମତ' : 'Community voices'}
+        </h3>
         <button
+          type="button"
           onClick={() => setIsFormOpen(!isFormOpen)}
-          className="px-2.5 py-1 rounded-xl bg-[#D4AF37]/15 hover:bg-[#D4AF37]/30 text-[#F5D77F] border border-[#D4AF37]/35 text-[10.5px] font-semibold flex items-center gap-1 transition-all cursor-pointer"
+          aria-expanded={isFormOpen}
+          className={`${textLink} shrink-0`}
         >
-          {isFormOpen ? <X className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
-          <span>{isFormOpen ? (isHi ? 'बंद करें' : 'Close') : (isHi ? 'समीक्षा जोड़ें' : isOr ? 'ମତାମତ ଯୋଡ଼ନ୍ତୁ' : 'Add Review')}</span>
+          {isFormOpen ? (isHi ? 'बंद करें' : 'Close') : (isHi ? 'समीक्षा जोड़ें' : isOr ? 'ମତାମତ ଯୋଡ଼ନ୍ତୁ' : 'Add a review')}
         </button>
       </div>
 
-      {/* Success Banner */}
       {successMsg && (
-        <div className="mb-3.5 p-3 rounded-xl bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 text-xs flex items-center gap-2 animate-fade-in">
-          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>{successMsg}</span>
-        </div>
+        <p role="status" className="mt-4 bg-paper-2 px-4 py-3 text-ink">{successMsg}</p>
       )}
 
-      {/* Add Review Dropdown Form */}
       {isFormOpen && (
-        <form onSubmit={handleSubmit} className="mb-4 p-4 rounded-2xl bg-[#12111E] border border-[#D4AF37]/40 space-y-3 animate-fade-in shadow-lg">
-          <div className="flex items-center justify-between border-b border-white/5 pb-2">
-            <span className="font-cinzel text-xs font-bold text-[#FFF8E7]">
-              {isHi ? 'अपना प्रामाणिक अनुभव साझा करें' : 'Share Your Verified Heritage Experience'}
+        <form onSubmit={handleSubmit} className="mt-6 bg-paper-2 px-5 py-6 flex flex-col gap-5">
+          <p className="font-display font-bold tracking-display text-xl">
+            {isHi ? 'अपना अनुभव साझा करें' : 'Share your experience'}
+            <span className="block mt-1 font-sans font-normal tracking-normal text-[15px] text-muted">
+              {translateEntityName(activeEntity.name, activeEntity.location_context)}
             </span>
-            <span className="text-[9.5px] text-zinc-400">
-              for {translateEntityName(activeEntity.name, activeEntity.location_context)}
-            </span>
-          </div>
+          </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div>
-              <label className="block text-[10px] text-zinc-400 mb-1">Your Name *</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <label className={labelClass}>Your name *
               <input
                 type="text"
                 required
@@ -151,16 +133,15 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
                 maxLength={80}
                 onChange={e => setAuthorName(e.target.value)}
                 placeholder="e.g. Rahul Sharma"
-                className="w-full bg-[#090812] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#D4AF37]"
+                className={`mt-1 ${fieldClass}`}
               />
-            </div>
+            </label>
 
-            <div>
-              <label className="block text-[10px] text-zinc-400 mb-1">Who are you?</label>
+            <label className={labelClass}>Who are you?
               <select
                 value={roleTag}
                 onChange={e => setRoleTag(e.target.value)}
-                className="w-full bg-[#090812] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#D4AF37]"
+                className={`mt-1 ${fieldClass}`}
               >
                 <option value="Cultural Traveler">Cultural Traveler</option>
                 <option value="Local Resident">Local Resident</option>
@@ -168,11 +149,10 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
                 <option value="Sacred Heritage Pilgrim">Sacred Heritage Pilgrim</option>
                 <option value="Hereditary Artisan">Hereditary Artisan / Artist</option>
               </select>
-            </div>
+            </label>
           </div>
 
-          <div>
-            <label className="block text-[10px] text-zinc-400 mb-1">Your Experience, Lore & Insights *</label>
+          <label className={labelClass}>Your experience, lore and insights *
             <textarea
               required
               rows={3}
@@ -180,137 +160,86 @@ export default function VerifiedCommunityOpinions({ activeEntity }) {
               maxLength={2000}
               onChange={e => setOpinionText(e.target.value)}
               placeholder="What makes this place special? What architecture, rituals, or story did you discover?"
-              className="w-full bg-[#090812] border border-white/10 rounded-xl p-2.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#D4AF37]"
+              className={`mt-1 ${fieldClass}`}
             />
-          </div>
+          </label>
 
-          <div>
-            <label className="block text-[10px] text-amber-400/90 mb-1 flex items-center gap-1">
-              <Lightbulb className="w-3 h-3 text-amber-400" />
-              <span>Practical Travel Tip for Visitors (Optional)</span>
-            </label>
+          <label className={labelClass}>A practical tip for visitors (optional)
             <input
               type="text"
               value={travelTip}
               maxLength={500}
               onChange={e => setTravelTip(e.target.value)}
               placeholder="e.g. Visit at sunrise; hire ASI certified guide at East Gate"
-              className="w-full bg-[#090812] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#D4AF37]"
+              className={`mt-1 ${fieldClass}`}
             />
-          </div>
+          </label>
 
-          <div className="flex items-center justify-end gap-2 pt-1">
-            <button
-              type="button"
-              onClick={() => setIsFormOpen(false)}
-              className="px-3 py-1.5 rounded-xl border border-white/10 text-zinc-400 hover:text-white text-xs cursor-pointer"
-            >
-              Cancel
-            </button>
+          <div className="flex items-center gap-6">
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#08080C] font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-md hover:scale-105 transition-all"
+              className="min-h-[48px] px-6 bg-ink text-paper font-medium hover:bg-ink-2 transition-colors duration-short ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Send className="w-3 h-3" />
-              <span>{submitting ? 'Submitting...' : 'Post Verified Review'}</span>
+              {submitting ? 'Submitting...' : 'Post review'}
+            </button>
+            <button type="button" onClick={() => setIsFormOpen(false)} className={textLink}>
+              Cancel
             </button>
           </div>
         </form>
       )}
 
-      {/* Opinions List */}
       {loading ? (
-        <div className="space-y-2.5 animate-pulse">
-          {[1, 2].map(i => (
-            <div key={i} className="p-3.5 rounded-2xl bg-[#141220] border border-white/5 h-20" />
-          ))}
-        </div>
+        <p className="mt-4 text-muted" role="status">Loading reviews</p>
       ) : opinions.length === 0 ? (
-        <div className="text-center py-5 text-xs text-zinc-500 italic">
-          No verified opinions yet. Be the first to share your experience!
-        </div>
+        <p className="mt-4 text-muted">No reviews yet. Be the first to share your experience.</p>
       ) : (
-        <div className="space-y-3">
+        <ul className="mt-5">
           {opinions.map((op, idx) => {
             const opText = isHi ? (op.opinion_text_hi || op.opinion_text) : isOr ? (op.opinion_text_or || op.opinion_text) : op.opinion_text;
             const opTip = isHi ? (op.travel_tip_hi || op.travel_tip) : isOr ? (op.travel_tip_or || op.travel_tip) : op.travel_tip;
             const opRole = isHi ? (op.role_tag_hi || op.role_tag) : isOr ? (op.role_tag_or || op.role_tag) : op.role_tag;
             const likes = (op.likes_count || 1) + (likedIds[op.id || idx] || 0);
+            const rating = Math.min(5, op.rating || 5);
 
             return (
-              <div 
-                key={op.id || idx}
-                className="p-3.5 rounded-2xl bg-[#131122] border border-[#D4AF37]/20 hover:border-[#D4AF37]/45 transition-all shadow-sm"
-              >
-                {/* Author & Verification Row */}
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B45309] text-[#08080C] font-bold text-xs flex items-center justify-center shrink-0">
-                      {op.author_name ? op.author_name.charAt(0).toUpperCase() : 'U'}
-                    </div>
-                    <div className="truncate">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-cinzel text-xs font-bold text-[#FFF8E7] truncate">
-                          {op.author_name}
-                        </span>
-                        {op.is_verified !== false && (
-                          <CheckCircle className="w-3.5 h-3.5 text-[#10B981] shrink-0" title="Verified Heritage Story" />
-                        )}
-                      </div>
-                      <span className="text-[9.5px] text-[#F5D77F]/80 font-medium block truncate">
-                        {opRole || 'Verified Explorer'} • <span className="text-zinc-500">{op.visit_time || 'Verified Visit'}</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Stars */}
-                  <div className="flex items-center gap-0.5 text-amber-400 shrink-0">
-                    {Array.from({ length: Math.min(5, op.rating || 5) }).map((_, s) => (
-                      <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
+              <li key={op.id || idx} className="py-5 border-t border-rule">
+                <div className="flex items-baseline justify-between gap-4">
+                  <p className="font-display font-bold tracking-display text-xl leading-tight">{op.author_name}</p>
+                  <p className="shrink-0 text-[15px] text-muted">{rating} of 5</p>
                 </div>
-
-                {/* Opinion Text */}
-                <p className="text-xs text-zinc-200 font-sans leading-relaxed mb-2.5">
-                  "{opText}"
+                <p className="mt-1 text-[15px] text-muted">
+                  {opRole || 'Explorer'}{op.visit_time ? `, ${op.visit_time}` : ''}
                 </p>
 
-                {/* Practical Tip Badge */}
+                <blockquote className="mt-3 text-[17px] leading-relaxed text-ink-2">{opText}</blockquote>
+
                 {opTip && (
-                  <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-1.5 mb-2 text-[11px] text-amber-300">
-                    <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                    <span className="leading-snug"><strong className="text-amber-200">Tip:</strong> {opTip}</span>
-                  </div>
+                  <p className="mt-3 bg-paper-2 px-4 py-3 text-[16px] text-ink-2">
+                    <span className="font-medium text-ink">Tip: </span>{opTip}
+                  </p>
                 )}
 
-                {/* Footer / Likes */}
-                <div className="flex items-center justify-between pt-1 text-[10px] text-zinc-500 border-t border-white/5">
-                  {op.is_verified !== false ? (
-                    <span className="flex items-center gap-1 text-emerald-400 font-medium">
-                      <ShieldCheck className="w-3 h-3" />
-                      <span>Dharohar Verified</span>
-                    </span>
-                  ) : (
-                    <span className="text-zinc-500 font-medium">Community Review</span>
-                  )}
-
+                <div className="mt-2 flex items-center justify-between gap-4 text-[15px]">
+                  <span className="text-muted">
+                    {op.is_verified !== false ? 'Curated by Dharohar' : 'Community review'}
+                  </span>
                   <button
+                    type="button"
                     onClick={() => handleLike(op.id || idx)}
-                    className="flex items-center gap-1 text-zinc-400 hover:text-[#F5D77F] transition-colors cursor-pointer"
+                    className="min-h-[44px] inline-flex items-center gap-1.5 text-ink hover:text-mark transition-colors duration-short ease-out cursor-pointer"
                   >
-                    <ThumbsUp className="w-3 h-3" />
-                    <span>Helpful ({likes})</span>
+                    <ThumbsUp className="w-4 h-4" aria-hidden="true" />
+                    <span>Helpful, {likes}</span>
                   </button>
                 </div>
-
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
 
-    </div>
+    </section>
   );
 }

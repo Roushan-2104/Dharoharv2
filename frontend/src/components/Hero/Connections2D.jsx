@@ -3,6 +3,7 @@ import { Polyline } from 'react-leaflet';
 import axios from 'axios';
 import { calibrateEntityCoordinates } from '../../utils/geo';
 import API_BASE_URL from '../../config/api';
+import { THEME } from '../../config/theme';
 
 export default function Connections2D({ activeEntity, itineraryRoute }) {
   const [connections, setConnections] = useState([]);
@@ -50,7 +51,7 @@ export default function Connections2D({ activeEntity, itineraryRoute }) {
             key={`conn-${conn.id}`} 
             positions={[startPos, endPos]} 
             pathOptions={{ 
-              color: '#D4AF37', 
+              color: THEME.paper, 
               weight: 2.5, 
               opacity: 0.8,
               dashArray: '6, 10',
@@ -65,7 +66,7 @@ export default function Connections2D({ activeEntity, itineraryRoute }) {
         <Polyline
           positions={itineraryPositions}
           pathOptions={{
-            color: '#F59E0B',
+            color: THEME.paper,
             weight: 4,
             opacity: 0.9,
             dashArray: '8, 8',
