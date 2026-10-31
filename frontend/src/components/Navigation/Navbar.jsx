@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Compass, Map, Feather, Sparkles, Languages, Check, Award } from 'lucide-react';
+import { Compass, Map, Feather, Sparkles, Languages, Check, Award, HelpCircle } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Navbar() {
@@ -11,7 +11,9 @@ export default function Navbar() {
     t, 
     setIsItineraryOpen, 
     visitedSites, 
-    setIsPassportOpen 
+    setIsPassportOpen,
+    setIsQuizOpen,
+    setActiveQuizEntity
   } = useLanguage();
   const navigate = useNavigate();
 
@@ -134,6 +136,22 @@ export default function Navbar() {
           <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
           <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide hidden sm:inline">
             {t('itinerary_btn')}
+          </span>
+        </button>
+
+        {/* Heritage Quiz Challenge Button */}
+        <button
+          onClick={() => {
+            setActiveQuizEntity(null);
+            setIsQuizOpen(true);
+          }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#D4AF37]/40 text-[#FFF8E7] hover:text-[#F5D77F] bg-[#141224]/90 hover:bg-[#D4AF37]/20 shadow-[0_0_12px_rgba(212,175,55,0.15)] transition-all transform hover:scale-105 cursor-pointer"
+          title={t('quiz_btn')}
+          aria-label={t('quiz_btn')}
+        >
+          <span className="text-xs">🎯</span>
+          <span className="heritage-badge text-xs text-[#F5D77F] font-semibold tracking-wide hidden sm:inline">
+            {t('nav_quiz')}
           </span>
         </button>
 

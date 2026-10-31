@@ -9,6 +9,7 @@ import axios from 'axios';
 import API_BASE_URL from '../../config/api';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRegionalFoodsForEntity } from '../../utils/regionalFoods';
+import VerifiedCommunityOpinions from './VerifiedCommunityOpinions';
 
 export default function RightPanel({ activeEntity, setActiveEntity }) {
   const { 
@@ -22,7 +23,8 @@ export default function RightPanel({ activeEntity, setActiveEntity }) {
     visitedSites,
     toggleVisited,
     isVisited,
-    setIsPassportOpen
+    setIsPassportOpen,
+    openQuizForEntity
   } = useLanguage();
 
   const [wikiImage, setWikiImage] = useState(null);
@@ -336,6 +338,16 @@ export default function RightPanel({ activeEntity, setActiveEntity }) {
               )}
             </button>
 
+            {/* Test Lore / Quiz Button */}
+            <button
+              onClick={() => openQuizForEntity(activeEntity?.name || activeEntity?.id)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#151424] hover:bg-[#D4AF37]/20 border border-[#D4AF37]/35 text-[#F5D77F] transition-all cursor-pointer shadow-sm hover:scale-105"
+              title="Play Lore Quiz on this Monument"
+            >
+              <span>🎯</span>
+              <span>{isHi ? 'क्विज़ खेलें' : isOr ? 'କୁଇଜ୍ ଖେଳନ୍ତୁ' : 'Lore Quiz'}</span>
+            </button>
+
             <a 
               href={`https://en.wikipedia.org/wiki/${encodeURIComponent(activeEntity?.name || '')}`}
               target="_blank"
@@ -532,6 +544,11 @@ export default function RightPanel({ activeEntity, setActiveEntity }) {
           )}
 
         </div>
+
+        {/* ------------------------------------------------------------- */}
+        {/* Verified Community Opinions & Traveler Experiences            */}
+        {/* ------------------------------------------------------------- */}
+        <VerifiedCommunityOpinions activeEntity={activeEntity} />
 
         {/* ------------------------------------------------------------- */}
         {/* Unified Dharohar AI Heritage Guide Launcher                   */}

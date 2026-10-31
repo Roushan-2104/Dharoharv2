@@ -12,6 +12,8 @@ export const translations = {
     nav_knowledge_live: "200+ Verified Sites",
     nav_title: "Dharohar",
     nav_subtitle: "Explore India's Living Heritage",
+    nav_quiz: "Quiz",
+    quiz_btn: "Heritage Quiz",
     lang_name: "English",
     audio_mute: "Mute Ambient Sitar",
     audio_play: "Play Ambient Temple Sitar",
@@ -184,6 +186,8 @@ export const translations = {
     nav_knowledge_live: "200+ सत्यापित स्थल",
     nav_title: "धरोहर",
     nav_subtitle: "भारत की जीवंत सांस्कृतिक धरोहर",
+    nav_quiz: "क्विज़",
+    quiz_btn: "धरोहर ज्ञान क्विज़",
     lang_name: "हिन्दी",
     audio_mute: "सितार संगीत बंद करें",
     audio_play: "पारंपरिक सितार संगीत सुनें",
@@ -356,6 +360,8 @@ export const translations = {
     nav_knowledge_live: "୨୦୦+ ସତ୍ୟାପିତ ସ୍ଥାନ",
     nav_title: "ଧରୋହର",
     nav_subtitle: "ଭାରତର ଜୀବନ୍ତ ସାଂସ୍କୃତିକ ଐତିହ୍ୟ",
+    nav_quiz: "କୁଇଜ୍",
+    quiz_btn: "ଐତିହ୍ୟ ଜ୍ଞାନ କୁଇଜ୍",
     lang_name: "ଓଡ଼ିଆ",
     audio_mute: "ସୀତାର ବାଦ୍ୟ ବନ୍ଦ କରନ୍ତୁ",
     audio_play: "ପାରମ୍ପରିକ ମନ୍ଦିର ସୀତାର ବାଦ୍ୟ ଶୁଣନ୍ତୁ",
@@ -824,6 +830,13 @@ export const LanguageProvider = ({ children }) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInitialQuery, setChatInitialQuery] = useState('');
   const [isPassportOpen, setIsPassportOpen] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [activeQuizEntity, setActiveQuizEntity] = useState(null);
+
+  const openQuizForEntity = (entityNameOrId) => {
+    setActiveQuizEntity(entityNameOrId || null);
+    setIsQuizOpen(true);
+  };
   const [visitedSites, setVisitedSites] = useState(() => {
     try {
       const saved = localStorage.getItem('dharohar_visited_sites');
@@ -1078,7 +1091,12 @@ export const LanguageProvider = ({ children }) => {
       toggleVisited,
       isVisited,
       isPassportOpen,
-      setIsPassportOpen
+      setIsPassportOpen,
+      isQuizOpen,
+      setIsQuizOpen,
+      activeQuizEntity,
+      setActiveQuizEntity,
+      openQuizForEntity
     }}>
       {children}
     </LanguageContext.Provider>
