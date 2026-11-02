@@ -8,8 +8,55 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;500;700&family=Radio+Canada:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Noto+Sans+Oriya:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+      /* Opening screen: shown at once, before the app loads; src/splash.js moves the progress rule
+         through its stages and removes the screen once the backend, the records and the globe are ready */
+      #splash { --paper: #f8f7f3; --ink: #0f141e; --muted: #5b6170; --mark: #d9241b; --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        position: fixed; inset: 0; z-index: 9999; display: grid; grid-template-rows: 1fr auto; background: var(--paper); color: var(--ink);
+        font-family: "Radio Canada", system-ui, sans-serif; transition: opacity 700ms ease-out; }
+      #splash.splash-out { opacity: 0; pointer-events: none; }
+      #splash .splash-center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(16px, 3vh, 32px); padding: 0 16px; text-align: center; }
+      #splash svg { width: clamp(84px, 11vw, 132px); height: auto; color: var(--mark); fill: var(--mark); animation: splash-fade 1400ms ease-out both, splash-spin 24s linear infinite; }
+      #splash .splash-name { font-family: "Radio Canada Big", system-ui, sans-serif; font-weight: 700; line-height: 0.9; font-size: clamp(56px, 14vw, 184px);
+        letter-spacing: -0.035em; white-space: nowrap; animation: splash-fade 1600ms ease-out 200ms both, splash-breathe 4s ease-in-out 1800ms infinite; }
+      #splash .splash-scripts { position: relative; height: 1.6em; width: 100%; font-size: clamp(20px, 2.6vw, 30px); font-weight: 500; color: var(--mark); }
+      #splash .splash-scripts span { position: absolute; inset: 0; opacity: 0; animation: splash-cycle 7.5s ease-in-out infinite; }
+      #splash .splash-scripts span:nth-child(1) { font-family: "Radio Canada", system-ui, sans-serif; animation-delay: 700ms; }
+      #splash .splash-scripts span:nth-child(2) { font-family: "Noto Sans Devanagari", system-ui, sans-serif; animation-delay: 3200ms; }
+      #splash .splash-scripts span:nth-child(3) { font-family: "Noto Sans Oriya", system-ui, sans-serif; animation-delay: 5700ms; }
+      #splash .splash-foot { padding: 0 clamp(16px, 4vw, 64px) clamp(20px, 5vh, 48px); animation: splash-fade 1200ms ease-out 600ms both; }
+      #splash .splash-rule { height: 3px; background: #e3e1da; overflow: hidden; }
+      #splash .splash-rule i { display: block; height: 100%; background: var(--ink); transform: scaleX(0.04); transform-origin: left; transition: transform 600ms ease-out; }
+      #splash .splash-stage span, #splash .splash-stage b { transition: opacity 400ms ease-out; }
+      #splash .splash-stage { display: flex; justify-content: space-between; gap: 16px; margin-top: 12px; font-size: 15px; color: var(--muted); }
+      #splash .splash-stage b { font-weight: 500; color: var(--ink); }
+      #splash .splash-slow { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 15px; color: var(--ink); }
+      #splash .splash-slow[hidden] { display: none; }
+      #splash button { min-height: 44px; padding: 0 18px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font: 500 15px "Radio Canada", system-ui, sans-serif; cursor: pointer; }
+      #splash button:focus-visible { outline: 3px solid var(--mark); outline-offset: 3px; }
+      @keyframes splash-spin { to { transform: rotate(360deg); } }
+      @keyframes splash-fade { from { opacity: 0; } }
+      @keyframes splash-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+      @keyframes splash-cycle { 0% { opacity: 0; } 8%, 28% { opacity: 1; } 36%, 100% { opacity: 0; } }
+      @media (prefers-reduced-motion: reduce) {
+        #splash *, #splash { animation: none !important; transition: none !important; }
+        #splash .splash-scripts span:nth-child(1) { opacity: 1; }
+      }
+    </style>
   </head>
   <body>
+    <div id="splash">
+      <div class="splash-center">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45.5" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="50" cy="50" r="8.5"/><path d="M50 41L48.05 24.07L50 7L51.95 24.07ZM52.33 41.31L54.83 24.45L61.13 8.47L58.59 25.46ZM54.5 42.21L61.28 26.57L71.5 12.76L64.65 28.52ZM56.36 43.64L66.96 30.29L80.41 19.59L69.71 33.04ZM57.79 45.5L71.48 35.35L87.24 28.5L73.43 38.72ZM58.69 47.67L74.54 41.41L91.53 38.87L75.55 45.17ZM59 50L75.93 48.05L93 50L75.93 51.95ZM58.69 52.33L75.55 54.83L91.53 61.13L74.54 58.59ZM57.79 54.5L73.43 61.28L87.24 71.5L71.48 64.65ZM56.36 56.36L69.71 66.96L80.41 80.41L66.96 69.71ZM54.5 57.79L64.65 71.48L71.5 87.24L61.28 73.43ZM52.33 58.69L58.59 74.54L61.13 91.53L54.83 75.55ZM50 59L51.95 75.93L50 93L48.05 75.93ZM47.67 58.69L45.17 75.55L38.87 91.53L41.41 74.54ZM45.5 57.79L38.72 73.43L28.5 87.24L35.35 71.48ZM43.64 56.36L33.04 69.71L19.59 80.41L30.29 66.96ZM42.21 54.5L28.52 64.65L12.76 71.5L26.57 61.28ZM41.31 52.33L25.46 58.59L8.47 61.13L24.45 54.83ZM41 50L24.07 51.95L7 50L24.07 48.05ZM41.31 47.67L24.45 45.17L8.47 38.87L25.46 41.41ZM42.21 45.5L26.57 38.72L12.76 28.5L28.52 35.35ZM43.64 43.64L30.29 33.04L19.59 19.59L33.04 30.29ZM45.5 42.21L35.35 28.52L28.5 12.76L38.72 26.57ZM47.67 41.31L41.41 25.46L38.87 8.47L45.17 24.45Z"/><circle cx="55.55" cy="7.86" r="1.7"/><circle cx="66.26" cy="10.74" r="1.7"/><circle cx="75.87" cy="16.28" r="1.7"/><circle cx="83.72" cy="24.13" r="1.7"/><circle cx="89.26" cy="33.74" r="1.7"/><circle cx="92.14" cy="44.45" r="1.7"/><circle cx="92.14" cy="55.55" r="1.7"/><circle cx="89.26" cy="66.26" r="1.7"/><circle cx="83.72" cy="75.87" r="1.7"/><circle cx="75.87" cy="83.72" r="1.7"/><circle cx="66.26" cy="89.26" r="1.7"/><circle cx="55.55" cy="92.14" r="1.7"/><circle cx="44.45" cy="92.14" r="1.7"/><circle cx="33.74" cy="89.26" r="1.7"/><circle cx="24.13" cy="83.72" r="1.7"/><circle cx="16.28" cy="75.87" r="1.7"/><circle cx="10.74" cy="66.26" r="1.7"/><circle cx="7.86" cy="55.55" r="1.7"/><circle cx="7.86" cy="44.45" r="1.7"/><circle cx="10.74" cy="33.74" r="1.7"/><circle cx="16.28" cy="24.13" r="1.7"/><circle cx="24.13" cy="16.28" r="1.7"/><circle cx="33.74" cy="10.74" r="1.7"/><circle cx="44.45" cy="7.86" r="1.7"/></svg>
+        <h1 class="splash-name">Dharohar</h1>
+        <div class="splash-scripts" aria-hidden="true"><span>India's living heritage, on one globe</span><span>धरोहर · भारत की जीवित विरासत</span><span>ଧରୋହର · ଭାରତର ଜୀବନ୍ତ ଐତିହ୍ୟ</span></div>
+      </div>
+      <div class="splash-foot" role="status" aria-live="polite">
+        <div class="splash-rule"><i data-bar></i></div>
+        <div class="splash-stage"><b data-stage>Waking the server</b><span data-step>1 of 3</span></div>
+        <div class="splash-slow" data-slow hidden>The server is taking longer than usual. <button type="button" data-continue>Continue anyway</button></div>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

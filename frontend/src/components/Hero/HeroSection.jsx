@@ -8,6 +8,7 @@ import BottomHUD from './BottomHUD';
 import RightPanel from './RightPanel';
 import CameraFramer from './CameraFramer';
 import { SATELLITE_TILES } from '../../config/satellite';
+import { markReady } from '../../splash';
 import HeroSearchBar from './HeroSearchBar';
 import ItineraryModal from './ItineraryModal';
 import PersonalizeMapModal from './PersonalizeMapModal';
@@ -20,7 +21,9 @@ import { calibrateEntityCoordinates, calculateDistanceKm } from '../../utils/geo
 // A quiet line in the field while the globe textures load, so the black field does not read as broken
 function GlobeLoading() {
   const { active, progress } = useProgress();
-  if (!active && progress >= 100) return null;
+  const loaded = !active && progress >= 100;
+  useEffect(() => { if (loaded) markReady('globe'); }, [loaded]);
+  if (loaded) return null;
   return (
     <p role="status" className="absolute inset-0 z-20 flex items-center justify-center text-paper opacity-80 text-sm pointer-events-none">
       Loading the globe{progress > 0 ? ` ${Math.round(progress)}%` : ''}
@@ -75,6 +78,7 @@ export default function HeroSection() {
           };
         });
         setEntities(data);
+        markReady('data');
       })
       .catch(err => console.error("Error fetching entities:", err));
   }, []);
