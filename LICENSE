@@ -19,25 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
--------------------------------------------------------------------------------
-
-Reserved: not covered by the MIT License above
-
-Copyright (c) 2026 Roushan Sharma and Manavendra Gupta. All rights reserved.
-
-The MIT License applies to the source code only. The following are not licensed
-for reuse, and all rights in them are reserved:
-
-  - The Dharohar name, wordmark and logo, as used to identify this project
-  - Digital_Heritage_Knowledge_System_Full_Document.docx and docx_content.txt
-    (the Smart India Hackathon 2026 idea submission)
-  - demo.mp4
-
-Third-party material keeps its own terms, which this licence does not change:
-
-  - Satellite imagery and screenshots that show it: Sentinel-2 cloudless by
-    EOX IT Services GmbH (CC BY-NC-SA 4.0); Esri World Imagery (Esri terms)
-  - NASA Blue Marble textures (public domain)
-  - Place coordinates from Wikidata (CC0) and OpenStreetMap (ODbL)
-  - Fonts: Radio Canada and Noto (SIL Open Font License)

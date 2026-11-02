@@ -596,9 +596,9 @@ Dharoharv2/
 
 The source code is released under the [MIT License](./LICENSE): use it, change it and share it, keeping the copyright notice.
 
-**All rights reserved** in the Dharohar name, wordmark and logo, the Smart India Hackathon 2026 idea document (`Digital_Heritage_Knowledge_System_Full_Document.docx`, `docx_content.txt`) and `demo.mp4`. These are not covered by the MIT License.
+**All rights reserved** in the Dharohar name, wordmark and logo, the Smart India Hackathon 2026 idea document (`Digital_Heritage_Knowledge_System_Full_Document.docx`, `docx_content.txt`) and `demo.mp4`. These are not covered by the MIT License; see [NOTICE](./NOTICE).
 
-Third-party imagery, data and fonts keep their own terms; see [Credits](#credits) and the [LICENSE](./LICENSE) file.
+Third-party imagery, data and fonts keep their own terms; see [Credits](#credits) and the [NOTICE](./NOTICE) file.
 
 Copyright © 2026 Roushan Sharma and Manavendra Gupta.
 
