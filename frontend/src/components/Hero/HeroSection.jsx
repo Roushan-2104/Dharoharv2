@@ -7,6 +7,7 @@ import Map2D from './Map2D';
 import BottomHUD from './BottomHUD';
 import RightPanel from './RightPanel';
 import CameraFramer from './CameraFramer';
+import { SATELLITE_TILES } from '../../config/satellite';
 import HeroSearchBar from './HeroSearchBar';
 import ItineraryModal from './ItineraryModal';
 import PersonalizeMapModal from './PersonalizeMapModal';
@@ -348,7 +349,7 @@ export default function HeroSection() {
                 dampingFactor={0.08}
                 autoRotate={globeDrifts}
                 autoRotateSpeed={0.35}
-                minDistance={3}
+                minDistance={2.506}
                 maxDistance={12}
                 zoomSpeed={1.2}
                 rotateSpeed={0.8}
@@ -357,6 +358,19 @@ export default function HeroSection() {
           </Canvas>
 
           <GlobeLoading />
+
+
+          {/* Credit for the satellite imagery, as its licence requires */}
+
+          <p className="absolute left-4 md:left-8 top-4 md:top-8 z-20 max-w-[60%] text-xs text-paper opacity-70 pointer-events-auto">
+
+            {SATELLITE_TILES.attributionUrl
+
+              ? <a href={SATELLITE_TILES.attributionUrl} target="_blank" rel="noreferrer" className="underline-offset-2 hover:underline">{SATELLITE_TILES.attribution}</a>
+
+              : SATELLITE_TILES.attribution}
+
+          </p>
 
 
           {!reduceMotion && !activeEntity && (

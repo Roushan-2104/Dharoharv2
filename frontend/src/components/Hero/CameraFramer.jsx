@@ -10,7 +10,7 @@ import { latLongToVector3 } from '../../utils/geo';
 // The orbit target stays at the globe's centre so dragging always spins the globe itself.
 
 const HOME_DISTANCE = 7.5;
-const RECORD_DISTANCE = 4.0;
+const RECORD_DISTANCE = 3.3;
 const PREVIEW_DISTANCE = 4.4;
 
 const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -110,6 +110,18 @@ export default function CameraFramer({ activeEntity, radius, reduceMotion = fals
   }, [controls]);
 
   useFrame(() => {
+    // Close to the ground, a drag should move the view a little, not spin the planet,
+    // and the near plane must come in so the surface is not clipped away
+    const altitude = Math.max(camera.position.length() - radius, 0.0001);
+    if (controls) {
+      controls.rotateSpeed = 0.8 * THREE.MathUtils.clamp(altitude / (HOME_DISTANCE - radius), 0.003, 1);
+    }
+    const near = THREE.MathUtils.clamp(altitude * 0.3, 0.0005, 0.1);
+    if (Math.abs(camera.near - near) > near * 0.1) {
+      camera.near = near;
+      camera.updateProjectionMatrix();
+    }
+
     const f = flight.current;
     if (!f) return;
     const raw = Math.min(1, (performance.now() - f.start) / f.duration);

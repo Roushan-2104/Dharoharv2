@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
+    "3d-tiles-renderer": "^0.5.3",
     "axios": "^1.20.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.39.0",

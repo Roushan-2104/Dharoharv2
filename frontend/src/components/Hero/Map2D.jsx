@@ -79,7 +79,7 @@ export default function Map2D({ entities, categoryColors, activeEntity, setActiv
         {/* High-Res Satellite Layer */}
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          attribution='Tiles &copy; Esri &mdash; Dharohar National Heritage Knowledge System'
+          attribution='Imagery &copy; Esri, Maxar, Earthstar Geographics'
         />
 
         <MapController activeEntity={activeEntity} />

@@ -3,6 +3,7 @@ import { useLoader, useThree } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import Connections from './Connections';
+import SatelliteSurface from './SatelliteSurface';
 import { THEME } from '../../config/theme';
 import { latLongToVector3 } from '../../utils/geo';
 import { useLanguage } from '../../context/LanguageContext';
@@ -63,9 +64,12 @@ export default function Earth({ entities, activeEntity, setActiveEntity, itinera
       <directionalLight position={indiaLightPos} intensity={3.4} color="white" />
       <ambientLight intensity={0.32} color="white" />
 
-      {/* Earth Sphere: oceans (white in the water mask) catch the sun, land stays matte */}
+      {/* Live satellite imagery, sharper tiles streaming in as the camera comes closer */}
+      <SatelliteSurface radius={radius} />
+
+      {/* The still Blue Marble globe sits just beneath the tiles: it shows while they load and fills any gap */}
       <mesh ref={earthRef} position={[0, 0, 0]}>
-        <sphereGeometry args={[radius, 128, 128]} />
+        <sphereGeometry args={[radius * 0.998, 128, 128]} />
         <meshPhongMaterial
           map={colorMap}
           bumpMap={bumpMap}

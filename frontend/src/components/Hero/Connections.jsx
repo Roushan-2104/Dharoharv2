@@ -7,6 +7,23 @@ import { latLongToVector3, calibrateEntityCoordinates } from '../../utils/geo';
 import API_BASE_URL from '../../config/api';
 import { THEME } from '../../config/theme';
 
+// Scale for markers drawn in 3D, so they keep a steady size on screen as the camera comes closer
+const screenScale = (camera, worldPos) => THREE.MathUtils.clamp(camera.position.distanceTo(worldPos) / 1.5, 0.0002, 2);
+
+// A small dot on the surface that keeps a steady size on screen at any zoom
+function SurfaceDot({ position, size }) {
+  const ref = useRef();
+  useFrame(({ camera }) => {
+    if (ref.current) ref.current.scale.setScalar(screenScale(camera, ref.current.position));
+  });
+  return (
+    <mesh ref={ref} position={position}>
+      <sphereGeometry args={[size, 16, 16]} />
+      <meshBasicMaterial color={THEME.paper} />
+    </mesh>
+  );
+}
+
 // One arc between two places on the globe. It draws itself from the start point outward,
 // then a small light keeps travelling along it so the link reads as alive.
 function Arc({ start, end, radius, height, lineWidth, opacity, delay = 0, drawMs = 900, reduceMotion }) {
@@ -27,7 +44,7 @@ function Arc({ start, end, radius, height, lineWidth, opacity, delay = 0, drawMs
     born.current = performance.now();
   }, [points]);
 
-  useFrame(() => {
+  useFrame(state => {
     const segments = points.length - 1;
     const elapsed = performance.now() - born.current - delay;
     const drawn = reduceMotion ? 1 : THREE.MathUtils.clamp(elapsed / drawMs, 0, 1);
@@ -43,6 +60,7 @@ function Arc({ start, end, radius, height, lineWidth, opacity, delay = 0, drawMs
         // A full trip along the arc every 2.4s, starting where the line began
         const t = ((elapsed - drawMs) / 2400) % 1;
         lightRef.current.position.copy(curve.getPoint(t));
+        lightRef.current.scale.setScalar(screenScale(state.camera, lightRef.current.position));
         lightRef.current.visible = true;
       }
     }
@@ -105,10 +123,7 @@ export default function Connections({ activeEntity, itineraryRoute, radius, redu
               delay={900 + idx * 140}
               reduceMotion={reduceMotion}
             />
-            <mesh position={[endPos.x, endPos.y, endPos.z]}>
-              <sphereGeometry args={[0.014, 16, 16]} />
-              <meshBasicMaterial color={THEME.paper} />
-            </mesh>
+            <SurfaceDot position={[endPos.x, endPos.y, endPos.z]} size={0.014} />
           </group>
         );
       })}
@@ -135,15 +150,9 @@ export default function Connections({ activeEntity, itineraryRoute, radius, redu
               drawMs={700}
               reduceMotion={reduceMotion}
             />
-            <mesh position={[p1.x, p1.y, p1.z]}>
-              <sphereGeometry args={[0.02, 16, 16]} />
-              <meshBasicMaterial color={THEME.paper} />
-            </mesh>
+            <SurfaceDot position={[p1.x, p1.y, p1.z]} size={0.02} />
             {idx === itineraryRoute.length - 2 && (
-              <mesh position={[p2.x, p2.y, p2.z]}>
-                <sphereGeometry args={[0.02, 16, 16]} />
-                <meshBasicMaterial color={THEME.paper} />
-              </mesh>
+              <SurfaceDot position={[p2.x, p2.y, p2.z]} size={0.02} />
             )}
           </group>
         );
