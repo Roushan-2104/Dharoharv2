@@ -30,34 +30,24 @@ Built for **Smart India Hackathon 2026**. Odisha is the first state on the globe
 ## Contents
 
 **Features**
-[01 The globe](#01--the-globe) ·
-[02 Satellite to the ground](#02--satellite-to-the-ground) ·
-[03 Every record where it began](#03--every-record-where-it-began) ·
-[04 Records and their links](#04--records-and-their-links) ·
-[05 The category index](#05--the-category-index) ·
-[06 The 2D map](#06--the-2d-map) ·
-[07 Darshak, the AI guide](#07--darshak-the-ai-guide) ·
-[08 Trip planner](#08--trip-planner) ·
-[09 Personalised map](#09--personalised-map) ·
-[10 Heritage quiz](#10--heritage-quiz) ·
-[11 Heritage passport](#11--heritage-passport) ·
-[12 Explore](#12--explore) ·
-[13 Share a story](#13--share-a-story) ·
-[14 Three languages](#14--three-languages) ·
-[15 Opening screen](#15--opening-screen) ·
-[16 On a phone](#16--on-a-phone)
+
+| On the map | Guides and tools | Your heritage | Everywhere |
+|:--|:--|:--|:--|
+| 01 [The globe](#01--the-globe) | 07 [Darshak, the AI guide](#07--darshak-the-ai-guide) | 11 [Heritage passport](#11--heritage-passport) | 14 [Three languages](#14--three-languages) |
+| 02 [Satellite to the ground](#02--satellite-to-the-ground) | 08 [Trip planner](#08--trip-planner) | 12 [Explore](#12--explore) | 15 [Opening screen](#15--opening-screen) |
+| 03 [Every record where it began](#03--every-record-where-it-began) | 09 [Personalised map](#09--personalised-map) | 13 [Share a story](#13--share-a-story) | 16 [On a phone](#16--on-a-phone) |
+| 04 [Records and their links](#04--records-and-their-links) | 10 [Heritage quiz](#10--heritage-quiz) | | |
+| 05 [The category index](#05--the-category-index) | | | |
+| 06 [The 2D map](#06--the-2d-map) | | | |
 
 **Project**
-[Run it](#run-it) ·
-[How it works](#how-it-works) ·
-[API](#api) ·
-[Data](#data) ·
-[Security and resilience](#security-and-resilience) ·
-[Design](#design) ·
-[Project structure](#project-structure) ·
-[Roadmap](#roadmap) ·
-[Credits](#credits) ·
-[License](#license)
+
+| Get started | Under the hood | About |
+|:--|:--|:--|
+| [Run it](#run-it) | [How it works](#how-it-works) | [Design](#design) |
+| [Settings](#settings) | [API](#api) | [Roadmap](#roadmap) |
+| [Docker guide](./DOCKER.md) | [Data](#data) | [Known limitations](#known-limitations) |
+| [Project structure](#project-structure) | [Security and resilience](#security-and-resilience) | [Credits](#credits) · [License](#license) |
 
 ---
 
