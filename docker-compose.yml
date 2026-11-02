@@ -1,3 +1,10 @@
+# ----------------------------------------------------
+# Development stack with live reload.
+# Run with: docker compose up --build
+# Then open http://localhost:5173 (API health: http://localhost:3000/api/health)
+# Secrets come from ./.env (copy .env.example). Without it the app still runs on
+# bundled data, but the chatbot falls back to offline answers.
+# ----------------------------------------------------
 services:
   backend:
     build:
@@ -7,20 +14,16 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
     environment:
-      - PORT=${PORT:-3000}
-      - DATABASE_URL=${DATABASE_URL}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PORT=3000
+      - NODE_ENV=development
     volumes:
       - ./backend:/app
       - /app/node_modules
     command: node --watch server.js
-    healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/api/entities', (r) => { process.exit(r.statusCode === 200 || r.statusCode === 500 ? 0 : 1); }).on('error', () => process.exit(1));\""]
-      interval: 15s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
     networks:
       - dharohar-network
 
@@ -33,14 +36,16 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=${VITE_API_URL:-http://localhost:3000}
+      # Empty: the browser calls /api on the Vite server, which proxies it to the backend container
+      - VITE_API_URL=
       - VITE_PROXY_TARGET=http://backend:3000
     volumes:
       - ./frontend:/app
       - /app/node_modules
     command: npm run dev -- --host
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - dharohar-network
 

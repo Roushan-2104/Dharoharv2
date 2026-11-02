@@ -1,13 +1,13 @@
 # ----------------------------------------------------
 # Development Dockerfile (Live Hot-Reload with Vite)
 # ----------------------------------------------------
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
 # Install dependencies first (leverages Docker layer cache)
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 # Copy rest of the application files
 COPY . .

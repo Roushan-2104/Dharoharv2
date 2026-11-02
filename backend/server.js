@@ -33,8 +33,16 @@ if (!DB_URL) {
 let isDbAvailable = true;
 const pool = new Pool({
   connectionString: DB_URL,
-  connectionTimeoutMillis: 2000,
+  // Generous: a far-away Supabase pooler can take several seconds to accept a new TLS connection
+  connectionTimeoutMillis: 10000,
   ssl: DB_URL && DB_URL.includes('localhost') ? false : { rejectUnauthorized: false }
+});
+
+// Dharohar's tables live in their own schema (see setup_db.js), so other tables in the same
+// database are left alone. public stays on the path as a fallback for older setups.
+const DB_SCHEMA = /^[a-z_][a-z0-9_]*$/.test(process.env.DB_SCHEMA || '') ? process.env.DB_SCHEMA : 'dharohar';
+pool.on('connect', client => {
+  client.query(`SET search_path TO ${DB_SCHEMA}, public`).catch(err => console.warn("Could not set search_path:", err.message));
 });
 
 pool.connect((err, client, release) => {
@@ -1885,6 +1893,15 @@ Return ONLY valid JSON matching this exact schema:
     console.error("Itinerary Generation Error:", error);
     res.status(500).json({ error: "Failed to generate itinerary" });
   }
+});
+
+// Health check for Docker and for teammates: shows whether the database and the chatbot's AI key are set up
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: "ok",
+    database: isDbAvailable ? "connected" : "offline (serving bundled data)",
+    chatbot: genAI ? "ai" : "offline answers only (GEMINI_API_KEY not set)"
+  });
 });
 
 app.get('/', (req, res) => {

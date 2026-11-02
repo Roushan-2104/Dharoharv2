@@ -1,6 +1,7 @@
 # ----------------------------------------------------
 # Production Docker Compose (Optimized Nginx + Node)
 # Run with: docker compose -f docker-compose.prod.yml up --build -d
+# Then open http://localhost (or set WEB_PORT=8080 in .env to use another port)
 # ----------------------------------------------------
 services:
   backend:
@@ -12,12 +13,12 @@ services:
     # Not published to the host: only Nginx (frontend container) reaches it at backend:3000
     expose:
       - "3000"
+    env_file:
+      - path: .env
+        required: false
     environment:
-      - PORT=${PORT:-3000}
-      - DATABASE_URL=${DATABASE_URL}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PORT=3000
       - TRUST_PROXY=1
-      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost}
     networks:
       - dharohar-network
 
@@ -28,9 +29,10 @@ services:
     container_name: dharohar-frontend-prod
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "${WEB_PORT:-80}:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - dharohar-network
 
