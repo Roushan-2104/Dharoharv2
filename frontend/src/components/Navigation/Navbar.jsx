@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
+import ChakraMark from '../Brand/ChakraMark';
 
 const linkBase = 'inline-flex items-center min-h-[44px] text-[16px] font-medium transition-colors duration-short ease-out hover:text-mark';
 
@@ -95,13 +96,13 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 z-50 w-full h-nav bg-paper text-ink">
       <div className="mx-auto h-full max-w-[1920px] px-4 md:px-8 xl:px-16 flex items-center gap-6 xl:gap-12">
 
-        {/* Wordmark: the name over the country, beside a square of the mark red */}
+        {/* Wordmark: the name over the country, beside the Chakra */}
         <NavLink
           to="/"
           aria-label={`${t('nav_title')}, ${countryName}`}
           className="inline-grid grid-cols-[auto_auto] gap-x-2.5 items-center font-display text-[22px] leading-[0.92] tracking-[-0.02em] shrink-0"
         >
-          <span aria-hidden="true" className="row-span-2 w-[41px] h-[41px] bg-mark" />
+          <ChakraMark className="row-span-2 w-[41px] h-[41px] text-mark" />
           <span className="font-bold">{t('nav_title')}</span>
           <span className="font-normal">{countryName}</span>
         </NavLink>
