@@ -1,0 +1,1412 @@
+{
+  "Odissi": {
+    "place": "Puri",
+    "coordinates": [
+      19.8159,
+      85.82898
+    ]
+  },
+  "Gotipua": {
+    "place": "Raghurajpur",
+    "coordinates": [
+      19.88537,
+      85.82654
+    ]
+  },
+  "Chhau": {
+    "place": "Baripada",
+    "coordinates": [
+      21.94329,
+      86.72517
+    ]
+  },
+  "Pattachitra": {
+    "place": "Raghurajpur",
+    "coordinates": [
+      19.89366,
+      85.83027
+    ]
+  },
+  "Tala Patra Chitra": {
+    "place": "Raghurajpur",
+    "coordinates": [
+      19.88875,
+      85.83541
+    ]
+  },
+  "Pipili Applique Work": {
+    "place": "Pipili",
+    "coordinates": [
+      20.11667,
+      85.83333
+    ]
+  },
+  "Tarakasi (Silver Filigree)": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.45829,
+      85.87041
+    ]
+  },
+  "Sambalpuri Ikat (Bandha) Weaving": {
+    "place": "Barpali",
+    "coordinates": [
+      21.2,
+      83.5833
+    ]
+  },
+  "Stone Carving": {
+    "place": "Konark",
+    "coordinates": [
+      19.88782,
+      86.09479
+    ]
+  },
+  "Wood Carving": {
+    "place": "Puri",
+    "coordinates": [
+      19.81099,
+      85.83411
+    ]
+  },
+  "Brass and Bell-Metal Work": {
+    "place": "Kantilo",
+    "coordinates": [
+      20.35829,
+      85.18374
+    ]
+  },
+  "Dhokra Metal Casting": {
+    "place": "Dhenkanal",
+    "coordinates": [
+      20.67496,
+      85.60375
+    ]
+  },
+  "Horn Craft": {
+    "place": "Paralakhemundi",
+    "coordinates": [
+      18.78333,
+      84.1
+    ]
+  },
+  "Lacquer Work": {
+    "place": "Balasore",
+    "coordinates": [
+      21.50333,
+      86.925
+    ]
+  },
+  "Papier Mâché Craft": {
+    "place": "Raghurajpur",
+    "coordinates": [
+      19.88187,
+      85.83535
+    ]
+  },
+  "Terracotta and Pottery": {
+    "place": "Sonepur, Odisha",
+    "coordinates": [
+      20.83333,
+      83.91667
+    ]
+  },
+  "Zari Embroidery": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.45338,
+      85.87557
+    ]
+  },
+  "Ganjifa": {
+    "place": "Raghurajpur",
+    "coordinates": [
+      19.87703,
+      85.83014
+    ]
+  },
+  "Kapdaganda Shawl": {
+    "place": "Niyamgiri",
+    "coordinates": [
+      19.58333,
+      83.4
+    ]
+  },
+  "Sambalpuri Saree Weaving": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.45829,
+      83.97044
+    ]
+  },
+  "Danda Nata": {
+    "place": "Berhampur",
+    "coordinates": [
+      19.32,
+      84.78
+    ]
+  },
+  "Dalkhai": {
+    "place": "Bargarh",
+    "coordinates": [
+      21.33333,
+      83.61667
+    ]
+  },
+  "Ghumura": {
+    "place": "Bhawanipatna",
+    "coordinates": [
+      19.90829,
+      83.1704
+    ]
+  },
+  "Dhemsa": {
+    "place": "Koraput",
+    "coordinates": [
+      18.82496,
+      82.72037
+    ]
+  },
+  "Chang": {
+    "place": "Balangir",
+    "coordinates": [
+      20.71667,
+      83.48333
+    ]
+  },
+  "Rock Shelter Paintings": {
+    "place": "Vikramkhol",
+    "coordinates": [
+      21.85829,
+      83.80378
+    ]
+  },
+  "Odissi Classical Music": {
+    "place": "Puri",
+    "coordinates": [
+      19.80411,
+      85.83406
+    ]
+  },
+  "Jhoomar": {
+    "place": "Sundargarh",
+    "coordinates": [
+      22.11667,
+      84.03333
+    ]
+  },
+  "Shola Pith Craft": {
+    "place": "Puri",
+    "coordinates": [
+      19.79927,
+      85.82885
+    ]
+  },
+  "Sand Art of Puri": {
+    "place": "Puri",
+    "coordinates": [
+      19.79932,
+      85.82153
+    ]
+  },
+  "Pakhala Bhata": {
+    "place": "Puri",
+    "coordinates": [
+      19.80423,
+      85.81639
+    ]
+  },
+  "Dalma": {
+    "place": "Puri",
+    "coordinates": [
+      19.81111,
+      85.81644
+    ]
+  },
+  "Machha Besara": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.4465,
+      85.87552
+    ]
+  },
+  "Chingudi Jhola": {
+    "place": "Chilika Lake",
+    "coordinates": [
+      19.71667,
+      85.31667
+    ]
+  },
+  "Machha Munda Chhenchda": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.30329,
+      85.82874
+    ]
+  },
+  "Mahaprasad": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.81301,
+      85.82206
+    ]
+  },
+  "Poda Pitha": {
+    "place": "Puri",
+    "coordinates": [
+      19.81595,
+      85.82165
+    ]
+  },
+  "Enduri Pitha": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.44166,
+      85.87028
+    ]
+  },
+  "Chhena Poda": {
+    "place": "Nayagarh",
+    "coordinates": [
+      20.13,
+      85.1
+    ]
+  },
+  "Chhena Jhili": {
+    "place": "Nimapada",
+    "coordinates": [
+      20.07,
+      86.02
+    ]
+  },
+  "Korakhai": {
+    "place": "Lingaraja Temple",
+    "coordinates": [
+      20.24662,
+      85.83735
+    ]
+  },
+  "Kardi": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.45338,
+      83.97563
+    ]
+  },
+  "Dahi Bara Aloo Dum": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.44171,
+      85.86293
+    ]
+  },
+  "Ghuguni": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.29838,
+      85.83389
+    ]
+  },
+  "Ratha Yatra": {
+    "place": "Gundicha Temple",
+    "coordinates": [
+      19.81692,
+      85.84036
+    ]
+  },
+  "Snana Yatra": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.8081,
+      85.82719
+    ]
+  },
+  "Chandan Yatra": {
+    "place": "Narendra Tank",
+    "coordinates": [
+      19.81368,
+      85.82497
+    ]
+  },
+  "Deepabali": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.2915,
+      85.83384
+    ]
+  },
+  "Durga Puja": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.44662,
+      85.85777
+    ]
+  },
+  "Shivaratri": {
+    "place": "Lingaraja Temple",
+    "coordinates": [
+      20.24171,
+      85.8425
+    ]
+  },
+  "Janmastami": {
+    "place": "Puri",
+    "coordinates": [
+      19.82015,
+      85.83898
+    ]
+  },
+  "Saraswati Puja": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.28666,
+      85.82861
+    ]
+  },
+  "Ganesh Puja": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.28671,
+      85.82126
+    ]
+  },
+  "Bali Jatra": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.4535,
+      85.85782
+    ]
+  },
+  "Raja Parba": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.45834,
+      85.86306
+    ]
+  },
+  "Pua Jiuntia": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.4465,
+      83.97558
+    ]
+  },
+  "Bhai Jiuntia": {
+    "place": "Bargarh",
+    "coordinates": [
+      21.34162,
+      83.62043
+    ]
+  },
+  "Nuakhai": {
+    "place": "Samaleswari Temple",
+    "coordinates": [
+      21.474,
+      83.959
+    ]
+  },
+  "Sitalsasthi": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.44166,
+      83.9703
+    ]
+  },
+  "Kumar Purnima": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.29162,
+      85.81611
+    ]
+  },
+  "Makar Sankranti / Makar Mela": {
+    "place": "Baripada",
+    "coordinates": [
+      21.93838,
+      86.73038
+    ]
+  },
+  "Dola Yatra": {
+    "place": "Puri",
+    "coordinates": [
+      19.80735,
+      85.84438
+    ]
+  },
+  "Gaja Lakshmi Puja": {
+    "place": "Dhenkanal",
+    "coordinates": [
+      20.67005,
+      85.60891
+    ]
+  },
+  "Gamha Purnima": {
+    "place": "Puri",
+    "coordinates": [
+      19.7947,
+      85.83858
+    ]
+  },
+  "Pana Sankranti": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.2985,
+      85.81616
+    ]
+  },
+  "Kartik Purnima / Boita Bandana": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.46254,
+      85.88045
+    ]
+  },
+  "Ratha Saptami": {
+    "place": "Chandrabhaga Beach",
+    "coordinates": [
+      19.86281,
+      86.0783
+    ]
+  },
+  "Prathamastami": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.30334,
+      85.82139
+    ]
+  },
+  "Akshaya Tritiya": {
+    "place": "Puri",
+    "coordinates": [
+      19.78961,
+      85.82497
+    ]
+  },
+  "Suna Besha": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.80122,
+      85.82714
+    ]
+  },
+  "Kandhen Budhi Yatra": {
+    "place": "Bhawanipatna",
+    "coordinates": [
+      19.90338,
+      83.17554
+    ]
+  },
+  "Chhau Festival": {
+    "place": "Baripada",
+    "coordinates": [
+      21.9315,
+      86.73033
+    ]
+  },
+  "Toshali National Crafts Mela": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.30754,
+      85.83877
+    ]
+  },
+  "Konark Dance Festival": {
+    "place": "Konark Sun Temple",
+    "coordinates": [
+      19.89573,
+      86.09833
+    ]
+  },
+  "Konark Sun Temple": {
+    "place": "Konark Sun Temple",
+    "coordinates": [
+      19.88744,
+      86.0946
+    ]
+  },
+  "Jagannath Temple": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.80472,
+      85.81833
+    ]
+  },
+  "Lingaraj Temple": {
+    "place": "Lingaraja Temple",
+    "coordinates": [
+      20.23833,
+      85.83361
+    ]
+  },
+  "Mukteswar Temple": {
+    "place": "Mukteshvara Temple, Bhubaneswar",
+    "coordinates": [
+      20.24269,
+      85.8405
+    ]
+  },
+  "Parsurameswar Temple": {
+    "place": "Parashurameshvara Temple",
+    "coordinates": [
+      20.2427,
+      85.8398
+    ],
+    "approximate": true
+  },
+  "Rajarani Temple": {
+    "place": "Rajarani Temple",
+    "coordinates": [
+      20.24346,
+      85.84354
+    ]
+  },
+  "Brahmeswara Temple": {
+    "place": "Brahmeswara Temple",
+    "coordinates": [
+      20.2395,
+      85.85174
+    ]
+  },
+  "Ananta Vasudeva Temple": {
+    "place": "Ananta Vasudeva Temple",
+    "coordinates": [
+      20.24061,
+      85.83578
+    ]
+  },
+  "Udayagiri and Khandagiri Caves": {
+    "place": "Udayagiri and Khandagiri Caves",
+    "coordinates": [
+      20.2628,
+      85.786
+    ]
+  },
+  "Dhauli Rock Edicts": {
+    "place": "Dhauli",
+    "coordinates": [
+      20.1922,
+      85.8397
+    ]
+  },
+  "Barabati Fort": {
+    "place": "Barabati Fort",
+    "coordinates": [
+      20.48463,
+      85.86442
+    ]
+  },
+  "Sisupalgarh": {
+    "place": "Sisupalgarh",
+    "coordinates": [
+      20.22664,
+      85.85306
+    ]
+  },
+  "Chausath Yogini Temple": {
+    "place": "Chausath Yogini Temple, Hirapur",
+    "coordinates": [
+      20.21667,
+      85.87083
+    ]
+  },
+  "Chausath Jogini Temple": {
+    "place": "Ranipur Jharial",
+    "coordinates": [
+      20.2887,
+      82.98587
+    ]
+  },
+  "Ratnagiri Buddhist Site": {
+    "place": "Ratnagiri, Odisha",
+    "coordinates": [
+      20.64119,
+      86.33533
+    ]
+  },
+  "Lalitagiri (Naltigiri) Buddhist Ruins": {
+    "place": "Lalitgiri",
+    "coordinates": [
+      20.5894,
+      86.2506
+    ]
+  },
+  "Udayagiri Buddhist Site": {
+    "place": "Udayagiri, Odisha",
+    "coordinates": [
+      20.6416,
+      86.2692
+    ]
+  },
+  "Pushpagiri Vihara": {
+    "place": "Pushpagiri Vihara",
+    "coordinates": [
+      20.72274,
+      86.19034
+    ]
+  },
+  "Athara Nala Bridge": {
+    "place": "Atharanala",
+    "coordinates": [
+      19.81981,
+      85.83171
+    ]
+  },
+  "Varahi Temple": {
+    "place": "Chaurasi",
+    "coordinates": [
+      19.995,
+      86.15
+    ],
+    "approximate": true
+  },
+  "Asoka Rock Inscriptions": {
+    "place": "Jaugada",
+    "coordinates": [
+      19.52256,
+      84.81225
+    ]
+  },
+  "Mahendragiri Temple Group": {
+    "place": "Mahendragiri",
+    "coordinates": [
+      18.96634,
+      84.36484
+    ]
+  },
+  "Gandharadi Temples": {
+    "place": "Gandharadi",
+    "coordinates": [
+      20.82,
+      84.26
+    ],
+    "approximate": true
+  },
+  "Paschima Somnatha Group": {
+    "place": "Boudh",
+    "coordinates": [
+      20.83333,
+      84.31667
+    ]
+  },
+  "Vikramkhol Rock Inscriptions": {
+    "place": "Vikramkhol",
+    "coordinates": [
+      21.85,
+      83.8
+    ]
+  },
+  "Chandrasekhar Temple Group": {
+    "place": "Kapilash Temple",
+    "coordinates": [
+      20.68206,
+      85.76309
+    ]
+  },
+  "Simhanatha Mahadeva Temple": {
+    "place": "Simhanatha Temple",
+    "coordinates": [
+      20.385,
+      85.34
+    ],
+    "approximate": true
+  },
+  "Ravana Chhaya Rock Paintings": {
+    "place": "Sitabhinji",
+    "coordinates": [
+      21.50018,
+      85.78956
+    ]
+  },
+  "Asurgarh Fort": {
+    "place": "Asurgarh",
+    "coordinates": [
+      20.09541,
+      83.34428
+    ]
+  },
+  "Bhaskareswar Temple": {
+    "place": "Bhaskareswar Temple",
+    "coordinates": [
+      20.244,
+      85.8545
+    ],
+    "approximate": true
+  },
+  "Kharavela": {
+    "place": "Udayagiri and Khandagiri Caves",
+    "coordinates": [
+      20.27109,
+      85.78974
+    ]
+  },
+  "Ashoka": {
+    "place": "Dhauli",
+    "coordinates": [
+      20.20049,
+      85.84343
+    ]
+  },
+  "Narasimhadeva I": {
+    "place": "Konark",
+    "coordinates": [
+      19.89611,
+      86.09852
+    ]
+  },
+  "Kapilendra Deva": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.44974,
+      85.88588
+    ]
+  },
+  "Purushottama Deva": {
+    "place": "Puri",
+    "coordinates": [
+      19.79507,
+      85.81153
+    ]
+  },
+  "Prataparudra Deva": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.43709,
+      85.88005
+    ]
+  },
+  "Jayadeva": {
+    "place": "Kenduli Sasan",
+    "coordinates": [
+      20.135,
+      85.995
+    ],
+    "approximate": true
+  },
+  "Sarala Das": {
+    "place": "Jagatsinghpur",
+    "coordinates": [
+      20.26667,
+      86.16667
+    ]
+  },
+  "Jagannath Das": {
+    "place": "Puri",
+    "coordinates": [
+      19.80787,
+      85.80612
+    ]
+  },
+  "Balaram Das": {
+    "place": "Puri",
+    "coordinates": [
+      19.82052,
+      85.81192
+    ]
+  },
+  "Achyutananda Das": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.432,
+      85.86639
+    ]
+  },
+  "Ananta Das": {
+    "place": "Balipatna",
+    "coordinates": [
+      20.15938,
+      85.97242
+    ]
+  },
+  "Yashovanta Das": {
+    "place": "Jagatsinghpur",
+    "coordinates": [
+      20.27496,
+      86.17041
+    ]
+  },
+  "Gopabandhu Das": {
+    "place": "Sakhigopal",
+    "coordinates": [
+      19.9357,
+      85.82982
+    ]
+  },
+  "Madhusudan Das": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.43746,
+      85.85289
+    ]
+  },
+  "Buxi Jagabandhu": {
+    "place": "Khordha",
+    "coordinates": [
+      20.18333,
+      85.61667
+    ]
+  },
+  "Surendra Sai": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.44171,
+      83.9629
+    ]
+  },
+  "Fakir Mohan Senapati": {
+    "place": "Balasore",
+    "coordinates": [
+      21.51162,
+      86.92877
+    ]
+  },
+  "Baji Rout": {
+    "place": "Dhenkanal",
+    "coordinates": [
+      20.66317,
+      85.60886
+    ]
+  },
+  "Biju Patnaik": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.45026,
+      85.84746
+    ]
+  },
+  "Kelucharan Mohapatra": {
+    "place": "Raghurajpur",
+    "coordinates": [
+      19.87708,
+      85.82281
+    ]
+  },
+  "Gangadhar Meher": {
+    "place": "Barpali",
+    "coordinates": [
+      21.20829,
+      83.58706
+    ]
+  },
+  "Radhanath Ray": {
+    "place": "Balasore",
+    "coordinates": [
+      21.50671,
+      86.93396
+    ]
+  },
+  "Nilakantha Das": {
+    "place": "Sakhigopal",
+    "coordinates": [
+      19.94399,
+      85.83355
+    ]
+  },
+  "Rama Devi": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.46291,
+      85.85328
+    ]
+  },
+  "Malati Choudhury": {
+    "place": "Angul",
+    "coordinates": [
+      20.79722,
+      85.02389
+    ]
+  },
+  "Nabakrushna Choudhury": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.468,
+      85.86695
+    ]
+  },
+  "Godabarish Mishra": {
+    "place": "Banapur",
+    "coordinates": [
+      19.78,
+      85.18
+    ]
+  },
+  "Jayanta Mahapatra": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.45978,
+      85.89353
+    ]
+  },
+  "Chandra Sekhar Behera": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.44662,
+      83.95771
+    ]
+  },
+  "Puri": {
+    "place": "Puri",
+    "coordinates": [
+      19.80761,
+      85.82525
+    ]
+  },
+  "Konark / Chandrabhaga": {
+    "place": "Chandrabhaga Beach",
+    "coordinates": [
+      19.85452,
+      86.07457
+    ]
+  },
+  "Cuttack": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.45,
+      85.86667
+    ]
+  },
+  "Kantilo, Nayagarh": {
+    "place": "Kantilo",
+    "coordinates": [
+      20.35,
+      85.18
+    ]
+  },
+  "Bhubaneswar": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.295,
+      85.825
+    ]
+  },
+  "Jajpur": {
+    "place": "Jajpur",
+    "coordinates": [
+      20.85,
+      86.33333
+    ]
+  },
+  "Sambalpur": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.45,
+      83.96667
+    ]
+  },
+  "Bargarh / Nrusimhanath": {
+    "place": "Nrusinghanath",
+    "coordinates": [
+      20.8958,
+      82.82794
+    ]
+  },
+  "Kalahandi": {
+    "place": "Bhawanipatna",
+    "coordinates": [
+      19.9,
+      83.16667
+    ]
+  },
+  "Mayurbhanj / Baripada": {
+    "place": "Baripada",
+    "coordinates": [
+      21.935,
+      86.72139
+    ]
+  },
+  "Mayurbhanj / Similipal": {
+    "place": "Similipal National Park",
+    "coordinates": [
+      21.75,
+      86.33
+    ]
+  },
+  "Ganjam": {
+    "place": "Ganjam",
+    "coordinates": [
+      19.38,
+      85.07
+    ]
+  },
+  "Koraput / Eastern Ghats": {
+    "place": "Koraput",
+    "coordinates": [
+      18.81667,
+      82.71667
+    ]
+  },
+  "Taptapani, Ganjam": {
+    "place": "Taptapani",
+    "coordinates": [
+      19.3,
+      84.24
+    ]
+  },
+  "Potagarh Fort": {
+    "place": "Potagarh Fort",
+    "coordinates": [
+      19.38216,
+      85.05626
+    ]
+  },
+  "Bichitrapur Mangrove Forest": {
+    "place": "Bichitrapur",
+    "coordinates": [
+      21.65,
+      87.4
+    ],
+    "approximate": true
+  },
+  "Rissia Nature Camp / Kuldiha": {
+    "place": "Kuldiha Wildlife Sanctuary",
+    "coordinates": [
+      21.33333,
+      86.5
+    ]
+  },
+  "Aul Palace": {
+    "place": "Aul",
+    "coordinates": [
+      20.6806,
+      86.64867
+    ]
+  },
+  "Deras Nature Camp": {
+    "place": "Chandaka Wildlife Sanctuary",
+    "coordinates": [
+      20.31475,
+      85.68849
+    ]
+  },
+  "Ansupa Lake": {
+    "place": "Ansupa Lake",
+    "coordinates": [
+      20.45914,
+      85.60371
+    ]
+  },
+  "Naraj Dam & Mahanadi Confluence Area": {
+    "place": "Naraj",
+    "coordinates": [
+      20.47507,
+      85.77959
+    ]
+  },
+  "Dhenkanal Palace": {
+    "place": "Dhenkanal",
+    "coordinates": [
+      20.66667,
+      85.6
+    ]
+  },
+  "Debrigarh": {
+    "place": "Debrigarh Wildlife Sanctuary",
+    "coordinates": [
+      21.5571,
+      83.64611
+    ]
+  },
+  "Huma": {
+    "place": "Huma Leaning Temple",
+    "coordinates": [
+      21.28188,
+      83.91302
+    ]
+  },
+  "Nrusimhanath": {
+    "place": "Nrusinghanath",
+    "coordinates": [
+      20.90409,
+      82.83169
+    ]
+  },
+  "Harishankar": {
+    "place": "Harishankar Temple",
+    "coordinates": [
+      20.85441,
+      82.86061
+    ]
+  },
+  "Gonasika": {
+    "place": "Gonasika",
+    "coordinates": [
+      21.4969,
+      85.54002
+    ]
+  },
+  "Sanghagra Waterfall": {
+    "place": "Sanghagra",
+    "coordinates": [
+      21.655,
+      85.555
+    ],
+    "approximate": true
+  },
+  "Badaghagra Waterfall": {
+    "place": "Badaghagra waterfall",
+    "coordinates": [
+      21.596,
+      85.522
+    ],
+    "approximate": true
+  },
+  "Belghar": {
+    "place": "Belghar",
+    "coordinates": [
+      19.94385,
+      83.60711
+    ]
+  },
+  "Belgadia Palace": {
+    "place": "Belgadia Palace",
+    "coordinates": [
+      21.943,
+      86.724
+    ]
+  },
+  "Deomali": {
+    "place": "Deomali",
+    "coordinates": [
+      18.70675,
+      82.85293
+    ]
+  },
+  "Minajhola": {
+    "place": "Minajhola",
+    "coordinates": [
+      19.26445,
+      83.60648
+    ]
+  },
+  "Mandasaru Silent Valley": {
+    "place": "Mandasaru",
+    "coordinates": [
+      20.14,
+      84.38
+    ],
+    "approximate": true
+  },
+  "Jirang / Chandragiri": {
+    "place": "Chandragiri, Odisha",
+    "coordinates": [
+      19.26919,
+      84.26006
+    ]
+  },
+  "Duduma & Rani Duduma": {
+    "place": "Duduma Waterfalls",
+    "coordinates": [
+      18.51852,
+      82.45356
+    ]
+  },
+  "Nabakalebara": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.79638,
+      85.82193
+    ]
+  },
+  "Chhera Pahara": {
+    "place": "Puri",
+    "coordinates": [
+      19.82561,
+      85.82553
+    ]
+  },
+  "Suna Vesha": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.79643,
+      85.81461
+    ]
+  },
+  "Anasara": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.80134,
+      85.80947
+    ]
+  },
+  "Mahaprasad Tradition": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.80822,
+      85.80952
+    ]
+  },
+  "Rukuna Rath Yatra": {
+    "place": "Lingaraja Temple",
+    "coordinates": [
+      20.23483,
+      85.84244
+    ]
+  },
+  "Debasnana Purnima": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.81306,
+      85.81473
+    ]
+  },
+  "Nuakhai Bhetghat": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.4535,
+      83.95776
+    ]
+  },
+  "Sal Puja": {
+    "place": "Rairangpur",
+    "coordinates": [
+      22.27,
+      86.17
+    ]
+  },
+  "Chait Parab": {
+    "place": "Koraput",
+    "coordinates": [
+      18.82005,
+      82.72548
+    ]
+  },
+  "Karamsani": {
+    "place": "Sundargarh",
+    "coordinates": [
+      22.12496,
+      84.03711
+    ]
+  },
+  "Kandhen Budhi Yatra Ritual": {
+    "place": "Bhawanipatna",
+    "coordinates": [
+      19.8965,
+      83.17549
+    ]
+  },
+  "Niyamgiri Sacred-Hill Tradition": {
+    "place": "Niyamgiri",
+    "coordinates": [
+      19.59162,
+      83.40372
+    ]
+  },
+  "Bonda Tribal Customs": {
+    "place": "Malkangiri",
+    "coordinates": [
+      18.35,
+      81.9
+    ]
+  },
+  "Santhal Dance-Music Tradition": {
+    "place": "Rairangpur",
+    "coordinates": [
+      22.27829,
+      86.17379
+    ]
+  },
+  "Gond Warrior Heritage": {
+    "place": "Nabarangpur",
+    "coordinates": [
+      19.23333,
+      82.55
+    ]
+  },
+  "Bhumia Marriage Customs": {
+    "place": "Jeypore",
+    "coordinates": [
+      18.85,
+      82.58
+    ]
+  },
+  "Oraon Agricultural Tradition": {
+    "place": "Sundargarh",
+    "coordinates": [
+      22.12005,
+      84.04233
+    ]
+  },
+  "Boita Bandana Ritual": {
+    "place": "Cuttack",
+    "coordinates": [
+      20.43912,
+      85.89304
+    ]
+  },
+  "Chhau Ritual Martial Tradition": {
+    "place": "Baripada",
+    "coordinates": [
+      21.92666,
+      86.72504
+    ]
+  },
+  "Sitalsasthi Procession": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.29474,
+      85.84419
+    ]
+  },
+  "Jhoti/Chita Floor Art": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.28209,
+      85.83837
+    ]
+  },
+  "Danda Yatra": {
+    "place": "Berhampur",
+    "coordinates": [
+      19.32829,
+      84.78371
+    ]
+  },
+  "Grama Devi (Village Deity) Worship": {
+    "place": "Bhubaneswar",
+    "coordinates": [
+      20.277,
+      85.82472
+    ]
+  },
+  "Khond Earth-Centered Ritual Tradition": {
+    "place": "Phulbani",
+    "coordinates": [
+      20.46667,
+      84.23333
+    ]
+  },
+  "Bhitarkanika Fishing Community Traditions": {
+    "place": "Bhitarkanika National Park",
+    "coordinates": [
+      20.6625,
+      86.9341
+    ]
+  },
+  "Chhatisha Niyog": {
+    "place": "Jagannath Temple, Puri",
+    "coordinates": [
+      19.81726,
+      85.83206
+    ]
+  },
+  "Ratha Nirmana": {
+    "place": "Puri",
+    "coordinates": [
+      19.81739,
+      85.852
+    ]
+  },
+  "Community Grain-Offering Ritual": {
+    "place": "Sambalpur",
+    "coordinates": [
+      21.45834,
+      83.96303
+    ]
+  },
+  "Kapdaganda Weaving Tradition": {
+    "place": "Niyamgiri",
+    "coordinates": [
+      19.58671,
+      83.40885
+    ]
+  }
+}

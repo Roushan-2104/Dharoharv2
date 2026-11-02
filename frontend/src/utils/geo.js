@@ -77,24 +77,17 @@ export const LANDMARK_COORDINATES = {
 export const calibrateEntityCoordinates = (entity) => {
   if (!entity) return [20.5, 84.5];
 
+  // The stored coordinates are verified per record (data/entity_locations.json), so they come first
+  const c = entity.coordinates;
+  if (Array.isArray(c) && c.length >= 2 && Number.isFinite(+c[0]) && Number.isFinite(+c[1])) {
+    return [+c[0], +c[1]];
+  }
+
+  // Fallback for records without coordinates (e.g. new community contributions): exact name only,
+  // since partial matches put things like "Konark Dance Festival" on the wrong record's spot
   const name = (entity.name || '').trim();
-  
-  // Exact match
   if (LANDMARK_COORDINATES[name]) {
     return LANDMARK_COORDINATES[name];
-  }
-
-  // Substring match
-  const lowerName = name.toLowerCase();
-  for (const [key, coords] of Object.entries(LANDMARK_COORDINATES)) {
-    if (lowerName === key.toLowerCase() || lowerName.includes(key.toLowerCase()) || key.toLowerCase().includes(lowerName)) {
-      return coords;
-    }
-  }
-
-  // Location context match fallback if original coords are invalid or missing
-  if (entity.coordinates && Array.isArray(entity.coordinates) && entity.coordinates.length >= 2) {
-    return entity.coordinates;
   }
 
   return [20.5, 84.5];

@@ -102,8 +102,13 @@ const LANDMARK_COORDINATES = {
   "Prachi Valley Heritage": [20.0833, 85.9667]
 };
 
+// Verified place of each record (from Wikidata and OpenStreetMap; see data/entity_locations.json).
+// These win over the rough lookups below, so a rebuild never scatters records again.
+const ENTITY_LOCATIONS = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/entity_locations.json'), 'utf8'));
+
 function getCoordinates(name, locationContext) {
   const cleanName = (name || '').trim();
+  if (ENTITY_LOCATIONS[cleanName]) return ENTITY_LOCATIONS[cleanName].coordinates;
   if (LANDMARK_COORDINATES[cleanName]) return LANDMARK_COORDINATES[cleanName];
 
   for (const [k, v] of Object.entries(LANDMARK_COORDINATES)) {
