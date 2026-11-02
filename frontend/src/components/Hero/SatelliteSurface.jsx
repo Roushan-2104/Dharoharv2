@@ -5,9 +5,11 @@ import { GeneratedSurfacePlugin, XYZTilesOverlay, TilesFadePlugin } from '3d-til
 import { SATELLITE_TILES } from '../../config/satellite';
 
 // Streams satellite imagery onto the globe, sharper tiles loading in as the camera comes closer,
-// the way map globes do. The tiles are laid on a sphere of the globe's own radius, then turned
-// from the tile library's frame (Z towards the north pole) into ours (Y towards the north pole),
-// so markers placed with latLongToVector3 sit on the right spot.
+// the way map globes do. The library builds the real Earth in metres; the whole group is scaled
+// down to the globe's radius (resizing the library's Earth instead breaks its tile bounds and makes
+// it fetch needlessly deep tiles), then turned from the library's frame (Z towards the north pole)
+// into ours (Y towards the north pole), so markers placed with latLongToVector3 sit on the right spot.
+const EARTH_EQUATORIAL_RADIUS_M = 6378137;
 export default function SatelliteSurface({ radius }) {
   const overlay = useMemo(() => new XYZTilesOverlay({
     url: SATELLITE_TILES.url,
@@ -30,14 +32,13 @@ export default function SatelliteSurface({ radius }) {
   // before its first update builds any tiles
   const setupTiles = useCallback(tiles => {
     if (!tiles) return;
-    // A perfect sphere of our radius instead of the real (slightly squashed) Earth in metres
-    tiles.ellipsoid.radius.set(radius, radius, radius);
     tiles.addEventListener('load-model', handleLoadModel);
+    if (import.meta.env.DEV) window.__dharoharTiles = tiles; // for inspecting tile loading in dev tools
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [radius]);
 
   return (
-    <group rotation={[-Math.PI / 2, 0, 0]}>
+    <group rotation={[-Math.PI / 2, 0, 0]} scale={radius / EARTH_EQUATORIAL_RADIUS_M}>
       <TilesRenderer ref={setupTiles} errorTarget={SATELLITE_TILES.errorTarget}>
         <TilesPlugin plugin={GeneratedSurfacePlugin} args={{ overlay, applyOverlayTexture: true }} />
         <TilesPlugin plugin={TilesFadePlugin} />

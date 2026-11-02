@@ -67,9 +67,9 @@ export default function Earth({ entities, activeEntity, setActiveEntity, itinera
       {/* Live satellite imagery, sharper tiles streaming in as the camera comes closer */}
       <SatelliteSurface radius={radius} />
 
-      {/* The still Blue Marble globe sits just beneath the tiles: it shows while they load and fills any gap */}
+      {/* The still Blue Marble globe sits just beneath the tiles (under the flattened poles too): it shows while they load and fills any gap */}
       <mesh ref={earthRef} position={[0, 0, 0]}>
-        <sphereGeometry args={[radius * 0.998, 128, 128]} />
+        <sphereGeometry args={[radius * 0.995, 128, 128]} />
         <meshPhongMaterial
           map={colorMap}
           bumpMap={bumpMap}

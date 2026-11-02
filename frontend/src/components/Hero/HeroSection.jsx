@@ -366,7 +366,7 @@ export default function HeroSection() {
 
           {/* Credit for the satellite imagery, as its licence requires */}
 
-          <p className="absolute left-4 md:left-8 top-4 md:top-8 z-20 max-w-[60%] text-xs text-paper opacity-70 pointer-events-auto">
+          <p className="absolute left-4 md:left-8 top-4 md:top-8 z-20 max-w-[42%] md:max-w-[60%] text-xs text-paper opacity-70 pointer-events-auto">
 
             {SATELLITE_TILES.attributionUrl
 
